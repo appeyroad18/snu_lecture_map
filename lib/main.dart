@@ -1,7 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:matrix_gesture_detector/matrix_gesture_detector.dart';
-import 'timetable.dart';
+import 'package:snu_lecture_map/map.dart';
+import 'package:snu_lecture_map/search.dart';
+import 'package:snu_lecture_map/setting.dart';
+import 'package:snu_lecture_map/timetable.dart';
 
 ///global variable
 class CurrentScreenNumber{
@@ -14,6 +18,8 @@ class CurrentScreenNumber{
 }
 
 final int content_num = 4;
+
+StreamController _controller = StreamController();
 ///
 
 void main(){
@@ -50,6 +56,18 @@ class _MainPageState extends State<MainPage> {
   Matrix4 transform_matrix = Matrix4.identity();
   CurrentScreenNumber csn = CurrentScreenNumber(currentNum: 0);
   //Matrix4 resetmatrix = Matrix4.identity();
+  Stream stream = _controller.stream;
+
+ @override
+  void initState() {
+    // TODO: implement initState
+   super.initState();
+   stream.listen((current_touched) {
+     setState(() {
+       csn.currentNum = current_touched;
+     });
+   });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,35 +77,19 @@ class _MainPageState extends State<MainPage> {
         children: [
           Visibility(
             visible: csn.currentNum == 0,
-            child: Center(
-              child: GestureDetector(
-                onDoubleTap: (){
-                  setState(() {
-                    transform_matrix = Matrix4.identity();
-                  });
-                },
-                child: MatrixGestureDetector(
-                  shouldRotate: true,
-                  shouldScale: true,
-                  shouldTranslate: true,
-                  onMatrixUpdate: (Matrix4 matrix, Matrix4 translationMatrix, Matrix4 scaleMatrix, Matrix4 rotationMatrix){
-                    setState(() {
-                      transform_matrix = MatrixGestureDetector.compose(matrix, translationMatrix, scaleMatrix, rotationMatrix);
-                    });
-                  },
-                  child: Transform(
-                    transform: transform_matrix,
-                    child: MapContainer(
-                      imagePath: 'assets/images/snumap.jpg',
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            child: MapScreen(),
           ),
           Visibility(
-            visible: csn.currentNum==1,
+            visible: csn.currentNum == 1,
+            child: SearchScreen(),
+          ),
+          Visibility(
+            visible: csn.currentNum == 2,
             child: TimeTable(),
+          ),
+          Visibility(
+            visible: csn.currentNum == 3,
+            child: SettingScreen(),
           ),
 
           Align(
@@ -117,7 +119,8 @@ class BottomButton extends StatefulWidget {
   int button_pos;
   String content;
   CurrentScreenNumber csn;
-  BottomButton({Key? key, required this.button_pos, required this.content, required this.csn}) : super(key: key);
+
+  BottomButton({Key? key, required this.button_pos, required this.content, required this.csn,}) : super(key: key);
 
   @override
   _BottomButtonState createState() => _BottomButtonState();
@@ -126,15 +129,13 @@ class BottomButton extends StatefulWidget {
 class _BottomButtonState extends State<BottomButton> {
   @override
   Widget build(BuildContext context) {
+    int tempnum = 0; // garbage value. to update stream. no meaning
     double screen_width = MediaQuery.of(context).size.width;
 
     return FlatButton(
       onPressed: (){
         if(widget.csn.currentNum != widget.button_pos){
-          setState(() {
-            widget.csn.changeCurrentNum(widget.button_pos);
-            print(widget.csn.currentNum);
-          });
+          _controller.add(widget.button_pos);
         }
       },
       child: Text(widget.content),
@@ -145,32 +146,4 @@ class _BottomButtonState extends State<BottomButton> {
   }
 }
 
-class MapContainer extends StatelessWidget {
 
-  final Widget? child;
-  final String imagePath;
-
-  MapContainer({this.child, required this.imagePath, Key? key}) : super(key: key);
-
-  //const MapBox({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    double screen_height = MediaQuery.of(context).size.height;
-    double screen_width = MediaQuery.of(context).size.width;
-    //number of pixel of snu map image
-    double image_height = 3508;
-    double image_width = 2481;
-
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage(imagePath),
-          fit: image_height/screen_height < image_width/screen_width?
-            BoxFit.fitWidth : BoxFit.fitHeight,
-        )
-      ),
-      child: child,
-    );
-  }
-}
