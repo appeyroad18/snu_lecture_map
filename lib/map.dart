@@ -20,37 +20,54 @@ class MapScreen extends StatefulWidget {
   _MapScreenState createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with SingleTickerProviderStateMixin {
   Matrix4 transform_matrix = Matrix4.identity();
   CurrentScreenNumber csn = CurrentScreenNumber(currentNum: 0);
 
   @override
   Widget build(BuildContext context) {
+    double width = MediaQuery.of(context).size.width;
+    double height = MediaQuery.of(context).size.height;
+    double _duration = 0.5;
     return Center(
-      child: GestureDetector(
-        onDoubleTap: (){
-          setState(() {
-            transform_matrix = Matrix4.identity();
-          });
-        },
-        child: MatrixGestureDetector(
-          shouldRotate: true,
-          shouldScale: true,
-          shouldTranslate: true,
-          onMatrixUpdate: (Matrix4 matrix, Matrix4 translationMatrix, Matrix4 scaleMatrix, Matrix4 rotationMatrix){
+        child: GestureDetector(
+          onDoubleTap: (){
             setState(() {
-              transform_matrix = MatrixGestureDetector.compose(matrix, translationMatrix, scaleMatrix, rotationMatrix);
+              transform_matrix = Matrix4.identity();
             });
           },
-          child: Transform(
-            transform: transform_matrix,
-            child: MapContainer(
-              imagePath: 'assets/images/snumap.jpg',
+          child: MatrixGestureDetector(
+            shouldRotate: true,
+            shouldScale: true,
+            shouldTranslate: true,
+            onMatrixUpdate: (Matrix4 matrix, Matrix4 translationMatrix, Matrix4 scaleMatrix, Matrix4 rotationMatrix){
+              setState(() {
+                transform_matrix = MatrixGestureDetector.compose(transform_matrix, translationMatrix, scaleMatrix, rotationMatrix);
+                double _scale = scaleMatrix[0];
+                if (transform_matrix[13] < -height*(1-1/_scale)){
+                  transform_matrix[13] = -height*(1-1/_scale);
+                }
+                else if (transform_matrix[13] > height*(1-1/_scale)){
+                  transform_matrix[13] = height*(1-1/_scale);
+                }
+                else if (transform_matrix[12] < -width*(1-1/_scale)){
+                  transform_matrix[12] = -width*(1-1/_scale);
+                }
+                else if (transform_matrix[12] > width*(1-1/_scale)){
+                  transform_matrix[12] = width*(1-1/_scale);
+                }
+              });
+              print(transform_matrix);
+            },
+            child: Transform(
+              transform: transform_matrix,
+              child: MapContainer(
+                imagePath: 'assets/images/snumap.jpg',
+              ),
             ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
