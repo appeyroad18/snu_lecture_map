@@ -44,6 +44,10 @@ class _MapScreenState extends State<MapScreen> with SingleTickerProviderStateMix
               setState(() {
                 transform_matrix = MatrixGestureDetector.compose(transform_matrix, translationMatrix, scaleMatrix, rotationMatrix);
                 double _scale = scaleMatrix[0];
+                if (_scale < 1){
+                  transform_matrix[0] = 1;
+                  transform_matrix[5] = 1;
+                }
                 if (transform_matrix[13] < -height*(1-1/_scale)){
                   transform_matrix[13] = -height*(1-1/_scale);
                 }
