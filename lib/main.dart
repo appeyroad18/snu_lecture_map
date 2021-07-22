@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:provider/provider.dart';
 import 'package:snu_lecture_map/map.dart';
 import 'package:snu_lecture_map/search.dart';
 import 'package:snu_lecture_map/setting.dart';
@@ -31,16 +32,19 @@ class SNUMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'SNUMap',
-      theme: ThemeData(
-        textTheme: Theme.of(context).textTheme.apply(
-          bodyColor: Colors.black,
-          displayColor: Colors.blue,
-        )
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => BoxSize(),
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: 'SNUMap',
+        theme: ThemeData(
+          textTheme: Theme.of(context).textTheme.apply(
+            bodyColor: Colors.black,
+            displayColor: Colors.blue,
+          )
+        ),
+        home: MainPage(),
       ),
-      home: MainPage(),
     );
   }
 }
