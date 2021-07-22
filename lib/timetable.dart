@@ -327,6 +327,8 @@ class __TableState extends State<_Table> {
     double screen_width = MediaQuery.of(context).size.width;
     double screen_height = MediaQuery.of(context).size.height;
 
+    List<String> my_lecture = ['기초영어', ];
+
     return Padding(
       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
       child: Container(
@@ -681,6 +683,15 @@ class __TableState extends State<_Table> {
               ),
             ],
           ),
+
+          ClassBox(lectureName: '',),
+          ClassBox(lectureName: '',),
+          ClassBox(lectureName: '',),
+          ClassBox(lectureName: '',),
+
+          // 1
+          // 2
+          // 3
           _TableBox(),
           AddBox(),
         ]),
@@ -1044,3 +1055,53 @@ class DataSearch extends SearchDelegate<String> {
     );
   }
 }
+
+class ClassBox extends StatefulWidget {
+  String lectureName;
+
+  ClassBox({required this.lectureName});
+
+  @override
+  _ClassBoxState createState() => _ClassBoxState();
+}
+
+class _ClassBoxState extends State<ClassBox> {
+  List<Widget> testList = <Widget>[
+    Container(
+      width : 50,
+      height : 50,
+      color : Colors.black
+    ),
+  ];
+
+  void AddWidget(Widget adding){
+    testList.add(adding);
+  }
+
+  double findStartTime(String lectureName){
+    // in data find start time
+    double startTime = 1;
+    return startTime;
+  }
+  double findEndTime(String lectureName){
+    double endTime = 3;
+    return endTime;
+  }
+  double ClassTime(String lectureName){
+
+    return 30;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+
+      alignment: Alignment(),
+      child: Container(
+        height : ClassTime(widget.lectureName),
+        width : 50,
+      ),
+    );
+  }
+}
+

@@ -22,6 +22,8 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen> {
   bool _showInfo = false;
+  List<bool> _showInfos = [false, false];
+
   @override
   Widget build(BuildContext context) {
      final double _width = MediaQuery.of(context).size.width;
@@ -90,6 +92,20 @@ class _MapScreenState extends State<MapScreen> {
                       MapContainer(
                         imagePath: "assets/images/snumap.jpg",
                       ),
+                      Stack(
+                        children: [
+                          GestureDetector(
+                            child: Buildings(buildingNum: 301,),
+                            onTap: (){
+                              setState(() {
+                                _showInfos[0] = !_showInfos[0];
+                              });
+                            },
+                          ),
+                          //
+                        ],
+                      ),
+                      /*
                       GestureDetector(
                         child: Buildings(),
                         onTap: (){
@@ -97,6 +113,8 @@ class _MapScreenState extends State<MapScreen> {
                             _showInfo = !_showInfo;
                           });
                         },),
+                        */
+
                       Container(
                         margin: EdgeInsets.fromLTRB(200, 200, 0, 0),
                         child: IconButton(
@@ -112,7 +130,8 @@ class _MapScreenState extends State<MapScreen> {
               ),
               Visibility(
                 child: Infobox(),
-                visible: _showInfo,
+                //visible: _showInfo,
+                visible: _showInfos[0],
               ),
               ]
             ),
@@ -153,8 +172,11 @@ class MapContainer extends StatelessWidget {
   }
 }
 
+/*
 class Buildings extends StatefulWidget {
-  const Buildings({Key? key}) : super(key: key);
+  int buildingNum;
+
+  Buildings({required this.buildingNum, Key? key}) : super(key: key);
 
   @override
   _BuildingsState createState() => _BuildingsState();
@@ -166,6 +188,7 @@ class _BuildingsState extends State<Buildings> {
     return Stack(
         children: [
           Container(
+
             width: 10,
             height: 20,
             color: Color.fromRGBO(80, 176, 209, 100),
@@ -175,6 +198,33 @@ class _BuildingsState extends State<Buildings> {
     );
   }
 }
+ */
+
+class Buildings extends StatefulWidget {
+  int buildingNum;
+  List<double> temp = <double>[0.5, ];
+
+  Buildings({required this.buildingNum, Key? key}) : super(key : key);
+
+  @override
+  _BuildingsState createState() => _BuildingsState();
+}
+
+class _BuildingsState extends State<Buildings> {
+
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment(-0.5, -0.5),
+      child: Container(
+        width: 10,
+        height: 20,
+        color: Color.fromRGBO(80, 176, 209, 100),
+      ),
+    );
+  }
+}
+
 
 class Infobox extends StatefulWidget {
   const Infobox({Key? key}) : super(key: key);
@@ -238,9 +288,9 @@ class _InfoboxState extends State<Infobox> {
                             ),
                           ],
                         ),
-                        AnimatedOpacity(
-                          opacity: _showResMenu?1:0,
-                          duration: Duration(milliseconds: 300),
+                        Visibility(
+                          visible: _showResMenu,
+                          //duration: Duration(milliseconds: 300),
                           child: ResMenuBox(),
                         ),
                       ],
