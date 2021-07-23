@@ -326,6 +326,8 @@ class __TableState extends State<_Table> {
   Widget build(BuildContext context) {
     double screen_width = MediaQuery.of(context).size.width;
     double screen_height = MediaQuery.of(context).size.height;
+    //double screen_width = double.infinity;
+    //double screen_height = double.infinity;
 
     List<String> my_lecture = ['기초영어', ];
 
@@ -1056,6 +1058,8 @@ class DataSearch extends SearchDelegate<String> {
   }
 }
 
+
+//참고용 widget
 class ClassBox extends StatefulWidget {
   String lectureName;
 
@@ -1089,17 +1093,18 @@ class _ClassBoxState extends State<ClassBox> {
   }
   double ClassTime(String lectureName){
 
-    return 30;
+    return 31;
   }
 
   @override
   Widget build(BuildContext context) {
     return Align(
 
-      alignment: Alignment(),
+      alignment: Alignment(-0.41, -0.326), //set position depend on lecture date and time
       child: Container(
-        height : ClassTime(widget.lectureName),
-        width : 50,
+        height : ClassTime(widget.lectureName), //set height depend on lecture duration
+        width : 74, //set width
+        color: Colors.blue,
       ),
     );
   }

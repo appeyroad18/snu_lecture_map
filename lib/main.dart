@@ -75,40 +75,49 @@ class _MainPageState extends State<MainPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Stack(
-        children: [
-          Visibility(
-            visible: csn.currentNum == 0,
-            child: MapScreen(),
-          ),
-          Visibility(
-            visible: csn.currentNum == 1,
-            child: SearchScreen(),
-          ),
-          Visibility(
-            visible: csn.currentNum == 2,
-            child: TimeTable(),
-          ),
-          Visibility(
-            visible: csn.currentNum == 3,
-            child: SettingScreen(),
-          ),
+    double screen_height = MediaQuery.of(context).size.height;
+    double screen_width = MediaQuery.of(context).size.width;
+    double menubar_height = 50;
 
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              height: 50,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  BottomButton(button_pos: 0, content: '지도', csn: csn,),
-                  BottomButton(button_pos: 1, content: '검색', csn: csn,),
-                  BottomButton(button_pos: 2, content: '내 강의', csn: csn,),
-                  BottomButton(button_pos: 3, content: '설정', csn: csn,),
-                ],
-              ),
+   return Scaffold(
+      backgroundColor: Colors.white,
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            height: screen_height - menubar_height,
+            child: Stack(
+              children: [
+                //Container(height: double.infinity,),
+                Visibility(
+                  visible: csn.currentNum == 0,
+                  child: MapScreen(),
+                ),
+                Visibility(
+                  visible: csn.currentNum == 1,
+                  child: SearchScreen(),
+                ),
+                Visibility(
+                  visible: csn.currentNum == 2,
+                  child: TimeTable(),
+                ),
+                Visibility(
+                  visible: csn.currentNum == 3,
+                  child: SettingScreen(),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: menubar_height,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                BottomButton(button_pos: 0, content: '지도', csn: csn,),
+                BottomButton(button_pos: 1, content: '검색', csn: csn,),
+                BottomButton(button_pos: 2, content: '내 강의', csn: csn,),
+                BottomButton(button_pos: 3, content: '설정', csn: csn,),
+              ],
             ),
           ),
         ],
