@@ -328,13 +328,7 @@ class __TableState extends State<_Table> {
     //double screen_width = double.infinity;
     //double screen_height = double.infinity;
 
-    //List<String> my_lecture = ['기초영어', ];
-    //if (context.read<BoxSize>().mlecture.length == 0) {
-    //  String a = "";}
-    // else if (context.read<BoxSize>().mlecture.length == 1) {
-    //String a =  context.read<BoxSize>().mlecture[1];
-    //}
-
+    List<String> my_lecture = ['기초영어', ];
 
     return Padding(
       padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
@@ -690,12 +684,12 @@ class __TableState extends State<_Table> {
               ),
             ],
           ),
-          //LectureBox(), =====> change
+          LectureBox(),
           //List.unmodifiable(elements),
-          ClassBox(lectureName: context.read<BoxSize>().mlecture[1],),
-          ClassBox(lectureName: '',),
-          ClassBox(lectureName: '',),
-          ClassBox(lectureName: '',),
+          //ClassBox(lectureName: '',),
+          //ClassBox(lectureName: '',),
+          //ClassBox(lectureName: '',),
+          //ClassBox(lectureName: '',),
 
           // 1
           // 2
@@ -884,47 +878,32 @@ class BoxSize with ChangeNotifier {
   double _height = 0;
   double _horizontal = 0;
   double _vertical = 0;
-  List _mlecture = ["","",""]; // =====>change
-  // List<Widget> _lectureList = <Widget>[Container(height: 20,width: 20,color: Colors.black,)]; =====>change
+  List<Widget> _lectureList = <Widget>[Container(height: 20,width: 20,color: Colors.black,)];
 
   String get selectedLecture => _selectedLecture;
   double get width => _width;
   double get height => _height;
   double get horizontal => _horizontal;
   double get vertical => _vertical;
-  List get mlecture => _mlecture; // =====>change
-  //List<Widget> get lectureList => _lectureList; // =====>change
+  List<Widget> get lectureList => _lectureList;
 
-  box() {
-
-  }
-  add() {
-    _mlecture.add(_selectedLecture);
-    print(_mlecture);
-  }
-/*
   add() {
     _lectureList.add(
-        Align(
-          alignment: Alignment(2, 2), //set position depend on lecture date and time
-          child:
-          Container(
-            height : 50, //set height depend on lecture duration
-            width : 50, //set width
-            color: Colors.blue,
+      Align(
+        alignment: Alignment(_horizontal, 2), //set position depend on lecture date and time
+        child:
+        Container(
+          height : 50, //set height depend on lecture duration
+          width : 50, //set width
+          color: Colors.blue,
 
-    ),),);
-    pr(_lectureList);
+        ),),);
     notifyListeners();
   }
 
- */
-  delete_all() {
-    _mlecture = [""];
+  delete_all(){
+    _lectureList = <Widget>[Container(height: 20,width: 20,color: Colors.black,)];
   }
-  //delete_all(){
-  //  _lectureList = <Widget>[Container(height: 20,width: 20,color: Colors.black,)];
-  //}
 
   pass(String lecture_name) {
     _selectedLecture = lecture_name;
@@ -951,13 +930,12 @@ class BoxSize with ChangeNotifier {
     notifyListeners();
   }
 
-  setothers(double start_time, double end_time) {
-    _vertical = start_time; // 연산추가 필요
-    _height = end_time - start_time; //연산추가 필요
-    print(_vertical);
-    print(_height);
-  }
-  notifyListeners();
+//add() {
+// _boxwidth = _boxwidth + 10;
+//notifyListeners();
+//}
+
+
 }
 /*
 class _TableBox extends StatefulWidget {
@@ -1000,10 +978,10 @@ class DataSearch extends SearchDelegate<String> {
     "재무관리"
   ];
   final recentLectures = ["대학글쓰기1", "대학글쓰기2"];
-  final lectureinfo = [["대학글쓰기1",1,3.0,5.0,"가나다","58동 401호"],
-    ["대학글쓰기2",2,9.0,10.0,"라마바","58동 402호"],
-    ["대학영어1",4,2.0,5.0,"사아자","58동 403호"],
-    ["대학영어2",4,2.0,5.0,"차카타파하","58동 404호"]];
+  final lectureinfo = [["대학글쓰기1",1,3,5,"가나다","58동 401호"],
+    ["대학글쓰기2",2,9,10,"라마바","58동 402호"],
+    ["대학영어1",4,2,5,"사아자","58동 403호"],
+    ["대학영어2",4,2,5,"차카타파하","58동 404호"]];
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -1070,7 +1048,7 @@ class DataSearch extends SearchDelegate<String> {
     // show some result based on the selection
     BoxSize _boxSize = Provider.of<BoxSize>(context);
     final String lecName = context.read<BoxSize>().selectedLecture;
-    List selectedinfo = ["","","","",""];
+    List selectedinfo = ["대학글쓰기1",1,3,5,"정다은","58동 404호"];
 
     for (List each in lectureinfo) {
       if (each[0] == lecName) {
@@ -1089,9 +1067,9 @@ class DataSearch extends SearchDelegate<String> {
         }
 */
         selectedinfo[0] = lec_week;
-        double lec_start_time = each[2];
+        int lec_start_time = each[2];
         selectedinfo[1] = lec_start_time;
-        double lec_end_time = each[3];
+        int lec_end_time = each[3];
         selectedinfo[2] = lec_end_time;
         String professor_name = each[4];
         selectedinfo[3] = professor_name;
@@ -1135,10 +1113,7 @@ class DataSearch extends SearchDelegate<String> {
                 _boxSize.setweek(selectedinfo[0]);
                 _boxSize.pr();
                 _boxSize.add();
-                _boxSize.setothers(selectedinfo[1], selectedinfo[2]);
-
-                //print(context.read<BoxSize>().lectureList);
-                print(context.read<BoxSize>().mlecture);
+                print(context.read<BoxSize>().lectureList);
               }),
         ),
         ListTile(
@@ -1168,14 +1143,10 @@ class DataSearch extends SearchDelegate<String> {
                 icon: AnimatedIcons.event_add,
                 progress: transitionAnimation,),
               onPressed: () {
-                close(context, "bye");
-                _boxSize.setweek(selectedinfo[0]);
+                close(context, "");
                 _boxSize.pr();
+                _boxSize.setweek(selectedinfo[0]);
                 _boxSize.add();
-                _boxSize.setothers(selectedinfo[1], selectedinfo[2]);
-
-                //print(context.read<BoxSize>().lectureList);
-                print(context.read<BoxSize>().mlecture);
               }),
         ),
 
@@ -1184,7 +1155,7 @@ class DataSearch extends SearchDelegate<String> {
   }
 }
 
-/*
+
 class LectureBox extends StatefulWidget {
   const LectureBox({Key? key}) : super(key: key);
 
@@ -1202,20 +1173,20 @@ class _LectureBoxState extends State<LectureBox> {
     //context.read<BoxSize>().lectureList.forEach((lec) => );
     return// Stack(
       //children: [
-        //  context.read<BoxSize>().lectureList.forEach((lec) => lec.createElement())
-     // ],
-   // );
+      //  context.read<BoxSize>().lectureList.forEach((lec) => lec.createElement())
+      // ],
+      // );
 
-    Stack(
-      children: List.unmodifiable(() sync* {
-        yield* getListFiles();
-      }()
-      ),
-    );
+      Stack(
+        children: List.unmodifiable(() sync* {
+          yield* getListFiles();
+        }()
+        ),
+      );
   }
 }
 
-*/
+
 
 //참고용 widget
 class ClassBox extends StatefulWidget {
@@ -1255,25 +1226,15 @@ class _ClassBoxState extends State<ClassBox> {
   @override
   Widget build(BuildContext context) {
     double screen_width = MediaQuery.of(context).size.width;
-    double screen_height = MediaQuery.of(context).size.height;
     double hor = context.read<BoxSize>().horizontal;
-    double ver = context.read<BoxSize>().vertical;
-    double hei = context.read<BoxSize>().height;
-
-    return
-      Align(
-        alignment: Alignment(hor, -0.326), //set position depend on lecture date and time
-        child: GestureDetector(
-          child: Container(
-            height : ClassTime(widget.lectureName), //set height depend on lecture duration
-            width : (screen_width - 41) / 5, //set width
-            color: Colors.blue,
-          ),
-          onTap:() {
-            print(hor);
-          },
-        ),
-      );
+    return Align(
+      alignment: Alignment(hor, -0.326), //set position depend on lecture date and time
+      child: Container(
+        height : ClassTime(widget.lectureName), //set height depend on lecture duration
+        width : (screen_width - 41) / 5, //set width
+        color: Colors.blue,
+      ),
+    );
   }
 }
 
