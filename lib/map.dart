@@ -1,5 +1,12 @@
+import 'dart:ffi';
+
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:photo_view/photo_view.dart';
+import 'package:flutter/animation.dart';
+import 'package:provider/provider.dart';
 
 //test1
 
@@ -20,123 +27,88 @@ class MapScreen extends StatefulWidget {
   _MapScreenState createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with SingleTickerProviderStateMixin {
   bool _showInfo = false;
-  List<bool> _showInfos = [false, false];
-
+  int? _buildingNum;
   @override
   Widget build(BuildContext context) {
-     final double _width = MediaQuery.of(context).size.width;
-     final double _height = MediaQuery.of(context).size.height;
-
-     // child: AnimatedBuilder(
-     //   animation: _controller,
-     //   child: GestureDetector(
-     //     onDoubleTap: (){
-     //       setState(() {
-     //         transform_matrix = Matrix4.identity();
-     //       });
-     //     },
-     //     child: MatrixGestureDetector(
-     //       shouldRotate: true,
-     //       shouldScale: true,
-     //       shouldTranslate: true,
-     //       onMatrixUpdate: (Matrix4 matrix, Matrix4 translationMatrix, Matrix4 scaleMatrix, Matrix4 rotationMatrix){
-     //         setState(() {
-     //           double _scale = 2;
-     //           scaleMatrix[0] = 2;
-     //           scaleMatrix[5] = 2;
-     //           if (translationMatrix[13] > 935*(1-1/_scale)){
-     //             translationMatrix[13] = 935*(1-1/_scale);
-     //           }
-     //           transform_matrix = MatrixGestureDetector.compose(transform_matrix, translationMatrix, scaleMatrix, rotationMatrix);
-     //   double _scale = scaleMatrix[0];
-     //   if (_scale < 1){
-     //     transform_matrix[0] = 1;
-     //     transform_matrix[5] = 1;
-     //   }
-     //   if (transform_matrix[13] < -height*(1-1/_scale)){
-     //     transform_matrix[13] = -height*(1-1/_scale);
-     //   }
-     //   else if (transform_matrix[13] > height*(1-1/_scale)){
-     //     transform_matrix[13] = height*(1-1/_scale);
-     //   }
-     //   else if (transform_matrix[12] < -width*(1-1/_scale)){
-     //     transform_matrix[12] = -width*(1-1/_scale);
-     //   }
-     //   else if (transform_matrix[12] > width*(1-1/_scale)){
-     //     transform_matrix[12] = width*(1-1/_scale);
-     //   }
-     //   });
-     //   print(transform_matrix);
-     // },
-     // child: Transform(
-     //   transform: transform_matrix,
+    final double _width = MediaQuery.of(context).size.width;
+    final double _height = MediaQuery.of(context).size.height;
+    //Showing showInfo = Provider.of<Showing>(context);
 
     return Align(
-      alignment: Alignment.topCenter,
-        child: GestureDetector(
-          onDoubleTap: (){
-            setState(() {
-              Transform.scale(scale: 2);
-            });
-          },
+          alignment: Alignment.topCenter,
           child: Container(
-            height : _height - 50,
-            width: _width,
-            child: Stack(
-              children: [
-                PhotoView.customChild(
-                  child: Stack(
-                    children: [
-                      MapContainer(
-                        imagePath: "assets/images/snumap.jpg",
-                      ),
-                      Stack(
-                        children: [
-                          GestureDetector(
-                            child: Buildings(buildingNum: 301,),
-                            onTap: (){
-                              setState(() {
-                                _showInfos[0] = !_showInfos[0];
-                              });
-                            },
-                          ),
-                          //
-                        ],
-                      ),
-                      /*
-                      GestureDetector(
-                        child: Buildings(),
-                        onTap: (){
-                          setState(() {
-                            _showInfo = !_showInfo;
-                          });
-                        },),
-                        */
-
-                      Container(
-                        margin: EdgeInsets.fromLTRB(200, 200, 0, 0),
-                        child: IconButton(
-                          icon: Icon(Icons.restaurant_menu),
-                          onPressed: (){},
+              height : _height - 50,
+              width: _width,
+              child: Stack(
+                  children: [
+                    GestureDetector(
+                      onDoubleTap: (){
+                        setState(() {
+                          Transform.scale(scale: 2);
+                        });
+                      },
+                      child: PhotoView.customChild(
+                        child: Stack(
+                            children: [
+                              MapContainer(
+                                imagePath: "assets/images/snumap.jpg",
+                              ),
+                              GestureDetector(
+                                child: Buildings(),
+                                onTap: (){
+                                  setState(() {
+                                    _showInfo = !_showInfo;
+                                  });
+                                },),
+                            ]
                         ),
-                      )
-                    ]
-                ),
-                backgroundDecoration: BoxDecoration(color: Colors.white10),
-                minScale: PhotoViewComputedScale.contained * 1,
-                maxScale: PhotoViewComputedScale.covered * 3.5,
+                        backgroundDecoration: BoxDecoration(color: Colors.white10),
+                        minScale: PhotoViewComputedScale.contained * 1,
+                        maxScale: PhotoViewComputedScale.covered * 3.5,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: AnimatedSize(
+                        vsync: this,
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOutCubic,
+                        child: Container(
+                          height: _showInfo ? 150 : 0,
+                          child: Stack(
+                              children: [
+                                Infobox(),
+                                Align(
+                                  alignment: Alignment.bottomLeft,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      IconButton(
+                                        icon: Icon(Icons.arrow_back),
+                                        onPressed: (){
+                                          setState(() {
+                                            //Showing();
+                                            _showInfo = !_showInfo;
+                                          });
+                                        },
+                                      ),
+                                      Container(
+                                        height: 100,
+                                        width: 1,
+                                      ),
+                                    ]
+                                  )
+                                )
+                              ]
+                          ),
+                        ),
+                      ),
+                    ),
+                  ]
               ),
-              Visibility(
-                child: Infobox(),
-                //visible: _showInfo,
-                visible: _showInfos[0],
-              ),
-              ]
             ),
-          ),
-        ),
     );
   }
 }
@@ -164,7 +136,7 @@ class MapContainer extends StatelessWidget {
           image: DecorationImage(
             image: AssetImage(imagePath),
             fit: (image_height/screen_height < image_width/screen_width) ?
-                BoxFit.fitWidth : BoxFit.fitHeight,
+            BoxFit.fitWidth : BoxFit.fitHeight,
           )
       ),
       child: child,
@@ -172,56 +144,64 @@ class MapContainer extends StatelessWidget {
   }
 }
 
-/*
 class Buildings extends StatefulWidget {
-  int buildingNum;
-
-  Buildings({required this.buildingNum, Key? key}) : super(key: key);
+  Buildings({Key? key}) : super(key: key);
 
   @override
   _BuildingsState createState() => _BuildingsState();
 }
 
 class _BuildingsState extends State<Buildings> {
+  List<double> axis_x = <double>[0.37, 0.365];
+  List<double> axis_y = <double>[-0.51, -0.578];
+  int? buildingNumber;
   @override
   Widget build(BuildContext context) {
     return Stack(
         children: [
-          Container(
-
-            width: 10,
-            height: 20,
-            color: Color.fromRGBO(80, 176, 209, 100),
-            margin: EdgeInsets.fromLTRB(262, 180, 0, 0),
+          Align(
+            alignment: Alignment(axis_x[0], axis_y[0]),
+            child: Container(
+              width: 10,
+              height: 10,
+              color: Color.fromRGBO(80, 176, 209, 100),
+            ),
+          ),
+          Align(
+            alignment: Alignment(axis_x[1], axis_y[1]),
+            child: Container(
+              width: 10,
+              height: 10,
+              color: Color.fromRGBO(80, 176, 209, 100),
+            ),
           ),
         ]
     );
   }
 }
- */
 
-class Buildings extends StatefulWidget {
-  int buildingNum;
-  List<double> temp = <double>[0.5, ];
+class Showing extends ChangeNotifier {
+  bool _showInfo = false;
+  bool getShowInfo() => _showInfo;
 
-  Buildings({required this.buildingNum, Key? key}) : super(key : key);
-
-  @override
-  _BuildingsState createState() => _BuildingsState();
+  void chgState(){
+    _showInfo = !_showInfo;
+    notifyListeners();
+  }
 }
 
-class _BuildingsState extends State<Buildings> {
+
+class Building301 extends StatefulWidget {
+  const Building301({Key? key}) : super(key: key);
 
   @override
+  _Building301State createState() => _Building301State();
+}
+
+class _Building301State extends State<Building301> {
+  @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment(-0.5, -0.5),
-      child: Container(
-        width: 10,
-        height: 20,
-        color: Color.fromRGBO(80, 176, 209, 100),
-      ),
-    );
+    return Container();
   }
 }
 
@@ -241,8 +221,26 @@ class _InfoboxState extends State<Infobox> {
     return Stack(
       children: [
         Align(
+          alignment: Alignment.center,
+          child: Visibility(
+            visible: _showResMenu,
+            child: GestureDetector(
+              child: Container(
+                height: 980,
+                width: 500,
+                color: Color.fromRGBO(100, 100, 100, 0),
+              ),
+              onTap: (){
+                setState(() {
+                  _showResMenu = !_showResMenu;
+                });
+              },
+            ),
+          ),
+        ),
+        Align(
           alignment: Alignment.bottomCenter,
-           child: Container(
+          child: Container(
             height: 150,
             width: double.infinity,
             decoration: BoxDecoration(
@@ -252,13 +250,36 @@ class _InfoboxState extends State<Infobox> {
               padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
               child: Stack(
                 children: [
-                  Column(
-                    children: [
-                      Text("301동", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
-                      Text("(기계공학, 항공우주, 컴퓨터공학, 전기정보)", style: TextStyle(fontSize: 15),),
-                      Expanded(child: Container()),
-                    ],
-                  ),
+                  Align(
+                    alignment: Alignment.center,
+                    child:
+                    //Visibility(
+                    //  visible: ,
+                    //  child:
+                        Column(
+                        children: [
+                          Text("301동", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                          Text("(기계공학, 항공우주, 컴퓨터공학, 전기정보)", style: TextStyle(fontSize: 15),),
+                          Expanded(child: Container()),
+                        ],
+                      ),
+                    ),
+                  //),
+                  Align(
+                    alignment: Alignment.center,
+                    child:
+                    //Visibility(
+                     // visible: ,
+                     // child:
+                      Column(
+                        children: [
+                          Text("301동", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),),
+                          Text("(기계공학, 항공우주, 컴퓨터공학, 전기정보)", style: TextStyle(fontSize: 15),),
+                          Expanded(child: Container()),
+                        ],
+                      ),
+                    ),
+                  //)
                   Align(
                     alignment: Alignment.bottomRight,
                     child: RaisedButton(
@@ -290,8 +311,9 @@ class _InfoboxState extends State<Infobox> {
                         ),
                         Visibility(
                           visible: _showResMenu,
-                          //duration: Duration(milliseconds: 300),
-                          child: ResMenuBox(),
+                          child:
+                          ResMenuBox(),
+
                         ),
                       ],
                     ),
@@ -299,7 +321,7 @@ class _InfoboxState extends State<Infobox> {
                 ],
               ),
             ),
-           ),
+          ),
         ),
         Align(
           alignment: Alignment.topCenter,
@@ -322,20 +344,15 @@ class ResMenuBox extends StatefulWidget {
 class _ResMenuBoxState extends State<ResMenuBox> {
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 90,
-      margin: EdgeInsets.only(left: 10, right: 10),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: const BorderRadius.all(const Radius.circular(5)),
-      ),
-      // child: Padding(
-      //   padding: const EdgeInsets.all(10),
-      //   child: Align(
-      //     alignment: Alignment.,
-      //   ),
-      // ),
-    );
+    return
+      Container(
+        height: 90,
+        margin: EdgeInsets.only(left: 10, right: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: const BorderRadius.all(const Radius.circular(5)),
+        ),
+      );
   }
 }
 
