@@ -11,6 +11,10 @@ import 'package:provider/provider.dart';
 //test1
 
 //for saving current screen number
+
+int _showInfo = 0;
+int _buildingNum = 0;
+
 class CurrentScreenNumber {
   int? currentNum;
 
@@ -67,7 +71,7 @@ class _MapScreenState extends State<MapScreen>
                 duration: Duration(milliseconds: 300),
                 curve: Curves.easeInOutCubic,
                 child: Container(
-                  height: showing.showInfo == 1 ? 150 : 0,
+                  height: (_showInfo == 1) ? 150 : 0,
                   child: Infobox(),
                 ),
               ),
@@ -159,10 +163,10 @@ class _BuildingsState extends State<Buildings> {
                 } else if (showing.showInfo == 1) {
                   showing.showingOff();
                 }
-                showing._buildingNum=301;
+                _buildingNum=301;
               });
               print(showing.showInfo == 1);
-              print(showing._buildingNum);
+              print(_buildingNum);
             },
             child: Align(
               alignment: Alignment(axis_x[0], axis_y[0]),
@@ -181,10 +185,10 @@ class _BuildingsState extends State<Buildings> {
                 } else if (showing.showInfo == 1) {
                   showing.showingOff();
                 }
-                showing._buildingNum=302;
+                _buildingNum=302;
               });
               print(showing.showInfo == 1);
-              print(showing._buildingNum);
+              print(_buildingNum);
             },
             child: Align(
               alignment: Alignment(axis_x[1], axis_y[1]),
@@ -202,9 +206,6 @@ class _BuildingsState extends State<Buildings> {
 }
 
 class Showing with ChangeNotifier {
-  int _showInfo = 0;
-  int _buildingNum = 0;
-
   int get showInfo => _showInfo;
 
   showingOn() {
@@ -246,7 +247,7 @@ class _InfoboxState extends State<Infobox> {
   @override
   Widget build(BuildContext context) {
     Showing showing = Provider.of<Showing>(context);
-    int buildingNum = showing._buildingNum;
+    int buildingNum = _buildingNum;
     return Stack(
       children: [
         Align(

@@ -10,7 +10,7 @@ double width = 0; // 고정값
 double height = 0;
 double horizontal = 0;
 double vertical = 0;
-List<Widget> lectureList = <Widget>[Opacity(key: ValueKey(0), child: Container(height: 20,width: 20,color: Colors.black,), opacity: 0.0,),];
+List<Widget> lectureList = <Widget>[/*Opacity(key: ValueKey(0), child: Container(height: 20,width: 20,color: Colors.black,), opacity: 0.0,),*/];
 int count = 10;
 double screen_width = 0;
 double screen_height = 0;
@@ -33,7 +33,7 @@ class _TimeTableState extends State<TimeTable> {
         child:
         Scaffold(
             appBar: AppBar(
-              toolbarHeight: 60,
+              //toolbarHeight: 60,
               title: Text(
                 '시간표',
                 style: TextStyle(color: Colors.black),
@@ -1111,7 +1111,8 @@ class BoxSize with ChangeNotifier {
 
   delete_all(){
     //print(lectureList[0].runtimeType);
-    lectureList = <Widget>[Opacity(key: ValueKey(0) ,child: Container(height: 20,width: 20,color: Colors.black,), opacity: 0.0,),];
+    //lectureList = <Widget>[Opacity(key: ValueKey(0) ,child: Container(height: 20,width: 20,color: Colors.black,), opacity: 0.0,),];
+    lectureList = <Widget>[];
     count = 100;
     notifyListeners();
   }
