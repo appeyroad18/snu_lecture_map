@@ -1,13 +1,20 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_picker/flutter_picker.dart';
 
 String selectedLecture = '초기화';
+String selectedLecture_classroom = '강의실';
 double width = 0; // 고정값
 double height = 0;
 double horizontal = 0;
 double vertical = 0;
-List<Widget> lectureList = <Widget>[Container(height: 20,width: 20,color: Colors.black,),];
+List<Widget> lectureList = <Widget>[Opacity(key: ValueKey(0), child: Container(height: 20,width: 20,color: Colors.black,), opacity: 0.0,),];
+int count = 10;
+double screen_width = 0;
+double screen_height = 0;
+
 
 class TimeTable extends StatefulWidget {
   const TimeTable({Key? key}) : super(key: key);
@@ -26,6 +33,7 @@ class _TimeTableState extends State<TimeTable> {
         child:
         Scaffold(
             appBar: AppBar(
+              toolbarHeight: 60,
               title: Text(
                 '시간표',
                 style: TextStyle(color: Colors.black),
@@ -44,9 +52,13 @@ class _TimeTableState extends State<TimeTable> {
                   },
                 ),
                 IconButton(
-                  icon: Icon(Icons.add_box_outlined),
-                  color: Colors.black,
-                  onPressed: () => _onButtonPressed(),
+                    icon: Icon(Icons.add_box_outlined),
+                    color: Colors.black,
+                    onPressed: () { Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => SelfAdd()));}
+                  //_onButtonPressed(),
                 ),
                 IconButton(
                   icon: Icon(Icons.settings),
@@ -180,6 +192,74 @@ class SecondPage extends StatelessWidget {
   }
 }
 
+class SelfAdd extends StatelessWidget {
+  const SelfAdd({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context3) {
+    return Scaffold(
+      body: Column(
+        children: [
+          SizedBox(
+            height: 30,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              TextButton(
+                child: Text("취소"),
+                onPressed: () {
+                  Navigator.pop(context3, "");
+                  print('hello');
+                },
+              ),
+              SizedBox(
+                width: 80,
+              ),
+              Text(
+                "직접 추가하기",
+                style: TextStyle(fontSize: 15),
+              ),
+              SizedBox(
+                width: 80,
+              ),
+              TextButton(
+                child: Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context3, "");
+                  print('hello');
+                },
+              ),
+            ],
+          ),
+          Container(height: 1,color: Colors.black12,),
+          ListTile(
+            // horizontalTitleGap: -10,
+            // leading: Icon(Icons.check, size: 20, color: Colors.white,),
+            title: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: TextField(
+                cursorColor: Colors.grey,
+                decoration: InputDecoration(hintText: "강의명"),
+              ),
+            ),
+          ),
+          ListTile(
+            title: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              child: TextField(
+                cursorColor: Colors.grey,
+                decoration: InputDecoration(hintText: "교수명"),
+              ),
+            ),
+          ),
+          TimeSelect()
+        ],
+      ),
+    );
+  }
+}
+
 class _buildButtonMenu extends StatefulWidget {
   const _buildButtonMenu({Key? key}) : super(key: key);
 
@@ -246,6 +326,95 @@ class __buildButtonMenuState extends State<_buildButtonMenu> {
 }
 
 class TimeSelect extends StatefulWidget {
+  //const TimeSelect({Key? key}) : super(key: key);
+
+  @override
+  _TimeSelectState createState() => _TimeSelectState();
+}
+
+class _TimeSelectState extends State<TimeSelect> {
+  List selectedtime = [];
+  String start_hour = '9';
+  String start_minute = '00';
+  String end_hour = '9';
+  String end_minute = '30';
+
+  void _showDatePicker(context) {
+    new Picker(
+        adapter: NumberPickerAdapter(data: [
+          NumberPickerColumn(begin: 9, end: 18),
+          NumberPickerColumn(begin: 0, end: 59),
+          NumberPickerColumn(begin: 9, end: 18),
+          NumberPickerColumn(begin: 0, end: 59),
+        ]),
+        hideHeader: true,
+        delimiter: [ // 구분자
+          PickerDelimiter(child: Container(
+            width: 10.0,
+            alignment: Alignment.center,
+            child: Text(':'),
+          ))
+        ],
+
+        title: new Text("시간 선택"),
+        onConfirm: (Picker picker, List value) {
+          setState(() {
+            print(value.toString());
+            selectedtime = picker.getSelectedValues();
+            start_hour = selectedtime[0].toString();
+            start_minute = selectedtime[1].toString();
+            end_hour = selectedtime[2].toString();
+            end_minute = selectedtime[3].toString();
+            print(picker.getSelectedValues());
+          });
+
+        }
+    ).showDialog(context);
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.fromLTRB(35, 0, 0, 0),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Text(
+                  '요일 및 시간 선택',
+                  style: TextStyle(fontSize: 15),
+                ),
+              ),
+            ],
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+            child: Row(
+              children: [
+                OutlinedButton(onPressed: () {}, child: Text('월요일'),
+                  //  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black2),)
+                )
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment(-1,0),
+            child: TextButton(
+              child : Text(start_hour+':'+start_minute + ' ~ '+ end_hour+':'+end_minute),
+              onPressed: () => _showDatePicker(context), ),
+          ),
+        ],
+      ),
+    );
+
+  }
+}
+
+
+/*
+class TimeSelect extends StatefulWidget {
   const TimeSelect({Key? key}) : super(key: key);
 
   @override
@@ -253,7 +422,10 @@ class TimeSelect extends StatefulWidget {
 }
 
 class _TimeSelectState extends State<TimeSelect> {
-  String _chosenDateTime = '';
+
+
+
+  String week = '';
 
   void _showDatePicker(ctx) {
     showCupertinoModalPopup(
@@ -270,15 +442,15 @@ class _TimeSelectState extends State<TimeSelect> {
                     setState(() {
                       //_chosenDateTime = val;
                       if (val == 0) {
-                        _chosenDateTime = '월요일';
+                        week = '월요일';
                       } else if (val == 1) {
-                        _chosenDateTime = '화요일';
+                        week = '화요일';
                       } else if (val == 2) {
-                        _chosenDateTime = '수요일';
+                        week  = '수요일';
                       } else if (val == 3) {
-                        _chosenDateTime = '목요일';
+                        week = '목요일';
                       } else if (val == 4) {
-                        _chosenDateTime = '금요일';
+                        week = '금요일';
                       }
                     });
                   },
@@ -306,22 +478,33 @@ class _TimeSelectState extends State<TimeSelect> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        CupertinoButton(
-          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-          child: Text(
-            '요일 및 시간 선택',
-            style: TextStyle(fontSize: 15),
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+      child: Column(
+        children: [
+
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              CupertinoButton(
+                //padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                child: Text(
+                  '요일 및 시간 선택',
+                  style: TextStyle(fontSize: 15),
+                ),
+                onPressed: () => _showDatePicker(context),
+              ),
+            ],
           ),
-          onPressed: () => _showDatePicker(context),
-        ),
-        Text(_chosenDateTime),
-      ],
+          Text(week),
+        ],
+      ),
     );
+
+
   }
 }
-
+*/
 class _Table extends StatefulWidget {
   const _Table({Key? key}) : super(key: key);
 
@@ -332,370 +515,382 @@ class _Table extends StatefulWidget {
 class __TableState extends State<_Table> {
   @override
   Widget build(BuildContext context) {
-    double screen_width = MediaQuery.of(context).size.width;
-    double screen_height = MediaQuery.of(context).size.height;
-    //double screen_width = double.infinity;
+    screen_width = MediaQuery.of(context).size.width;
+    screen_height = MediaQuery.of(context).size.height;
+    double height1 = (screen_height - 134) / 31;
+    double height2 = (screen_height - 134) / 31 * 3;
+    double width1 = screen_width / 16;
+    double width2 = screen_width / 16 *3;
+    // double screen_width = double.infinity;
     //double screen_height = double.infinity;
 
 
-    return Padding(
-      padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-      child: Container(
-        height: screen_height - 150,
-        decoration: BoxDecoration(
-            border: Border(
-                left: BorderSide(
-                  color: Colors.grey,
-                  width: 1,
-                ),
-                top: BorderSide(
-                  color: Colors.grey,
-                  width: 1,
-                ))),
-        child: Stack(children: [
-          Column(
-            // crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Container(
-                      child: Text(
-                        '',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(height: 1.25),
-                      ),
-                      width: 20,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  Container(
-                      child: Text(
-                        '월',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(height: 1.25),
-                      ),
-                      width: (screen_width - 41) / 5,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  Container(
-                      child: Text(
-                        '화',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(height: 1.25),
-                      ),
-                      width: (screen_width - 41) / 5,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  Container(
-                      child: Text(
-                        '수',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(height: 1.25),
-                      ),
-                      width: (screen_width - 41) / 5,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  Container(
-                      child: Text(
-                        '목',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(height: 1.25),
-                      ),
-                      width: (screen_width - 41) / 5,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  Container(
-                      child: Text(
-                        '금',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(height: 1.25),
-                      ),
-                      width: (screen_width - 41) / 5,
-                      height: 20,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text(
-                        '9',
+    return Container(
+      height: screen_height - 134, // 50 = 메뉴바, 60 = appbar, 20 =?
+      width: screen_width,
+      child: Stack(children: [
+        Column(
+          // crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Container(
+                    child: Text(
+                      '',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(height: 1.25),
+                    ),
+                    width: width1,
+                    height:height1,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                Container(
+                    child: Text(
+                      '월',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(height: 1.25),
+                    ),
+                    width: width2,
+                    height: height1,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                Container(
+                    child: Text(
+                      '화',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(height: 1.25),
+                    ),
+                    width: width2,
+                    height: height1,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                Container(
+                    child: Text(
+                      '수',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(height: 1.25),
+                    ),
+                    width: width2,
+                    height: height1,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                Container(
+                    child: Text(
+                      '목',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(height: 1.25),
+                    ),
+                    width: width2,
+                    height: height1,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                Container(
+                    child: Text(
+                      '금',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(height: 1.25),
+                    ),
+                    width: width2,
+                    height: height1,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            top: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text(
+                      '9',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(fontSize: 13),
+                    ),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text('10',
                         textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13),
-                      ),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text('10',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 13)),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text('11',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 13)),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text('12',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 13)),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text('1',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 13)),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text('2',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 13)),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text('3',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 13)),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text('4',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 13)),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text('5',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 13)),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-              Row(
-                children: [
-                  Container(
-                      padding: EdgeInsets.all(2),
-                      child: Text('6',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(fontSize: 13)),
-                      width: 20,
-                      height: (screen_height - 171) / 10,
-                      decoration: BoxDecoration(
-                          border: Border(
-                              right: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              ),
-                              bottom: BorderSide(
-                                color: Colors.grey,
-                                width: 1,
-                              )))),
-                  TableRow()
-                ],
-              ),
-            ],
-          ),
-          LectureBox(),
+                        style: TextStyle(fontSize: 13)),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text('11',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 13)),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text('12',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 13)),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text('1',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 13)),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text('2',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 13)),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text('3',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 13)),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text('4',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 13)),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text('5',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 13)),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+            Row(
+              children: [
+                Container(
+                    padding: EdgeInsets.all(2),
+                    child: Text('6',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(fontSize: 13)),
+                    width: width1,
+                    height: height2,
+                    decoration: BoxDecoration(
+                        border: Border(
+                            right: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            ),
+                            bottom: BorderSide(
+                              color: Colors.grey,
+                              width: 1,
+                            )))),
+                TableRow()
+              ],
+            ),
+          ],
+        ),
+        LectureBox(),
 
-        ]),
-      ),
+      ]),
     );
   }
 }
@@ -712,14 +907,16 @@ class _TableRowState extends State<TableRow> {
   Widget build(BuildContext context) {
     double screen_width = MediaQuery.of(context).size.width;
     double screen_height = MediaQuery.of(context).size.height;
+    double height3 = (screen_height - 134) / 31 * 3 /2;
+    double width2 = screen_width / 16 *3 ;
 
     return Row(
       children: [
         Column(
           children: [
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -731,8 +928,8 @@ class _TableRowState extends State<TableRow> {
                           width: 0.5,
                         )))),
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -748,8 +945,8 @@ class _TableRowState extends State<TableRow> {
         Column(
           children: [
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -761,8 +958,8 @@ class _TableRowState extends State<TableRow> {
                           width: 0.5,
                         )))),
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -778,8 +975,8 @@ class _TableRowState extends State<TableRow> {
         Column(
           children: [
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -791,8 +988,8 @@ class _TableRowState extends State<TableRow> {
                           width: 0.5,
                         )))),
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -808,8 +1005,8 @@ class _TableRowState extends State<TableRow> {
         Column(
           children: [
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -821,8 +1018,8 @@ class _TableRowState extends State<TableRow> {
                           width: 0.5,
                         )))),
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -838,8 +1035,8 @@ class _TableRowState extends State<TableRow> {
         Column(
           children: [
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -851,8 +1048,8 @@ class _TableRowState extends State<TableRow> {
                           width: 0.5,
                         )))),
             Container(
-                width: (screen_width - 41) / 5,
-                height: (screen_height - 171) / 20,
+                width: width2,
+                height: height3,
                 decoration: BoxDecoration(
                     border: Border(
                         right: BorderSide(
@@ -870,46 +1067,52 @@ class _TableRowState extends State<TableRow> {
   }
 }
 
-class BoxSize with ChangeNotifier {
-/*
-  wrap(var i) {
-    i = GestureDetector(
-      child: i,
-      onTap: (){
-        print("hello"+i.toString())};
-      notifyListeners();
-  }
 
- */
-  int i =0;
+class BoxSize with ChangeNotifier {
 
   add() {
-    int i = lectureList.length;
+    // print((screen_width/16)/(screen_width/2))
+    // int i = lectureList.length;
+    int mykey = count;
+    int mykey_check = mykey;
     lectureList.add(
       Align(
-        key: ValueKey(lectureList.length),
-        alignment: Alignment(horizontal, 0.3), //set position depend on lecture date and time
+        key: ValueKey(mykey),
+        alignment: Alignment(horizontal, 0), //set position depend on lecture date and time
         child:
         GestureDetector(
           child: Container(
-            height : 50, //set height depend on lecture duration
-            width : 50, //set width
-            color: Colors.blue,
+            height : (screen_height - 134) / 31 * 3 - 10, //set height depend on lecture duration
+            width : (screen_width / 16 * 3)-1, //set width
+            color: Colors.orange,
+            child: Column(
+              children: [
+                Text(selectedLecture,style: TextStyle(fontSize: 12) ),
+                Text(selectedLecture_classroom, style: TextStyle(fontSize: 10),)
+              ],
+            ),
 
           ),
           onTap: () {
-            print(i);
+            print('hello');
+          },
+          onLongPress: () {
             print("hi");
-            lectureList.removeAt(i);
+            lectureList.removeWhere((k) => (k.key as ValueKey).value == mykey_check);
             notifyListeners();
             print("hi");
           },
-        ),),);
+        ),
+      ),
+    );
+    count = count +1;
     notifyListeners();
   }
 
   delete_all(){
-    lectureList = <Widget>[Container(height: 20,width: 20,color: Colors.black,),];
+    //print(lectureList[0].runtimeType);
+    lectureList = <Widget>[Opacity(key: ValueKey(0) ,child: Container(height: 20,width: 20,color: Colors.black,), opacity: 0.0,),];
+    count = 100;
     notifyListeners();
   }
 
@@ -923,17 +1126,17 @@ class BoxSize with ChangeNotifier {
     notifyListeners();
   }
 
-  setweek(int week) {
+  setweek(int week) {  // 화면 위치보고 정함
     if (week  == 1) {
-      horizontal = -0.87;
+      horizontal = -0.847;
     } else if (week  == 2) {
-      horizontal = -0.405;
+      horizontal = -0.386;
     } else if (week == 3) {
-      horizontal = 0.065;
+      horizontal = 0.0735;
     } else if (week == 4) {
-      horizontal = 0.53;
+      horizontal = 0.534;
     } else if (week  == 5) {
-      horizontal = 0.997;
+      horizontal = 0.993;
     }
     notifyListeners();
   }
@@ -946,28 +1149,22 @@ class DataSearch extends SearchDelegate<String> {
   final lectures = [
     "대학글쓰기1",
     "대학글쓰기2",
-    "대학영어1",
-    "대학영어1",
-    "대학영어1",
-    "대학영어1",
-    "대학영어1",
-    "대학영어1",
-    "대학영어1",
-    "대학영어1",
-    "대학영어1",
-    "대학영어1",
-    "대학영어1",
-    "대학영어2",
+    "English",
+    "Economics",
+    "Physics",
+    "Statistics",
     "통계학",
     "통계학실험",
     "굿 라이프 심리학",
     "재무관리"
   ];
-  final recentLectures = ["대학글쓰기1", "대학글쓰기2"];
+  final recentLectures = ["대학글쓰기1", "대학글쓰기2","Physics", "Statistics"];
   final lectureinfo = [["대학글쓰기1",1,3,5,"가나다","58동 401호"],
     ["대학글쓰기2",2,9,10,"라마바","58동 402호"],
-    ["대학영어1",4,2,5,"사아자","58동 403호"],
-    ["대학영어2",4,2,5,"차카타파하","58동 404호"]];
+    ["Physics",4,2,5,"사아자","58동 403호"],
+    ["Statistics",4,2,5,"차카타파하","58동 404호"],
+  ];
+
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -1048,6 +1245,7 @@ class DataSearch extends SearchDelegate<String> {
         selectedinfo[3] = professor_name;
         String place = each[5];
         selectedinfo[4] = place;
+        selectedLecture_classroom = place;
 
       };
     };
@@ -1116,10 +1314,11 @@ class DataSearch extends SearchDelegate<String> {
                 icon: AnimatedIcons.event_add,
                 progress: transitionAnimation,),
               onPressed: () {
-                close(context, "");
-                _boxSize.pr();
+                close(context, "bye");
                 _boxSize.setweek(selectedinfo[0]);
+                _boxSize.pr();
                 _boxSize.add();
+                print(lectureList);
               }),
         ),
 
