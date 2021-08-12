@@ -32,16 +32,19 @@ class SNUMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (BuildContext context) => BoxSize(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (BuildContext context) => BoxSize(),),
+        ChangeNotifierProvider(create: (BuildContext context) => Showing(),),
+      ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'SNUMap',
         theme: ThemeData(
-          textTheme: Theme.of(context).textTheme.apply(
-            bodyColor: Colors.black,
-            displayColor: Colors.blue,
-          )
+            textTheme: Theme.of(context).textTheme.apply(
+              bodyColor: Colors.black,
+              displayColor: Colors.blue,
+            )
         ),
         home: MainPage(),
       ),

@@ -10,6 +10,8 @@ import 'package:provider/provider.dart';
 
 //test1
 //for saving current screen number
+
+
 class CurrentScreenNumber {
   int? currentNum;
 
@@ -20,7 +22,6 @@ class CurrentScreenNumber {
   }
 }
 
-bool _showInformation = false;
 
 class MapScreen extends StatefulWidget {
   const MapScreen({Key? key}) : super(key: key);
@@ -31,9 +32,6 @@ class MapScreen extends StatefulWidget {
 
 class _MapScreenState extends State<MapScreen>
     with SingleTickerProviderStateMixin {
-  bool _showInfo = false;
-
-  //int? _buildingNum;
 
   @override
   Widget build(BuildContext context) {
@@ -129,9 +127,9 @@ class Buildings extends StatefulWidget {
 }
 
 class _BuildingsState extends State<Buildings> {
-  List<double> axis_x = <double>[0.25, 0.37, 0.365];
-  List<double> axis_y = <double>[0.25, -0.705, -0.795];
-  List<String> buildingNumber = ["1", "301", "302"];
+  List<double> axis_x = <double>[0.39, 0.33, 0.37, 0.365];
+  List<double> axis_y = <double>[0.205, 0.215, -0.705, -0.795];
+  List<String> buildingNumber = ["1", "2", "301", "302"];
 
   @override
   Widget build(BuildContext context) {
@@ -150,18 +148,18 @@ class _BuildingsState extends State<Buildings> {
             ? screen_width
             : screen_height * image_width / image_height,
         child: Stack(children: [
-          for (int i = 0; i<2; i++)
+          for (int i = 0; i<axis_x.length; i++)
           GestureDetector(
             onTap: () {
               setState(() {
-                if (showing._showInfo == 0) {
+                // if (showing._showInfo == 0) {
                   showing.showingOn();
-                } else if (showing._showInfo == 1) {
-                  showing.showingOff();
-                }
+                // } else if (showing._showInfo == 1) {
+                //   showing.showingOff();
+                // }
                 showing.currentBuildingNum(buildingNumber[i]);
               });
-              print(showing._showInfo);
+              print(showing._showInfo == 1);
               print(showing._buildingNum);
             },
             child: Align(
@@ -217,8 +215,6 @@ class _InfoboxState extends State<Infobox> {
   @override
   Widget build(BuildContext context) {
     Showing showing = Provider.of<Showing>(context);
-    // int buildingNum = showing._buildingNum;
-    // print(buildingNum);
     return ChangeNotifierProvider(
       create: (BuildContext context) => Showing(),
       child: Stack(
@@ -339,7 +335,6 @@ class _BuildingInfoState extends State<BuildingInfo> {
                 children: [
                   Text("301동 (공과대학)", style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 20),),
-                  //Text("", style: TextStyle(fontSize: 15,),),
                   Text("기계공학, 항공우주, 컴퓨터공학, 전기정보",
                     style: TextStyle(fontSize: 15),),
                 ],
