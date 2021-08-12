@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'dart:convert';
+
 
 String selectedLecture = '초기화';
 String selectedLecture_classroom = '강의실';
@@ -10,11 +12,12 @@ double width = 0; // 고정값
 double height = 0;
 double horizontal = 0;
 double vertical = 0;
-List<Widget> lectureList = <Widget>[/*Opacity(key: ValueKey(0), child: Container(height: 20,width: 20,color: Colors.black,), opacity: 0.0,),*/];
+List<Widget> lectureList = <Widget>[
+  /*Opacity(key: ValueKey(0), child: Container(height: 20,width: 20,color: Colors.black,), opacity: 0.0,),*/
+];
 int count = 10;
 double screen_width = 0;
 double screen_height = 0;
-
 
 class TimeTable extends StatefulWidget {
   const TimeTable({Key? key}) : super(key: key);
@@ -27,106 +30,102 @@ class _TimeTableState extends State<TimeTable> {
   @override
   Widget build(BuildContext context) {
     BoxSize _boxSize = Provider.of<BoxSize>(context);
-    return
-      ChangeNotifierProvider(
-        create: (BuildContext context) => BoxSize(),
-        child:
-        Scaffold(
-            appBar: AppBar(
-              //toolbarHeight: 60,
-              title: Text(
-                '시간표',
-                style: TextStyle(color: Colors.black),
+    return ChangeNotifierProvider(
+      create: (BuildContext context) => BoxSize(),
+      child: Scaffold(
+          appBar: AppBar(
+            //toolbarHeight: 60,
+            title: Text(
+              '시간표',
+              style: TextStyle(color: Colors.black),
+            ),
+            elevation: 1,
+            backgroundColor: Colors.white,
+            iconTheme: IconThemeData(color: Colors.black),
+            actions: [
+              IconButton(
+                icon: Icon(Icons.search),
+                color: Colors.black,
+                onPressed: () {
+                  showSearch(context: context, delegate: DataSearch());
+                  // Navigator.push(context, MaterialPageRoute(
+                  //   builder: (context) => SearchPage()));
+                },
               ),
-              elevation: 0,
-              backgroundColor: Colors.white,
-              iconTheme: IconThemeData(color: Colors.black),
-              actions: [
-                IconButton(
-                  icon: Icon(Icons.search),
+              IconButton(
+                  icon: Icon(Icons.add_box_outlined),
                   color: Colors.black,
                   onPressed: () {
-                    showSearch(context: context, delegate: DataSearch());
-                    // Navigator.push(context, MaterialPageRoute(
-                    //   builder: (context) => SearchPage()));
-                  },
-                ),
-                IconButton(
-                    icon: Icon(Icons.add_box_outlined),
-                    color: Colors.black,
-                    onPressed: () { Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => SelfAdd()));}
+                    Navigator.push(context,
+                        MaterialPageRoute(builder: (context) => SelfAdd()));
+                  }
                   //_onButtonPressed(),
-                ),
-                IconButton(
-                  icon: Icon(Icons.settings),
-                  color: Colors.black,
-                  onPressed: () {
-                    print(lectureList);
-                    _boxSize.delete_all();
-                    print(lectureList);
-                  },
+                  ),
+              IconButton(
+                icon: Icon(Icons.settings),
+                color: Colors.black,
+                onPressed: () {
+                  print(lectureList);
+                  _boxSize.delete_all();
+                  print(lectureList);
+                },
+              ),
+            ],
+          ),
+          drawer: Drawer(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                ListTile(
+                  contentPadding: EdgeInsets.fromLTRB(20, 30, 10, 10),
+                  title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "2021 여름학기",
+                          style: TextStyle(color: Colors.black, fontSize: 20),
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "시간표",
+                            style:
+                                TextStyle(color: Colors.black54, fontSize: 15),
+                          ),
+                        ),
+                        // SizedBox(height: 10,),
+                        TextButton(
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => SecondPage()));
+                            },
+                            child: Text(
+                              "시간표1",
+                              style: TextStyle(
+                                  color: Colors.black54, fontSize: 15),
+                            )),
+                        // SizedBox(height: 10,),
+                        TextButton(
+                          onPressed: () {},
+                          child: Text(
+                            "시간표2",
+                            style:
+                                TextStyle(color: Colors.black54, fontSize: 15),
+                          ),
+                        )
+                      ]),
                 ),
               ],
             ),
-            drawer: Drawer(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: [
-                  ListTile(
-                    contentPadding: EdgeInsets.fromLTRB(20, 30, 10, 10),
-                    title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "2021 여름학기",
-                            style: TextStyle(color: Colors.black, fontSize: 20),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "시간표",
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                            ),
-                          ),
-                          // SizedBox(height: 10,),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => SecondPage()));
-                              },
-                              child: Text(
-                                "시간표1",
-                                style: TextStyle(
-                                    color: Colors.black54, fontSize: 15),
-                              )),
-                          // SizedBox(height: 10,),
-                          TextButton(
-                            onPressed: () {},
-                            child: Text(
-                              "시간표2",
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                            ),
-                          )
-                        ]),
-                  ),
-                ],
-              ),
-            ),
-            body: SingleChildScrollView(
-              child: _Table(),
-            )
-        ),
-      );
+          ),
+          body: SingleChildScrollView(child: _Table())
+          ),
+    );
   }
 
   void _onButtonPressed() {
@@ -204,7 +203,7 @@ class SelfAdd extends StatelessWidget {
             height: 30,
           ),
           Row(
-            mainAxisAlignment: MainAxisAlignment.center,
+            //mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextButton(
                 child: Text("취소"),
@@ -232,12 +231,15 @@ class SelfAdd extends StatelessWidget {
               ),
             ],
           ),
-          Container(height: 1,color: Colors.black12,),
+          Container(
+            height: 1,
+            color: Colors.black12,
+          ),
           ListTile(
             // horizontalTitleGap: -10,
             // leading: Icon(Icons.check, size: 20, color: Colors.white,),
             title: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+              padding: const EdgeInsets.fromLTRB(20, 10, 20, 0),
               child: TextField(
                 cursorColor: Colors.grey,
                 decoration: InputDecoration(hintText: "강의명"),
@@ -333,29 +335,48 @@ class TimeSelect extends StatefulWidget {
 }
 
 class _TimeSelectState extends State<TimeSelect> {
+
   List selectedtime = [];
   String start_hour = '9';
   String start_minute = '00';
   String end_hour = '9';
   String end_minute = '30';
-
+  //static const PickerData = [["9:00","9:30"], ["9:00","9:30"]];
+  /*
+  showPickerDialog(BuildContext context) {
+    //BoxSize _boxSize = Provider.of<BoxSize>(context);
+    Picker(
+        adapter: PickerDataAdapter<String>(pickerdata: ["9:00","9:30"],),
+        hideHeader: true,
+        title: Text("시간 선택"),
+        selectedTextStyle: TextStyle(color: Colors.blue),
+        onConfirm: (Picker picker, List value) {
+          print(value.toString());
+          print(picker.getSelectedValues());
+          String a = value.toString();
+          print(a);
+          if (a==[1]) {print(1);};
+          //double value1 = value[0] as double;
+          //_boxSize.setheight(value1, 3);
+          //print(value1);
+        }
+    ).showDialog(context);
+  }
+   */
   void _showDatePicker(context) {
     new Picker(
         adapter: NumberPickerAdapter(data: [
           NumberPickerColumn(begin: 9, end: 18),
-          NumberPickerColumn(begin: 0, end: 59),
-          NumberPickerColumn(begin: 9, end: 18),
-          NumberPickerColumn(begin: 0, end: 59),
+          NumberPickerColumn(begin: 0, end: 30, jump: 30),
         ]),
         hideHeader: true,
-        delimiter: [ // 구분자
-          PickerDelimiter(child: Container(
-            width: 10.0,
-            alignment: Alignment.center,
-            child: Text(':'),
+        delimiter: [
+          // 구분자
+          PickerDelimiter(
+              child: Container(
+               width: 10.0, alignment: Alignment.center, child: Text(':'),
           ))
         ],
-
         title: new Text("시간 선택"),
         onConfirm: (Picker picker, List value) {
           setState(() {
@@ -367,10 +388,11 @@ class _TimeSelectState extends State<TimeSelect> {
             end_minute = selectedtime[3].toString();
             print(picker.getSelectedValues());
           });
-
-        }
-    ).showDialog(context);
+        }).showDialog(context);
   }
+
+  List<bool> _selections = List.generate(5, (_) => false);
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -381,7 +403,7 @@ class _TimeSelectState extends State<TimeSelect> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                 child: Text(
                   '요일 및 시간 선택',
                   style: TextStyle(fontSize: 15),
@@ -393,25 +415,55 @@ class _TimeSelectState extends State<TimeSelect> {
             padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
             child: Row(
               children: [
-                OutlinedButton(onPressed: () {}, child: Text('월요일'),
-                  //  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black2),)
-                )
+                ToggleButtons(
+                    children:[
+                      Text("월"),
+                      Text("화"),
+                      Text("수"),
+                      Text("목"),
+                      Text("금"),],
+                  isSelected: _selections,
+                  constraints: BoxConstraints(minHeight: 30, minWidth: 40),
+                  onPressed: (int index) {
+                      setState(() {
+                        _selections=List.filled(_selections.length, false);
+                        _selections[index] = true;
+                        //_selections[index] =! _selections[index];
+                      });
+                  },
+                    )
+                //OutlinedButton(
+                //  onPressed: () {}, child: Text('월요일'),
+                  //  style: ButtonStyle(backgroundColor: MaterialStateProperty.all(Colors.black2),))
               ],
             ),
           ),
           Align(
-            alignment: Alignment(-1,0),
-            child: TextButton(
-              child : Text(start_hour+':'+start_minute + ' ~ '+ end_hour+':'+end_minute),
-              onPressed: () => _showDatePicker(context), ),
+            alignment: Alignment(-1, 0),
+            child: Column(
+              children: [
+                Row(
+                  children: [Text("시작 시간"),
+                    TextButton(
+                      child: Text(start_hour +
+                          ':' +
+                          start_minute +
+                          ' ~ ' +
+                          end_hour +
+                          ':' +
+                          end_minute),
+                      onPressed: () => _showDatePicker(context),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
-
   }
 }
-
 
 /*
 class TimeSelect extends StatefulWidget {
@@ -505,6 +557,80 @@ class _TimeSelectState extends State<TimeSelect> {
   }
 }
 */
+
+
+class FirstColumn extends StatelessWidget {
+
+  double width = 0;
+  String name = "";
+  int flex = 0;
+  double bottom_border = 1;
+  double left_border = 1;
+  FirstColumn(this.width, this.name, this.flex, this.bottom_border, this.left_border);
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      flex: flex,
+      child: Container(
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(name,
+              textAlign: TextAlign.center,
+            ),
+          ),
+          width: width,
+          decoration: BoxDecoration(
+              border: Border(
+                  right: BorderSide(
+                    color: Colors.black26,
+                    width: left_border,
+                  ),
+                  bottom: BorderSide(
+                    color: Colors.black26,
+                    width: bottom_border,
+                  )))),
+    );
+  }
+}
+
+class SecondColumn extends StatelessWidget {
+  double width = 0;
+  String name = "";
+  double left_border =1;
+  SecondColumn(this.width, this.name, this.left_border);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        FirstColumn(width, name, 2,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+        FirstColumn(width, "", 3,0.5, left_border),
+        FirstColumn(width, "",3,1, left_border),
+      ],
+    );
+  }
+}
+
+double need = 0;
 class _Table extends StatefulWidget {
   const _Table({Key? key}) : super(key: key);
 
@@ -513,607 +639,110 @@ class _Table extends StatefulWidget {
 }
 
 class __TableState extends State<_Table> {
+  final height_key = GlobalKey();
+  Size? height_size;
+  /*
+  void getSize() {
+    setState(() {
+      height_size = height_key.currentContext!.size!;
+      need = height_size!.height;
+    });
+  }
+   */
   @override
   Widget build(BuildContext context) {
     screen_width = MediaQuery.of(context).size.width;
     screen_height = MediaQuery.of(context).size.height;
-    double height1 = (screen_height - 134) / 31;
-    double height2 = (screen_height - 134) / 31 * 3;
     double width1 = screen_width / 16;
-    double width2 = screen_width / 16 *3;
-    // double screen_width = double.infinity;
-    //double screen_height = double.infinity;
-
+    double width2 = screen_width / 16 * 3;
 
     return Container(
-      height: screen_height - 134, // 50 = 메뉴바, 60 = appbar, 20 =?
-      width: screen_width,
-      child: Stack(children: [
-        Column(
-          // crossAxisAlignment: CrossAxisAlignment.start,
+      height : screen_height*0.82,
+      child: Stack(
+        children: [Row(
           children: [
-            Row(
-              children: [
-                Container(
-                    child: Text(
-                      '',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(height: 1.25),
-                    ),
-                    width: width1,
-                    height:height1,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                Container(
-                    child: Text(
-                      '월',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(height: 1.25),
-                    ),
-                    width: width2,
-                    height: height1,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                Container(
-                    child: Text(
-                      '화',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(height: 1.25),
-                    ),
-                    width: width2,
-                    height: height1,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                Container(
-                    child: Text(
-                      '수',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(height: 1.25),
-                    ),
-                    width: width2,
-                    height: height1,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                Container(
-                    child: Text(
-                      '목',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(height: 1.25),
-                    ),
-                    width: width2,
-                    height: height1,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                Container(
-                    child: Text(
-                      '금',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(height: 1.25),
-                    ),
-                    width: width2,
-                    height: height1,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            top: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-              ],
+            Expanded(
+              flex: 1,
+              key: height_key,
+              child: Column(
+                children: [
+                  FirstColumn(width1, "", 1,1,1),
+                  FirstColumn(width1, "9", 3,1,1),
+                  FirstColumn(width1, "10",3,1,1),
+                  FirstColumn(width1, "11",3,1,1),
+                  FirstColumn(width1, "12",3,1,1),
+                  FirstColumn(width1, "13",3,1,1),
+                  FirstColumn(width1, "14",3,1,1),
+                  FirstColumn(width1, "15",3,1,1),
+                  FirstColumn(width1, "16",3,1,1),
+                  FirstColumn(width1, "17",3,1,1),
+                  FirstColumn(width1, "18",3,1,1),
+                ],
+              ),
             ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text(
-                      '9',
-                      textAlign: TextAlign.right,
-                      style: TextStyle(fontSize: 13),
-                    ),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text('10',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13)),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text('11',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13)),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text('12',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13)),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text('1',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13)),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text('2',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13)),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text('3',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13)),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text('4',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13)),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text('5',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13)),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
-            Row(
-              children: [
-                Container(
-                    padding: EdgeInsets.all(2),
-                    child: Text('6',
-                        textAlign: TextAlign.right,
-                        style: TextStyle(fontSize: 13)),
-                    width: width1,
-                    height: height2,
-                    decoration: BoxDecoration(
-                        border: Border(
-                            right: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            ),
-                            bottom: BorderSide(
-                              color: Colors.grey,
-                              width: 1,
-                            )))),
-                TableRow()
-              ],
-            ),
+            Expanded(child: SecondColumn(width2,"월",1),flex:3),
+            Expanded(child: SecondColumn(width2,"화",1),flex:3),
+            Expanded(child: SecondColumn(width2,"수",1),flex:3),
+            Expanded(child: SecondColumn(width2,"목",1),flex:3),
+            Expanded(child: SecondColumn(width2,"금",0),flex:3),
           ],
         ),
-        LectureBox(),
-
-      ]),
-    );
-  }
-}
-
-class TableRow extends StatefulWidget {
-  const TableRow({Key? key}) : super(key: key);
-
-  @override
-  _TableRowState createState() => _TableRowState();
-}
-
-class _TableRowState extends State<TableRow> {
-  @override
-  Widget build(BuildContext context) {
-    double screen_width = MediaQuery.of(context).size.width;
-    double screen_height = MediaQuery.of(context).size.height;
-    double height3 = (screen_height - 134) / 31 * 3 /2;
-    double width2 = screen_width / 16 *3 ;
-
-    return Row(
-      children: [
-        Column(
-          children: [
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 0.5,
-                        )))),
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        )))),
-          ],
-        ),
-        Column(
-          children: [
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 0.5,
-                        )))),
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        )))),
-          ],
-        ),
-        Column(
-          children: [
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 0.5,
-                        )))),
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        )))),
-          ],
-        ),
-        Column(
-          children: [
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 0.5,
-                        )))),
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        )))),
-          ],
-        ),
-        Column(
-          children: [
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 0.5,
-                        )))),
-            Container(
-                width: width2,
-                height: height3,
-                decoration: BoxDecoration(
-                    border: Border(
-                        right: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        ),
-                        bottom: BorderSide(
-                          color: Colors.grey,
-                          width: 1,
-                        )))),
-          ],
-        ),
-      ],
+       LectureBox()
+        ]),
     );
   }
 }
 
 
 class BoxSize with ChangeNotifier {
-
   add() {
-    // print((screen_width/16)/(screen_width/2))
-    // int i = lectureList.length;
     int mykey = count;
     int mykey_check = mykey;
     lectureList.add(
-      Align(
+      Positioned(
         key: ValueKey(mykey),
-        alignment: Alignment(horizontal, 0), //set position depend on lecture date and time
-        child:
-        GestureDetector(
+        left: screen_width / 16 * horizontal,
+        top : vertical,
+        //alignment: Alignment(horizontal, vertical),
+        //set position depend on lecture date and time
+        child: GestureDetector(
           child: Container(
-            height : (screen_height - 134) / 31 * 3 - 10, //set height depend on lecture duration
-            width : (screen_width / 16 * 3)-1, //set width
+            height: height,
+            //set height depend on lecture duration
+            width: (screen_width / 16 * 3) - 1,
+            //set width
             color: Colors.orange,
             child: Column(
               children: [
-                Text(selectedLecture,style: TextStyle(fontSize: 12) ),
-                Text(selectedLecture_classroom, style: TextStyle(fontSize: 10),)
+                Text(selectedLecture, style: TextStyle(fontSize: 10)),
+                Text(
+                  selectedLecture_classroom,
+                  style: TextStyle(fontSize: 10),
+                )
               ],
             ),
-
           ),
           onTap: () {
             print('hello');
           },
           onLongPress: () {
             print("hi");
-            lectureList.removeWhere((k) => (k.key as ValueKey).value == mykey_check);
+            lectureList
+                .removeWhere((k) => (k.key as ValueKey).value == mykey_check);
             notifyListeners();
             print("hi");
           },
         ),
       ),
     );
-    count = count +1;
+    count = count + 1;
     notifyListeners();
   }
 
-  delete_all(){
-    //print(lectureList[0].runtimeType);
-    //lectureList = <Widget>[Opacity(key: ValueKey(0) ,child: Container(height: 20,width: 20,color: Colors.black,), opacity: 0.0,),];
+  delete_all() {
     lectureList = <Widget>[];
     count = 100;
+    print(need);
     notifyListeners();
   }
 
@@ -1127,26 +756,30 @@ class BoxSize with ChangeNotifier {
     notifyListeners();
   }
 
-  setweek(int week) {  // 화면 위치보고 정함
-    if (week  == 1) {
-      horizontal = -0.847;
-    } else if (week  == 2) {
-      horizontal = -0.386;
-    } else if (week == 3) {
-      horizontal = 0.0735;
-    } else if (week == 4) {
-      horizontal = 0.534;
-    } else if (week  == 5) {
-      horizontal = 0.993;
-    }
+  setheight(double start_time, double end_time) {
+    height = screen_height * 0.82/31 * (end_time - start_time)*1.5;
+    vertical = screen_height * 0.82/31 * (1+ 1.5*start_time);
     notifyListeners();
   }
 
+  setweek(int week) {
+    // 화면 위치보고 정함
+    if (week == 1) {
+      horizontal = 1;
+    } else if (week == 2) {
+      horizontal = 4;
+    } else if (week == 3) {
+      horizontal = 7;
+    } else if (week == 4) {
+      horizontal = 10;
+    } else if (week == 5) {
+      horizontal = 13;
+    }
+    notifyListeners();
+  }
 }
 
-
 class DataSearch extends SearchDelegate<String> {
-
   final lectures = [
     "대학글쓰기1",
     "대학글쓰기2",
@@ -1159,13 +792,13 @@ class DataSearch extends SearchDelegate<String> {
     "굿 라이프 심리학",
     "재무관리"
   ];
-  final recentLectures = ["대학글쓰기1", "대학글쓰기2","Physics", "Statistics"];
-  final lectureinfo = [["대학글쓰기1",1,3,5,"가나다","58동 401호"],
-    ["대학글쓰기2",2,9,10,"라마바","58동 402호"],
-    ["Physics",4,2,5,"사아자","58동 403호"],
-    ["Statistics",4,2,5,"차카타파하","58동 404호"],
+  final recentLectures = ["대학글쓰기1", "대학글쓰기2", "Physics", "Statistics"];
+  final lectureinfo = [
+    ["대학글쓰기1", 1, 10.0, 14.0, "가나다", "58동 401호"],
+    ["대학글쓰기2", 2, 0.0, 2.0, "라마바", "58동 402호"],
+    ["Physics", 4, 3.0, 6.0, "사아자", "58동 403호"],
+    ["Statistics", 5, 14.0, 17.0, "차카타파하", "58동 404호"],
   ];
-
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -1194,6 +827,7 @@ class DataSearch extends SearchDelegate<String> {
           // Navigator.pop(context);
         });
   }
+
   @override
   Widget buildSuggestions(BuildContext context) {
     BoxSize _boxSize = Provider.of<BoxSize>(context);
@@ -1214,7 +848,7 @@ class DataSearch extends SearchDelegate<String> {
           text: TextSpan(
               text: suggestionList[index].substring(0, query.length),
               style:
-              TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+                  TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
               children: [
                 TextSpan(
                     text: suggestionList[index].substring(query.length),
@@ -1226,30 +860,30 @@ class DataSearch extends SearchDelegate<String> {
     );
   }
 
-
   @override
   Widget buildResults(BuildContext context) {
     // show some result based on the selection
     BoxSize _boxSize = Provider.of<BoxSize>(context);
     final String lecName = selectedLecture;
-    List selectedinfo = ["대학글쓰기1",1,3,5,"정다은","58동 404호"];
+    List selectedinfo = ["대학글쓰기1", 1, 3.0, 5.0, "정다은", "58동 404호"];
 
     for (List each in lectureinfo) {
       if (each[0] == lecName) {
         int lec_week = each[1];
         selectedinfo[0] = lec_week;
-        int lec_start_time = each[2];
+        double lec_start_time = each[2];
         selectedinfo[1] = lec_start_time;
-        int lec_end_time = each[3];
+        double lec_end_time = each[3];
         selectedinfo[2] = lec_end_time;
         String professor_name = each[4];
         selectedinfo[3] = professor_name;
         String place = each[5];
         selectedinfo[4] = place;
         selectedLecture_classroom = place;
-
-      };
-    };
+      }
+      ;
+    }
+    ;
 
     return ListView(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -1261,28 +895,32 @@ class DataSearch extends SearchDelegate<String> {
               Row(
                 children: [
                   Text(selectedinfo[3]),
-                  SizedBox(width: 5,),
+                  SizedBox(
+                    width: 5,
+                  ),
                   Text(selectedinfo[4]),
                 ],
               ),
-              Row(
-                  children:[
-                    Text(selectedinfo[0].toString()),
-                    SizedBox(width: 5,),
-                    Text(selectedinfo[1].toString()),
-                    Text("-"),
-                    Text(selectedinfo[2].toString()),
-                  ]
-              ),
+              Row(children: [
+                Text(selectedinfo[0].toString()),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(selectedinfo[1].toString()),
+                Text("-"),
+                Text(selectedinfo[2].toString()),
+              ]),
             ],
           ),
           trailing: IconButton(
               icon: AnimatedIcon(
                 icon: AnimatedIcons.event_add,
-                progress: transitionAnimation,),
+                progress: transitionAnimation,
+              ),
               onPressed: () {
                 close(context, "bye");
                 _boxSize.setweek(selectedinfo[0]);
+                _boxSize.setheight(selectedinfo[1], selectedinfo[2]);
                 _boxSize.pr();
                 _boxSize.add();
                 print(lectureList);
@@ -1295,25 +933,28 @@ class DataSearch extends SearchDelegate<String> {
               Row(
                 children: [
                   Text(selectedinfo[3]),
-                  SizedBox(width: 5,),
+                  SizedBox(
+                    width: 5,
+                  ),
                   Text(selectedinfo[4]),
                 ],
               ),
-              Row(
-                  children:[
-                    Text(selectedinfo[0].toString()),
-                    SizedBox(width: 5,),
-                    Text(selectedinfo[1].toString()),
-                    Text("-"),
-                    Text(selectedinfo[2].toString()),
-                  ]
-              ),
+              Row(children: [
+                Text(selectedinfo[0].toString()),
+                SizedBox(
+                  width: 5,
+                ),
+                Text(selectedinfo[1].toString()),
+                Text("-"),
+                Text(selectedinfo[2].toString()),
+              ]),
             ],
           ),
           trailing: IconButton(
               icon: AnimatedIcon(
                 icon: AnimatedIcons.event_add,
-                progress: transitionAnimation,),
+                progress: transitionAnimation,
+              ),
               onPressed: () {
                 close(context, "bye");
                 _boxSize.setweek(selectedinfo[0]);
@@ -1322,15 +963,12 @@ class DataSearch extends SearchDelegate<String> {
                 print(lectureList);
               }),
         ),
-
       ],
     );
   }
 }
 
-
 class LectureBox extends StatefulWidget {
-
   @override
   _LectureBoxState createState() => _LectureBoxState();
 }
@@ -1341,12 +979,12 @@ class _LectureBoxState extends State<LectureBox> {
     List<Widget> list = lectureList;
     return list;
   }
+
   Widget build(BuildContext context) {
     return Stack(
       children: List.from(() sync* {
         yield* getListFiles();
-      }()
-      ),
+      }()),
     );
   }
 }
