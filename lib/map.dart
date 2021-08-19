@@ -1,4 +1,8 @@
 import 'dart:ffi';
+import 'dart:math';
+
+import 'package:snu_lecture_map/search.dart';
+import 'package:snu_lecture_map/timetable.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -65,12 +69,33 @@ class _MapScreenState extends State<MapScreen>
                 child: ChangeNotifierProvider(
                   create: (BuildContext context) => Showing(),
                   child: Container(
-                    height: showing._showInfo == 1 ? 150 : 0,
-                    child: Infobox(buildingnum: showing._buildingNum,),
+                    height: showing.showInfo.isNotEmpty ? 150 : 0,
+                    child: Stack(
+                        children: [
+                          Infobox(buildingnum: showing._buildingNum, showingmenu: showing._showMenu,),
+                          Align(
+                            alignment: Alignment.topLeft,
+                            child: IconButton(
+                                icon: Icon(Icons.arrow_back),
+                                padding: EdgeInsets.all(17),
+                                onPressed: () {
+                                  setState(() {
+                                    showing.showingOff();
+                                  });
+                                  print(showing._showInfo);
+                                }),
+                          ),
+                        ]),
                   ),
                 ),
               ),
             ),
+            // ChangeNotifierProvider(
+            //   create: (BuildContext context) => Showing(),
+            //   child: Visibility(
+            //       visible: showing._showLectures,
+            //       child: SearchScreen()),
+            // )
           ]),
         ),
     );
@@ -119,6 +144,18 @@ class MapContainer extends StatelessWidget {
   }
 }
 
+
+class BuildingPosition {
+  List<double> axis_x = <double>[0.345, 0.37, 0.365, 0.52, 0.45, 0.445, 0.44, 0.40, 0.575];
+  List<double> axis_y = <double>[-0.6, -0.705, -0.795, -0.805, -0.778, -0.615, -0.585, -0.55, -0.905];
+  List<String> buildingNumber = ["300", "301", "302", "310", "311", "312", "313", "314", "316"];
+  List<int> menuExist = [1, 1, 1, 1, 0, 0, 0, 0, 0];
+}
+
+// Map<String, double> buildingXAxis = {"1": 0.39, "2": 0.33, "300": 0.345, "301": 0.37};
+// Map<String, double> buildingYAxis = {"1": 0.205, "2": 0.215, "300": -0.6, "301": -0.705};
+
+
 class Buildings extends StatefulWidget {
   Buildings({Key? key}) : super(key: key);
 
@@ -127,9 +164,6 @@ class Buildings extends StatefulWidget {
 }
 
 class _BuildingsState extends State<Buildings> {
-  List<double> axis_x = <double>[0.39, 0.33, 0.37, 0.365];
-  List<double> axis_y = <double>[0.205, 0.215, -0.705, -0.795];
-  List<String> buildingNumber = ["1", "2", "301", "302"];
 
   @override
   Widget build(BuildContext context) {
@@ -138,6 +172,7 @@ class _BuildingsState extends State<Buildings> {
     //number of pixel of snu map image
     double image_height = 3508;
     double image_width = 2481;
+    // List<String> bn = ["301"];
     Showing showing = Provider.of<Showing>(context);
     return Center(
       child: Container(
@@ -148,22 +183,26 @@ class _BuildingsState extends State<Buildings> {
             ? screen_width
             : screen_height * image_width / image_height,
         child: Stack(children: [
-          for (int i = 0; i<axis_x.length; i++)
+          for (int i = 0; i<BuildingPosition().axis_x.length; i++)
           GestureDetector(
             onTap: () {
               setState(() {
-                // if (showing._showInfo == 0) {
-                  showing.showingOn();
-                // } else if (showing._showInfo == 1) {
-                //   showing.showingOff();
-                // }
-                showing.currentBuildingNum(buildingNumber[i]);
+                if (!showing._showInfo.remove(i)) {
+                  showing.showingOn(i);
+                  showing.showingMenu(BuildingPosition().menuExist[i]);
+                } else {
+                  showing.showingOff();
+                }
+                showing.currentBuildingNum(BuildingPosition().buildingNumber[i]);
               });
-              print(showing._showInfo == 1);
+              print(showing._showInfo);
               print(showing._buildingNum);
+              print(BuildingPosition().axis_x[i]);
+              print(BuildingPosition().axis_y[i]);
+              print(showing._showMenu);
             },
             child: Align(
-              alignment: Alignment(axis_x[i], axis_y[i]),
+              alignment: Alignment(BuildingPosition().axis_x[i], BuildingPosition().axis_y[i]),
               child: Container(
                 width: 10,
                 height: 10,
@@ -179,30 +218,40 @@ class _BuildingsState extends State<Buildings> {
 
 
 class Showing with ChangeNotifier {
-  int _showInfo = 0;
+  List<int> _showInfo = [];
   String _buildingNum = "0";
+  int _showMenu = 0;
+  bool _showLectures = false;
 
-  //int get showInfo => _showInfo;
+  get showInfo => _showInfo;
 
-  showingOn() {
-    _showInfo = 1;
+  showingOn(int i) {
+    _showInfo.clear();
+    _showInfo.add(i);
     notifyListeners();
   }
 
   showingOff() {
-    _showInfo = 0;
+    _showInfo.clear();
     notifyListeners();
   }
 
   currentBuildingNum(String bn) {
     this._buildingNum = bn;
+    notifyListeners();
+  }
+
+  showingMenu(int i) {
+    this._showMenu = i;
+    notifyListeners();
   }
 }
 
 
 class Infobox extends StatefulWidget {
   String buildingnum;
-  Infobox({required this.buildingnum, Key? key}) : super(key: key);
+  int showingmenu;
+  Infobox({required this.buildingnum, required this.showingmenu, Key? key}) : super(key: key);
 
   @override
   _InfoboxState createState() => _InfoboxState();
@@ -210,33 +259,14 @@ class Infobox extends StatefulWidget {
 
 class _InfoboxState extends State<Infobox> {
   bool _showResMenu = false;
-  bool _showLectures = false;
+  //bool _showLectures = false;
+
 
   @override
   Widget build(BuildContext context) {
     Showing showing = Provider.of<Showing>(context);
-    return ChangeNotifierProvider(
-      create: (BuildContext context) => Showing(),
-      child: Stack(
+    return Stack(
         children: [
-          Align(
-            alignment: Alignment.center,
-            child: Visibility(
-              visible: _showResMenu,
-              child: GestureDetector(
-                child: Container(
-                  height: 980,
-                  width: 500,
-                  color: Color.fromRGBO(100, 100, 100, 0),
-                ),
-                onTap: () {
-                  setState(() {
-                    _showResMenu = !_showResMenu;
-                  });
-                },
-              ),
-            ),
-          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -250,17 +280,6 @@ class _InfoboxState extends State<Infobox> {
                 child: Stack(
                   children: [
                     Align(
-                      alignment: Alignment.topLeft,
-                      child: IconButton(
-                          icon: Icon(Icons.arrow_back),
-                          onPressed: () {
-                            setState(() {
-                              showing.showingOff();
-                            });
-                            print(showing._showInfo);
-                          }),
-                    ),
-                    Align(
                          alignment: Alignment.center,
                          child: BuildingInfo(buildingnumber: widget.buildingnum,)
                     ),
@@ -269,35 +288,41 @@ class _InfoboxState extends State<Infobox> {
                       child: RaisedButton(
                         onPressed: () {
                           setState(() {
-                            _showLectures = !_showLectures;
+                            // showing._showLectures = !showing._showLectures;
+                            // Navigator.push(context,
+                            // MaterialPageRoute(builder: (context) => SearchLecture()));
+                            showSearch(context: context, delegate: DataSearch(), query: widget.buildingnum);
                           });
                         },
                         child: Text("강의 보기"),
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.topRight,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(child: Container()),
-                              IconButton(
-                                icon: Icon(Icons.restaurant_rounded),
-                                onPressed: () {
-                                  setState(() {
-                                    _showResMenu = !_showResMenu;
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                          Visibility(
-                            visible: _showResMenu,
-                            child: ResMenuBox(),
-                          ),
-                        ],
+                    Visibility(
+                      visible: widget.showingmenu == 1,
+                      child: Align(
+                        alignment: Alignment.topRight,
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(child: Container()),
+                                IconButton(
+                                  icon: Icon(Icons.restaurant_rounded),
+                                  onPressed: () {
+                                    setState(() {
+                                      _showResMenu = !_showResMenu;
+                                    });
+                                  },
+                                ),
+                              ],
+                            ),
+                            Visibility(
+                              visible: _showResMenu,
+                              child: ResMenuBox(),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -305,12 +330,13 @@ class _InfoboxState extends State<Infobox> {
               ),
             ),
           ),
-          Align(
+          /*Align(
             alignment: Alignment.topCenter,
-            child: Visibility(visible: _showLectures, child: ShowLectures()),
-          ),
+            child: */
+            //Visibility(visible: showing._showLectures, child: SearchScreen()),
+          //),
         ],
-      ),
+     // ),
     );
   }
 }
@@ -329,11 +355,24 @@ class _BuildingInfoState extends State<BuildingInfo> {
     return Stack(
         children: [
           Visibility(
+            visible: widget.buildingnumber == "300",
+            child: Center(
+              child: Column(
+                children: [
+                  Text("300동 - 공과대학", style: TextStyle(
+                      fontWeight: FontWeight.bold, fontSize: 20),),
+                  Text("유회진학술정보관",
+                    style: TextStyle(fontSize: 15),),
+                ],
+              ),
+            ),
+          ),
+          Visibility(
             visible: widget.buildingnumber == "301",
             child: Center(
               child: Column(
                 children: [
-                  Text("301동 (공과대학)", style: TextStyle(
+                  Text("301동 - 제 1공학관", style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 20),),
                   Text("기계공학, 항공우주, 컴퓨터공학, 전기정보",
                     style: TextStyle(fontSize: 15),),
@@ -346,7 +385,7 @@ class _BuildingInfoState extends State<BuildingInfo> {
             child: Center(
               child: Column(
                 children: [
-                  Text("302동 (공과대학)", style: TextStyle(
+                  Text("302동 - 제 2공학관", style: TextStyle(
                       fontWeight: FontWeight.bold, fontSize: 20),),
                   Text("화학생명공학",
                     style: TextStyle(fontSize: 15),),
@@ -402,5 +441,15 @@ class _ShowLecturesState extends State<ShowLectures> {
         children: [],
       ),
     );
+  }
+}
+
+
+class SearchLecture extends StatelessWidget {
+  const SearchLecture({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
   }
 }
