@@ -3,6 +3,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dart:io';
 import 'dart:math';
 
 String selectedLecture = '초기화';
@@ -16,18 +18,64 @@ List check_info = [];
 int count = 10;
 double screen_width = 0;
 double screen_height = 0;
+/*
+class Storage {
+  Future<String> get _localPath async {
+    final directory = await getApplicationDocumentsDirectory();
+    return directory.path;
+  }
 
+  Future<File> get _localFile async {
+    final path = await _localPath;
+    return File('$path/contents.txt');
+  }
+
+  Future<File> writeList(String? lectureList_info) async {
+    final file = await _localFile;
+    return file.writeAsString('$lectureList_info');
+  }
+
+  Future<String> readList() async {
+    try{
+      final file = await _localFile;
+      String contents = await file.readAsString();
+      return contents;
+    }catch (e) {
+      return "";
+    }}
+}
+*/
 class TimeTable extends StatefulWidget {
-  const TimeTable({Key? key}) : super(key: key);
+  //final Storage? storage;
+  const TimeTable({Key? key,//this.storage
+  }) : super(key: key);
 
   @override
   _TimeTableState createState() => _TimeTableState();
 }
 
 class _TimeTableState extends State<TimeTable> {
+  /*
+  String? _lectureList_info;
+  void initStage() {
+    super.initState();
+    widget.storage!.readList().then((String value) {
+      setState(() {
+        _lectureList_info = value;
+      });
+    });
+  }
+
+  Future<File> _addLecture() {
+    setState(() {
+      DataSearch();
+    });
+    return widget.storage!.writeList(_lectureList_info);
+  }
+   */
+
   @override
   Widget build(BuildContext context) {
-    BoxSize _boxSize = Provider.of<BoxSize>(context);
     return ChangeNotifierProvider(
       create: (BuildContext context) => BoxSize(),
       child: Scaffold(
@@ -125,7 +173,7 @@ class _TimeTableState extends State<TimeTable> {
         builder: (context) {
           return Container(
             color: Color(0xFF737373),
-            height: 460,
+            height: 80,
             child: Container(
               child: _buildButtonMenu(),
               decoration: BoxDecoration(
@@ -308,14 +356,13 @@ class _SelfAddState extends State<SelfAdd> {
                     print(start_time);
                     if (lecture_name != "") {
                       Navigator.pop(context, "");
-                      _boxSize.add(lecture_name, lecture_professor, lecture_place, day, start_time, end_time, context);
+                      _boxSize.add(lecture_name, lecture_professor, lecture_place, day, start_time, end_time, context, true);
                       setState(() {
                         day = 1;
                         start_time = 9;
                         end_time = 9.5;
                         lecture_name = "";
                         lecture_professor = "";
-
                       });
                       print(vertical);
                       print(height);
@@ -390,39 +437,23 @@ class _TimeSelectState extends State<TimeSelect> {
   String end_hour = '9';
   String end_minute = '30';
 
-  /*showPickerDialog(BuildContext context) {
-    //BoxSize _boxSize = Provider.of<BoxSize>(context);
-    Picker(
-        adapter: PickerDataAdapter<String>(pickerdata: ["9:00","9:30"],),
-        hideHeader: true,
-        title: Text("시간 선택"),
-        selectedTextStyle: TextStyle(color: Colors.blue),
-        onConfirm: (Picker picker, List value) {
-          print(value.toString());
-          print(picker.getSelectedValues());
-          String a = value.toString();
-          print(a);
-          if (a==[1]) {print(1);};
-          //double value1 = value[0] as double;
-          //_boxSize.setheight(value1, 3);
-          //print(value1);
-        }
-    ).showDialog(context);
-  }
-   */
-
   void _showDatePicker(context) {
+    int picker_start_hour = 9;
+    int picker_start_minute = 0;
+    int picker_end_hour = 9;
+    int picker_end_minute = 0;
+
     new Picker(
         adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(begin: 9, end: 18),
-          NumberPickerColumn(begin: 0, end: 59),
-          NumberPickerColumn(begin: 9, end: 18),
-          NumberPickerColumn(begin: 0, end: 59),
+          NumberPickerColumn(begin: picker_start_hour, end: 18),
+          NumberPickerColumn(begin: picker_start_minute, end: 59),
+          NumberPickerColumn(begin: picker_end_hour, end: 18),
+          NumberPickerColumn(begin: picker_end_minute, end: 59),
         ]),
         hideHeader: true,
         /*
         delimiter: [
-          // 구분자
+         // 구분자
           PickerDelimiter(
               child: Container(
                width: 10.0, alignment: Alignment.center, child: Text(':'),
@@ -436,18 +467,23 @@ class _TimeSelectState extends State<TimeSelect> {
           setState(() {
             print(value.toString());
             selectedtime = picker.getSelectedValues();
+            picker_start_hour = selectedtime[0];
+            picker_start_minute = selectedtime[1];
+            picker_end_hour = selectedtime[2];
+            picker_end_minute = selectedtime[3];
+
             start_hour = selectedtime[0].toString();
             if (selectedtime[1] < 10) {
               start_minute = selectedtime[1].toString();
               start_minute = '0' + start_minute;
-            } else () {start_minute = selectedtime[1].toString();
-            };
+            } else {start_minute = selectedtime[1].toString();
+            }
             end_hour = selectedtime[2].toString();
             if (selectedtime[3] < 10) {
               end_minute = selectedtime[3].toString();
               end_minute = '0' + end_minute;
-            } else () {end_minute = selectedtime[3].toString();
-            };
+            } else {end_minute = selectedtime[3].toString();
+            }
             print(picker.getSelectedValues());
             start_time = selectedtime[0] + selectedtime[1]/60;
             end_time = selectedtime[2] + selectedtime[3]/60;
@@ -459,7 +495,6 @@ class _TimeSelectState extends State<TimeSelect> {
 
   @override
   Widget build(BuildContext context) {
-    BoxSize _boxSize = Provider.of<BoxSize>(context);
     return Padding(
       padding: EdgeInsets.fromLTRB(35, 0, 0, 0),
       child: Column(
@@ -544,99 +579,6 @@ class _TimeSelectState extends State<TimeSelect> {
     );
   }
 }
-
-/*
-class TimeSelect extends StatefulWidget {
-  const TimeSelect({Key? key}) : super(key: key);
-
-  @override
-  _TimeSelectState createState() => _TimeSelectState();
-}
-
-class _TimeSelectState extends State<TimeSelect> {
-
-
-
-  String week = '';
-
-  void _showDatePicker(ctx) {
-    showCupertinoModalPopup(
-        context: ctx,
-        builder: (_) => Container(
-          height: 200,
-          color: Color.fromARGB(255, 255, 255, 255),
-          child: Column(
-            children: [
-              Container(
-                height: 130,
-                child: CupertinoPicker(
-                  onSelectedItemChanged: (val) {
-                    setState(() {
-                      //_chosenDateTime = val;
-                      if (val == 0) {
-                        week = '월요일';
-                      } else if (val == 1) {
-                        week = '화요일';
-                      } else if (val == 2) {
-                        week  = '수요일';
-                      } else if (val == 3) {
-                        week = '목요일';
-                      } else if (val == 4) {
-                        week = '금요일';
-                      }
-                    });
-                  },
-                  itemExtent: 32,
-                  children: [
-                    Text('월'),
-                    Text('화'),
-                    Text('수'),
-                    Text('목'),
-                    Text('금')
-                  ],
-                ),
-              ),
-
-              // Close the modal
-              CupertinoButton(
-                child: Text('OK'),
-                padding: EdgeInsets.zero,
-                onPressed: () => Navigator.of(ctx).pop(),
-              )
-            ],
-          ),
-        ));
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-      child: Column(
-        children: [
-
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              CupertinoButton(
-                //padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-                child: Text(
-                  '요일 및 시간 선택',
-                  style: TextStyle(fontSize: 15),
-                ),
-                onPressed: () => _showDatePicker(context),
-              ),
-            ],
-          ),
-          Text(week),
-        ],
-      ),
-    );
-
-
-  }
-}
-*/
 
 
 class FirstColumn extends StatelessWidget {
@@ -779,11 +721,13 @@ void move(context) {
 }
 
 List check_list = [];
-
+List check_list_multi = [];
+List before_list = [];
 
 class BoxSize with ChangeNotifier {
 
-  add(String name, String professor, String place, int week, double start_time, double end_time, BuildContext context) {
+  add_multi(String name, String professor, String place, List time, BuildContext context, bool single) {
+
     void _showDialog () {
       showDialog(
         context: context,
@@ -804,22 +748,11 @@ class BoxSize with ChangeNotifier {
       );
     }
 
-    check_info.forEach((x) {
-      if (x[1] !=
-          week) //&& (x[2] < start_time || start_time <= x[3]) && (x[2] < end_time || end_time <= x[3]))
-          {
-        check_list.add(true);
-      }
-      else {check_list.add(false);}
-    });
+    for (List i in time) {
+      int week = i[0];
+      double start_time = i[1];
+      double end_time = i[2];
 
-    print(check_list);
-    if (check_list.contains(false)) {
-      print("error");
-      _showDialog();
-      check_list = [];
-    }
-    else {
       height = screen_height * 0.82 / 31 * (end_time - start_time) * 3;
       vertical = screen_height * 0.82 / 31 * (1 + 3 * (start_time - 9));
 
@@ -835,57 +768,226 @@ class BoxSize with ChangeNotifier {
         horizontal = 13;
       }
 
-      List colors = [
-        Colors.red,
-        Colors.orange,
-        Colors.yellow,
-        Colors.green,
-        Colors.blue
-      ];
-      //Random random = new Random();
-      int index = lectureList.length;
-      int mykey = count;
-      int mykey_check = mykey;
+      for (List x in check_info) {
+        if (x[1] != week) //&& (x[2] < start_time || start_time <= x[3]) && (x[2] < end_time || end_time <= x[3]))
+            {
+          check_list.add(true);
+        }
+        else {
+          check_list.add(false);
+        }
+      }
 
-      check_info.add(
-          [mykey, week, start_time, end_time]
-      );
-      lectureList.add(
-        Positioned(
-          key: ValueKey(mykey),
-          left: screen_width / 16 * horizontal,
-          top: vertical,
-          child: GestureDetector(
-            child: Container(
-              height: height,
-              width: (screen_width / 16 * 3) - 1,
-              color: colors[index],
-              child: Column(
-                children: [
-                  Text(name, style: TextStyle(fontSize: 10)),
-                  Text(place, style: TextStyle(fontSize: 10),
-                  )
-                ],
+      print('start');
+      print(check_info);
+      print(check_list);
+
+      if (check_list.contains(false)) {
+        print("error");
+        check_list_multi.add(false);
+        break;
+      } else {
+        check_list_multi.add(true);
+      }
+    }
+
+    if (check_list_multi.contains(false)) {
+      print("error");
+      _showDialog();
+      check_list_multi = [];
+    } else {
+      for (List i in time) {
+
+        int week = i[0];
+        double start_time = i[1];
+        double end_time = i[2];
+        int index_of_element = time.indexOf(i);
+
+        height = screen_height * 0.82 / 31 * (end_time - start_time) * 3;
+        vertical = screen_height * 0.82 / 31 * (1 + 3 * (start_time - 9));
+
+        if (week == 1) {
+          horizontal = 1;
+        } else if (week == 2) {
+          horizontal = 4;
+        } else if (week == 3) {
+          horizontal = 7;
+        } else if (week == 4) {
+          horizontal = 10;
+        } else if (week == 5) {
+          horizontal = 13;
+        }
+
+        int mykey = count;
+        check_info.add(
+            [mykey, week, start_time, end_time]
+        );
+
+        void _deleteBox(int element) {
+          for (int i = 0 - element; i < time.length - element; i++) {
+            print(element);
+            print(i);
+            print(mykey + i);
+            lectureList.removeWhere((k) =>
+            (k.key as ValueKey).value == mykey + i);
+          }
+          print(check_info);
+          for (int i = 0 - element; i < time.length - element; i++) {
+            check_info.removeWhere((k) => (k[0] == mykey + i));
+          }
+          print(check_info);
+        }
+
+        before_list.add(
+          Positioned(
+            key: ValueKey(mykey),
+            left: screen_width / 16 * horizontal,
+            top: vertical,
+            child: GestureDetector(
+              child: Container(
+                height: height,
+                width: (screen_width / 16 * 3) - 1,
+                color: Colors.purple,
+                child: Column(
+                  children: [
+                    Text(name, style: TextStyle(fontSize: 10)),
+                    Text(place, style: TextStyle(fontSize: 10),
+                    )
+                  ],
+                ),
               ),
+              onTap: () {
+                move(context); //new page <실행안됨>
+              },
+              onLongPress: () {
+                print("hi");
+                _deleteBox(index_of_element);
+                notifyListeners();
+                print("hi");
+                print(lectureList);
+                print(before_list);
+              },
             ),
-            onTap: () {
-              move(context); //new page <실행안됨>
-            },
-            onLongPress: () {
-              print("hi");
-              lectureList
-                  .removeWhere((k) =>
-              (k.key as ValueKey).value == mykey_check);
-              check_info.removeWhere((k) => (k[0] == mykey_check));
-              notifyListeners();
-              print("hi");
-            },
           ),
-        ),
+        );
+        count += 1;
+        print(index_of_element);
+      }
+    }
+    for (var i in before_list) {
+    lectureList.add(i);}
+    print(lectureList);
+    print(before_list);
+    before_list = [];
+    notifyListeners();
+  }
+
+  add(String name, String professor, String place, int week, double start_time, double end_time, BuildContext context, bool single) {
+
+    void _showDialog () {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          // return object  of type Dialog
+          return CupertinoAlertDialog(
+            title: new Text("수업 시간이 겹칩니다."),
+            actions: <Widget>[
+              new TextButton(
+                child: new Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ],
+          );
+        },
       );
+    }
+
+    for (List x in check_info) {
+      if (x[1] != week) //&& (x[2] < start_time || start_time <= x[3]) && (x[2] < end_time || end_time <= x[3]))
+          {check_list.add(true);}
+      else {check_list.add(false);}
+    }
+
+    print('start');
+    print(check_info);
+    print(check_list);
+
+    if (check_list.contains(false)) {
+      print("error");
+      _showDialog();
+      check_list = [];
+    }
+    else {
+
+      height = screen_height * 0.82 / 31 * (end_time - start_time) * 3;
+      vertical = screen_height * 0.82 / 31 * (1 + 3 * (start_time - 9));
+
+      if (week == 1) {
+        horizontal = 1;
+      } else if (week == 2) {
+        horizontal = 4;
+      } else if (week == 3) {
+        horizontal = 7;
+      } else if (week == 4) {
+        horizontal = 10;
+      } else if (week == 5) {
+        horizontal = 13;
+      }
+
+    List colors = [
+      Colors.red,
+      Colors.orange,
+      Colors.yellow,
+      Colors.green,
+      Colors.blue
+    ];
+    int index = lectureList.length;
+    int mykey = count;
+    int mykey_check = mykey;
+
+      if (single == true) {
+        check_info.add(
+            [mykey, week, start_time, end_time]
+        );
+        lectureList.add(
+          Positioned(
+            key: ValueKey(mykey),
+            left: screen_width / 16 * horizontal,
+            top: vertical,
+            child: GestureDetector(
+              child: Container(
+                height: height,
+                width: (screen_width / 16 * 3) - 1,
+                color: colors[index],
+                child: Column(
+                  children: [
+                    Text(name, style: TextStyle(fontSize: 10)),
+                    Text(place, style: TextStyle(fontSize: 10),
+                    )
+                  ],
+                ),
+              ),
+              onTap: () {
+                move(context); //new page <실행안됨>
+              },
+              onLongPress: () {
+                print("hi");
+                lectureList
+                    .removeWhere((k) =>
+                (k.key as ValueKey).value == mykey_check);
+                check_info.removeWhere((k) => (k[0] == mykey_check));
+                notifyListeners();
+                print("hi");
+              },
+            ),
+          ),
+        );
+      }
       count = count + 1;
       check_list = [];
-      print(check_info);
+      //print(check_info);
       notifyListeners();
     }
   }
@@ -941,15 +1043,18 @@ class DataSearch extends SearchDelegate<String> {
     "통계학",
     "통계학실험",
     "굿 라이프 심리학",
-    "재무관리"
+    "재무관리",
+    "초급중국어1",
+    "데이터과학"
   ];
-  final recentLectures = ["대학글쓰기1", "대학글쓰기2", "Physics", "Statistics"];
+  final recentLectures = ["대학글쓰기1", "대학글쓰기2", "Physics", "Statistics","초급중국어1","데이터과학"];
   final lectureinfo = [
-    ["대학글쓰기1", 1, 13.0, 14.5,"가나다", "58동 401호"],
-    ["대학글쓰기2", 2, 9.0, 10.25, "라마바", "58동 402호"],
-    ["Physics", 4, 11.5, 12.75, "사아자", "58동 403호"],
-    ["Statistics", 5, 14.0, (16+5/6), "차카타파하", "58동 404호"],
-  ];
+    ["대학글쓰기1", [[1, 13.0, 14.5],[2, 9.0, 10.25],[3, 16.0,18.0]], "가나", "58동 401호"],
+    ["대학글쓰기2", [[2, 9.0, 10.25]], "다라", "58동 402호"],
+    ["Physics", [[4, 11.5, 12.75]], "마바", "58동 403호"],
+    ["Statistics", [[5, 14.0, (16+5/6)]], "사아", "58동 404호"],
+    ["초급중국어1", [[1,12.5,13.75],[1,17.0,(17+5/6)],[3,12.5,13.75]], "자차", "3동 106호"],
+    ["데이터과학",[[2,11.0,12.25],[4,11.0,12.25]],"카타","25동 418호"]];
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -1014,25 +1119,67 @@ class DataSearch extends SearchDelegate<String> {
     // show some result based on the selection
     BoxSize _boxSize = Provider.of<BoxSize>(context);
     final String lecName = selectedLecture;
-    List selectedinfo = ["대학글쓰기1", 1, 3.0, 5.0, "정다은", "58동 404호"];
+    List selectedinfo = [[], "교수명", "강의실"];
+    List one_time = [];
+    String time_day = "";
+    String time_start = "";
+    String time_end = "";
+    String time_info = "";
+    List time_info_list = [];
+    String time_info_final = "";
 
     for (List each in lectureinfo) {
       if (each[0] == lecName) {
-        int lec_week = each[1];
-        selectedinfo[0] = lec_week;
-        double lec_start_time = each[2];
-        selectedinfo[1] = lec_start_time;
-        double lec_end_time = each[3];
-        selectedinfo[2] = lec_end_time;
-        String professor_name = each[4];
-        selectedinfo[3] = professor_name;
-        String place = each[5];
-        selectedinfo[4] = place;
+        for (List one in each[1]) {
+          one_time.add(one[0]);
+          one_time.add(one[1]);
+          one_time.add(one[2]);
+          selectedinfo[0].add(one_time);
+          one_time = [];
+
+          if (one[0] == 1) {
+            time_day = "월";
+          } else if (one[0] == 2) {
+            time_day = "화";
+          } else if (one[0] == 3) {
+            time_day = "수";
+          } else if (one[0] == 4) {
+            time_day = "목";
+          } else if (one[0] == 5) {
+            time_day = "금";
+          }
+
+          int time_start_hour = one[1].toInt();
+          String time_start_hour_ = time_start_hour.toString();
+          int time_start_minute = (((one[1] - one[1].toInt())*100).ceil()*0.6).toInt();
+          String time_start_minute_ = time_start_minute.toString();
+
+          int time_end_hour = one[2].toInt();
+          String time_end_hour_ = time_end_hour.toString();
+          int time_end_minute = (((one[2] - one[2].toInt())*100).ceil()*0.6).toInt();
+          String time_end_minute_ = time_end_minute.toString();
+
+          time_start = time_start_hour_ + ":" + time_start_minute_;
+          time_end = time_end_hour_ + ":" + time_end_minute_;
+          time_info = time_day + " "+ time_start + "-" + time_end;
+          time_info_list.add(time_info);
+        }
+        print(selectedinfo);
+        print(time_info_list);
+
+        for (String i in time_info_list) {
+          time_info_final += (i + ", ");
+        }
+        time_info_final = time_info_final.replaceRange(time_info_final.length-2,time_info_final.length, "");
+
+        String professor_name = each[2];
+        selectedinfo[1] = professor_name;
+        String place = each[3];
+        selectedinfo[2] = place;
         selectedLecture_classroom = place;
+        }
       }
       ;
-    }
-    ;
 
     return ListView(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -1043,22 +1190,18 @@ class DataSearch extends SearchDelegate<String> {
             children: [
               Row(
                 children: [
-                  Text(selectedinfo[3]),
+                  Text(selectedinfo[1]),
                   SizedBox(
                     width: 5,
                   ),
-                  Text(selectedinfo[4]),
+                  Text(selectedinfo[2]),
                 ],
               ),
-              Row(children: [
-                Text(selectedinfo[0].toString()),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(selectedinfo[1].toString()),
-                Text("-"),
-                Text(selectedinfo[2].toString()),
-              ]),
+              Row(
+                children: [
+                  Text(time_info_final),
+                ],
+              ),
             ],
           ),
           trailing: IconButton(
@@ -1068,11 +1211,16 @@ class DataSearch extends SearchDelegate<String> {
               ),
               onPressed: () {
                 close(context, "bye");
-                //_boxSize.setweek(selectedinfo[0]);
-                //_boxSize.setheight(selectedinfo[1], selectedinfo[2]);
-                _boxSize.pr();
-                _boxSize.add(lecName,selectedinfo[3], selectedinfo[4], selectedinfo[0], selectedinfo[1],selectedinfo[2], context);
-                print(lectureList);
+                if (selectedinfo[0].length == 1) {
+                  _boxSize.add(lecName,selectedinfo[1], selectedinfo[2], selectedinfo[0][0][0], selectedinfo[0][0][1], selectedinfo[0][0][2], context, true);
+                  print(lectureList);
+                  print(check_info);
+                }
+                else {
+                  _boxSize.add_multi(lecName, selectedinfo[1], selectedinfo[2], selectedinfo[0], context, false);
+                  print(lectureList);
+                  print(check_info);
+                }
               }),
         ),
         ListTile(
@@ -1081,22 +1229,18 @@ class DataSearch extends SearchDelegate<String> {
             children: [
               Row(
                 children: [
-                  Text(selectedinfo[3]),
+                  Text(selectedinfo[1]),
                   SizedBox(
                     width: 5,
                   ),
-                  Text(selectedinfo[4]),
+                  Text(selectedinfo[2]),
                 ],
               ),
-              Row(children: [
-                Text(selectedinfo[0].toString()),
-                SizedBox(
-                  width: 5,
-                ),
-                Text(selectedinfo[1].toString()),
-                Text("-"),
-                Text(selectedinfo[2].toString()),
-              ]),
+              Row(
+                children: [
+                  Text(time_info_final),
+                ],
+              ),
             ],
           ),
           trailing: IconButton(
@@ -1106,30 +1250,37 @@ class DataSearch extends SearchDelegate<String> {
               ),
               onPressed: () {
                 close(context, "bye");
-                //_boxSize.setweek(selectedinfo[0]);
-                _boxSize.pr();
-                _boxSize.add(lecName,selectedinfo[3], selectedinfo[4], selectedinfo[0], selectedinfo[1],selectedinfo[2], context);
-                print(lectureList);
+                if (selectedinfo[0].length == 1) {
+                  _boxSize.add(lecName,selectedinfo[1], selectedinfo[2], selectedinfo[0][0][0], selectedinfo[0][0][1], selectedinfo[0][0][2], context, true);
+                }
+                else {
+                for (List each in selectedinfo[0]) {
+                  _boxSize.add(lecName,selectedinfo[1], selectedinfo[2], each[0], each[1],each[2], context, false);
+                }
+                }
               }),
         ),
       ],
+
     );
   }
 }
 
 class LectureBox extends StatefulWidget {
+  LectureBox({Key? key}) : super(key: key);
   @override
   _LectureBoxState createState() => _LectureBoxState();
 }
 
 class _LectureBoxState extends State<LectureBox> {
   @override
-  List getListFiles() {
-    List list = lectureList;
-    return list;
-  }
 
   Widget build(BuildContext context) {
+    List getListFiles() {
+      List list = lectureList;
+      return list;
+    }
+
     return Stack(
       children: List.from(() sync* {
         yield* getListFiles();
