@@ -81,55 +81,50 @@ class _MainPageState extends State<MainPage> {
     double screen_height = MediaQuery.of(context).size.height;
     double screen_width = MediaQuery.of(context).size.width;
     double menubar_height = 50;
-    double appbar_height = AppBar().preferredSize.height;
 
-    return CupertinoTabScaffold(
+    return Scaffold(
       backgroundColor: Colors.white,
-      tabBar: CupertinoTabBar(
-        backgroundColor: Color(0xffaeddef),
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-              icon: Icon(Icons.map_outlined),
-              title: Text("map")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.search_outlined),
-              title: Text("search")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.schedule_outlined),
-              title: Text("schedule")),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.settings_applications_outlined),
-              title: Text("settings")),
+      body: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Container(
+            height: screen_height - menubar_height,
+            child: Stack(
+              children: [
+                //Container(height: double.infinity,),
+                Visibility(
+                  visible: csn.currentNum == 0,
+                  child: MapScreen(),
+                ),
+                // Visibility(
+                //   visible: csn.currentNum == 1,
+                //   child: SearchScreen(),
+                // ),
+                Visibility(
+                  visible: csn.currentNum == 2,
+                  child: TimeTable(),
+                ),
+                Visibility(
+                  visible: csn.currentNum == 3,
+                  child: SettingScreen(),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            height: menubar_height,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                BottomButton(button_pos: 0, content: '지도', csn: csn,),
+                BottomButton(button_pos: 1, content: '검색', csn: csn,),
+                BottomButton(button_pos: 2, content: '내 강의', csn: csn,),
+                BottomButton(button_pos: 3, content: '설정', csn: csn,),
+              ],
+            ),
+          ),
         ],
-        activeColor: Color(0xff7e7c7a),
-        inactiveColor: Color(0xffa3b6c5),
       ),
-      tabBuilder: (context, index) {
-        switch (index) {
-          case 0:
-            return CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(child: MapScreen());
-            });
-            break;
-          case 1:
-            return CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(child: SearchScreen());
-            });
-            break;
-          case 2:
-            return CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(child: TimeTable());
-            });
-            break;
-          case 3:
-            return CupertinoTabView(builder: (context) {
-              return CupertinoPageScaffold(child: SettingScreen());
-            });
-            break;
-          default:
-            return const CupertinoTabView();
-        }
-      },
     );
   }
 }
@@ -166,5 +161,3 @@ class _BottomButtonState extends State<BottomButton> {
     );
   }
 }
-
-
