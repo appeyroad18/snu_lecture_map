@@ -34,7 +34,10 @@ class CurrentScreenNumber {
 // }
 
 class MapScreen extends StatefulWidget {
-  const MapScreen({Key? key}) : super(key: key);
+  double bottomBarHeight;
+  double appBarHeight;
+
+  MapScreen({Key? key, required this.bottomBarHeight, required this.appBarHeight}) : super(key: key);
 
   @override
   _MapScreenState createState() => _MapScreenState();

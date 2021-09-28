@@ -3,6 +3,47 @@ import 'package:snu_lecture_map/dataclass.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 
+class SearchScreen extends StatefulWidget {
+  double bottomBarHeight;
+  double appBarHeight;
+
+  SearchScreen({Key? key, required this.bottomBarHeight, required this.appBarHeight}) : super(key: key);
+
+  @override
+  _SearchScreenState createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        children: [
+          Align(
+            alignment: Alignment(0.8, -0.9),
+            child: InkWell(
+              onTap: (){
+                print("get course catalog");
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.all(Radius.circular(3.0)),
+                ),
+                child : Padding(
+                  child: Text("refresh course catalog"),
+                  padding: EdgeInsets.all(10.0),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
 class Home extends StatefulWidget {
 
   @override
@@ -50,9 +91,14 @@ class _HomeState extends State<Home> {
     print('$temp');
     PreProcessingData();
 
-    var tempa = SearchingNameData("경제");
+    var tempa = SearchingNameData("fffdf");
     for(int i=0;i<tempa.length;i++){
       print("${tempa[i]}");
+    }
+    if(tempa.length != 0 ) {
+      for (var idx in tempa) {
+        String? className = dataclass[idx].n8;
+      }
     }
   }
 
@@ -125,8 +171,6 @@ class _HomeState extends State<Home> {
         newlecturetime.EndTime=999;
         lecturetime.add(newlecturetime);
       }
-
-
 
       dataclass[i].lecture_time = lecturetime;
       print('${dataclass[i].lecture_time![0].StartTime!}');

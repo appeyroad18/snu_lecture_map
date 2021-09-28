@@ -3,9 +3,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_picker/flutter_picker.dart';
-import 'package:path_provider/path_provider.dart';
+//import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 import 'dart:math';
+
+import 'package:snu_lecture_map/dataclass.dart';
 
 String selectedLecture = '초기화';
 String selectedLecture_classroom = '강의실';
@@ -47,8 +49,10 @@ class Storage {
 */
 class TimeTable extends StatefulWidget {
   //final Storage? storage;
-  const TimeTable({Key? key,//this.storage
-  }) : super(key: key);
+  double bottomBarHeight;
+  double appBarHeight;
+
+  TimeTable({Key? key, required this.bottomBarHeight, required this.appBarHeight}) : super(key: key);
 
   @override
   _TimeTableState createState() => _TimeTableState();
@@ -437,18 +441,20 @@ class _TimeSelectState extends State<TimeSelect> {
   String end_hour = '9';
   String end_minute = '30';
 
+  int picker_start_hour = 9;
+  int picker_start_minute = 0;
+  int picker_end_hour = 9;
+  int picker_end_minute = 0;
+
   void _showDatePicker(context) {
-    int picker_start_hour = 9;
-    int picker_start_minute = 0;
-    int picker_end_hour = 9;
-    int picker_end_minute = 0;
+    List<int> _minutes = [0,10,20,30,40,50];
 
     new Picker(
         adapter: NumberPickerAdapter(data: [
-          NumberPickerColumn(begin: picker_start_hour, end: 18),
-          NumberPickerColumn(begin: picker_start_minute, end: 59),
-          NumberPickerColumn(begin: picker_end_hour, end: 18),
-          NumberPickerColumn(begin: picker_end_minute, end: 59),
+          NumberPickerColumn(begin: 9, end: 18, initValue: picker_start_hour),
+          NumberPickerColumn(begin: 0, end: 59, initValue: picker_start_minute, items: _minutes),
+          NumberPickerColumn(begin: 9, end: 18, initValue: picker_end_hour),
+          NumberPickerColumn(begin: 0, end: 59, initValue: picker_end_minute, items: _minutes),
         ]),
         hideHeader: true,
         /*
@@ -1178,8 +1184,7 @@ class DataSearch extends SearchDelegate<String> {
         selectedinfo[2] = place;
         selectedLecture_classroom = place;
         }
-      }
-      ;
+      };
 
     return ListView(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
@@ -1254,9 +1259,9 @@ class DataSearch extends SearchDelegate<String> {
                   _boxSize.add(lecName,selectedinfo[1], selectedinfo[2], selectedinfo[0][0][0], selectedinfo[0][0][1], selectedinfo[0][0][2], context, true);
                 }
                 else {
-                for (List each in selectedinfo[0]) {
-                  _boxSize.add(lecName,selectedinfo[1], selectedinfo[2], each[0], each[1],each[2], context, false);
-                }
+                  for (List each in selectedinfo[0]) {
+                    _boxSize.add(lecName,selectedinfo[1], selectedinfo[2], each[0], each[1],each[2], context, false);
+                  }
                 }
               }),
         ),
@@ -1285,6 +1290,84 @@ class _LectureBoxState extends State<LectureBox> {
       children: List.from(() sync* {
         yield* getListFiles();
       }()),
+    );
+  }
+}
+
+// TODO reference @다은
+// assume that there is well defined lecture info class (might be "Dataclass")
+// for show example, "TempLectureClass" class is used
+// maybe, need to make class for lecture tile(not a widget)
+class TempLectureClass{
+  int startTime;
+  int endTime;
+  String lectureName;
+  TempLectureClass({this.startTime : -1, this.endTime : -1, this.lectureName:"no class"}); //-1 time used for marking null lecture
+}
+
+
+class SampleTable extends StatefulWidget {
+  const SampleTable({Key? key}) : super(key: key);
+
+  @override
+  _SampleTableState createState() => _SampleTableState();
+}
+
+class _SampleTableState extends State<SampleTable> {
+  // List<Dataclass> _mondayLectures = [];
+  // List<Dataclass> _tuesdayLectures = [];
+  // List<Dataclass> _wednesdayLectures = [];
+  // List<Dataclass> _thursdayLectures = [];
+  // List<Dataclass> _fridayLectures = [];
+  List<List<TempLectureClass>> _lectureLists = [];
+  TempLectureClass _nullLecture = new TempLectureClass();
+
+  @override
+  void initState(){
+    // _mondayLectures = List.generate(20, (index) => new Dataclass());
+    _lectureLists = List.generate(5, (i) => List.generate(20, (j) => new TempLectureClass(startTime: j, endTime: j)) );
+  }
+
+  bool checkOverlap(TempLectureClass newLecture){
+    // TODO : check whether there are overlapped lecture
+    // if lecture has start time or end time of -1, it mean this time is already occupied
+    // of course if there is lecture name, this time is already occupied
+    return false;
+  }
+
+  void addLecture(TempLectureClass newLecture, int day){
+    if(day < 0 || day >= 5) {
+      print("invalid day input");
+      return;
+    }
+
+    if(checkOverlap(newLecture)){
+      print("there are overlapped lecture");
+      return;
+    }
+
+    setState(() {
+      int startTime = newLecture.startTime;
+      int endTime = newLecture.endTime;
+
+      for(int period = startTime;period<=endTime;period++){
+        _lectureLists[day][period] = _nullLecture;
+      }
+      _lectureLists[day][startTime] = newLecture;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: [
+        Center(
+          child: Text("text"),
+          // use Listview.builder
+          // make Lecture Container corresponding to each element of "_lectureLists"
+          // if start time or end time is -1 do not make corresponding Container
+        ),
+      ],
     );
   }
 }

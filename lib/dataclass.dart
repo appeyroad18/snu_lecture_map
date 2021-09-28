@@ -11,7 +11,7 @@ class LectureBR{
 
 
 class Dataclass {
-  String? n1;
+  String? n1; //교과구분
   String? n2;
   String? n3;
   String? n4;
@@ -22,15 +22,20 @@ class Dataclass {
   String? n9;
   String? n10;
   String? n11;
-  String? n12;
+  String? n12; // 9시 = 9, 9시 30분 = 9.5, 9시~10시 15분 9시~10시 30분
+  //double start_time;  //9
+  //double end_time;    //10.5
   String? n13;
   String? n14;
+  //List<String> lecture_place; // lp[0] : 강의동, lp[1]:강의실호수
   String? n15;
   String? n16;
   String? n17;
   String? n18;
   List<LectureTime>? lecture_time;
   List<LectureBR>? lecture_br;
+
+
 
 
   Dataclass({this.n1,this.n2,this.n3,this.n4,this.n5,this.n6,this.n7,this.n8,this.n9,
@@ -56,8 +61,6 @@ class Dataclass {
       n16: "${json['정원']}",
       n17: "${json['비고']}",
       n18: "${json['강의언어']}",
-
-
 
     );
   }
