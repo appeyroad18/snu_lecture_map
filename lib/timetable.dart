@@ -20,33 +20,7 @@ List check_info = [];
 int count = 10;
 double screen_width = 0;
 double screen_height = 0;
-/*
-class Storage {
-  Future<String> get _localPath async {
-    final directory = await getApplicationDocumentsDirectory();
-    return directory.path;
-  }
 
-  Future<File> get _localFile async {
-    final path = await _localPath;
-    return File('$path/contents.txt');
-  }
-
-  Future<File> writeList(String? lectureList_info) async {
-    final file = await _localFile;
-    return file.writeAsString('$lectureList_info');
-  }
-
-  Future<String> readList() async {
-    try{
-      final file = await _localFile;
-      String contents = await file.readAsString();
-      return contents;
-    }catch (e) {
-      return "";
-    }}
-}
-*/
 class TimeTable extends StatefulWidget {
   //final Storage? storage;
   double bottomBarHeight;
@@ -59,27 +33,21 @@ class TimeTable extends StatefulWidget {
 }
 
 class _TimeTableState extends State<TimeTable> {
-  /*
-  String? _lectureList_info;
-  void initStage() {
-    super.initState();
-    widget.storage!.readList().then((String value) {
-      setState(() {
-        _lectureList_info = value;
-      });
-    });
-  }
 
-  Future<File> _addLecture() {
-    setState(() {
-      DataSearch();
-    });
-    return widget.storage!.writeList(_lectureList_info);
-  }
-   */
+
+  List row0 = ["","월","화","수","목","금"];
+
+  List info0 = ["9","10","11","12","13","14","15","16","17","18"];
+  List info1 = [[["마케팅관리", 500],["58-304",500],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]],
+    [["", 0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]],
+    [["마케팅관리", 500],["58-304",500],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]],
+    [["", 0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]],
+    [["", 0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]]];
 
   @override
   Widget build(BuildContext context) {
+    screen_width = MediaQuery.of(context).size.width;
+    screen_height = MediaQuery.of(context).size.height;
     return ChangeNotifierProvider(
       create: (BuildContext context) => BoxSize(),
       child: Scaffold(
@@ -167,8 +135,87 @@ class _TimeTableState extends State<TimeTable> {
               ],
             ),
           ),
-          body: SingleChildScrollView(child: _Table())
-      ),
+          body: Column(
+            children: [
+              SizedBox( // 첫번째 행 (월,화,수,목,금)
+                height : (screen_height - widget.appBarHeight - widget.bottomBarHeight - 60)/ 21,
+                width: screen_width,
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  separatorBuilder: (context, index) => Container(color: Colors.black26,width:1),
+                  itemCount: row0.length,
+                  itemBuilder: (context, index) {
+                    return Align(
+                      alignment: Alignment.center,
+                      child: Container(
+                        width : (screen_width -5) / 6,
+                        child: Text('${row0[index]}', textAlign: TextAlign.center,),
+                      ),
+                    );
+                    },),
+              ),
+              Container( // 행 구분선
+                  color: Colors.black26,
+                  width: screen_width,
+                  height : 1,
+              ),
+              SizedBox(
+                width : screen_width,
+                height : (screen_height - widget.appBarHeight - widget.bottomBarHeight-60) / 21*20,
+                child: Row(
+                  children: [
+                    SizedBox( // 첫번째 열
+                      height: (screen_height - widget.appBarHeight - widget.bottomBarHeight -60) / 21*20,
+                      width: (screen_width-5) / 6,
+                      child: ListView.separated(
+                        separatorBuilder: (context, index) => Container(color: Colors.black26, height:1),
+                        itemCount: info0.length,
+                        itemBuilder: (context, index) {
+                          return Container(
+                              width : (screen_width-5) / 6,
+                              height: (screen_height - widget.appBarHeight - widget.bottomBarHeight -60-10) / 21 * 2,
+                              child: Text('${info0[index]}', textAlign: TextAlign.center,),
+                          );
+                        },),
+                    ),
+                    Container( // 열 구분선
+                      color: Colors.black26,
+                      width: 1,
+                      height : (screen_height - widget.appBarHeight - widget.bottomBarHeight) / 21*20,
+                    ),
+                    SizedBox(
+                      width: (screen_width -5) / 6 * 5,
+                      child: ListView.separated(
+                        scrollDirection: Axis.horizontal,
+                        separatorBuilder: (context, index) => Container(color: Colors.black26, width:1),
+                        itemCount: 5,
+                        itemBuilder: (context, index_main) {
+                          return SizedBox(
+                            width: (screen_width-5) / 6,
+                            child: ListView.separated(
+                              separatorBuilder: (context, index) => Divider(color: Colors.black26, height:1),
+                              itemCount: info1[index_main].length,
+                              itemBuilder: (context, index_each) {
+                                return Container(
+                                  height: (screen_height - widget.appBarHeight - widget.bottomBarHeight-60-20) / 21,
+                                  child: Text('${info1[index_main][index_each][0]}'),
+                                  color: Colors.amber[info1[index_main][index_each][1]],
+                                );
+                              },
+                            ),
+                          );
+                          },
+                              ),
+                            ),
+                          ],
+                        ),
+            ),
+            ],
+          ),
+             ),
+
+          //SingleChildScrollView(child: Table(bottomBarHeight: widget.bottomBarHeight, appBarHeight: widget.appBarHeight))
+
     );
   }
   void _onButtonPressed() {
@@ -586,7 +633,47 @@ class _TimeSelectState extends State<TimeSelect> {
   }
 }
 
+class Table extends StatefulWidget {
+  double bottomBarHeight;
+  double appBarHeight;
 
+  Table({Key? key, required this.bottomBarHeight, required this.appBarHeight}) : super(key: key);
+
+
+  @override
+  _TableState createState() => _TableState();
+}
+
+class _TableState extends State<Table> {
+  @override
+  Widget build(BuildContext context) {
+    screen_width = MediaQuery.of(context).size.width;
+    screen_height = MediaQuery.of(context).size.height;
+
+
+    List info0 = ["","9","10","11","12","13","14","15","16","17","18"];
+    List info1 = [['월'],['대학영어1'], ['초급중국어1'], ['수학1']];
+    return Row(
+        children: [
+
+          ListView.builder(
+            itemCount : 21,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                color: Colors.black26,
+                height: 30, //(screen_height - widget.appBarHeight - widget.bottomBarHeight - 50) / 21,
+                child : Center(child :Text('hi'),)
+
+              );
+            },
+          ),
+        ],
+    );
+  }
+}
+
+
+/*
 class FirstColumn extends StatelessWidget {
 
   double width = 0;
@@ -709,6 +796,8 @@ class __TableState extends State<_Table> {
     );
   }
 }
+
+ */
 
 class LectureInfoPage extends StatelessWidget {
   const LectureInfoPage({Key? key}) : super(key: key);
@@ -1332,7 +1421,11 @@ class _SampleTableState extends State<SampleTable> {
     // TODO : check whether there are overlapped lecture
     // if lecture has start time or end time of -1, it mean this time is already occupied
     // of course if there is lecture name, this time is already occupied
-    return false;
+    if (newLecture.startTime == -1 || newLecture.endTime == -1) {
+      return false;
+    } else {
+      return true;
+    }
   }
 
   void addLecture(TempLectureClass newLecture, int day){
