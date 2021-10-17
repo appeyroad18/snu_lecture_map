@@ -34,20 +34,21 @@ class TimeTable extends StatefulWidget {
 
 class _TimeTableState extends State<TimeTable> {
 
-
-  List row0 = ["","월","화","수","목","금"];
-
-  List info0 = ["9","10","11","12","13","14","15","16","17","18"];
-  List info1 = [[["마케팅관리", 500],["58-304",500],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]],
-    [["", 0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]],
-    [["마케팅관리", 500],["58-304",500],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]],
-    [["", 0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]],
-    [["", 0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0],["",0]]];
+  // [이름, color, 높이 (0: 시간 column, 1 :  첫번째 row, 2 : 나머지)]
+  // 너비 (index_main으로 조절)
+  List info1 = [[["", 0, 1,0,0],["9", 0, 0,0,0],["10", 0, 0,0,0],["11", 0, 0,0,0],["12", 0, 0,0,0],["13", 0, 0,0,0],["14", 0, 0,0,0],["15", 0, 0,0,0],["16", 0, 0,0,0],["17", 0, 0,0,0],["18", 0, 0,0,0]],
+    [["월", 0, 1,0,0],["마케팅관리", 500,3],["",0,0],["",0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
+    [["화", 0, 1,0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
+    [["수", 0, 1,0,0],["마케팅관리", 500,3],["",0,0],["",0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
+    [["목", 0, 1,0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
+    [["금", 0, 1,0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]]];
 
   @override
   Widget build(BuildContext context) {
     screen_width = MediaQuery.of(context).size.width;
     screen_height = MediaQuery.of(context).size.height;
+    double basic_height = (screen_height - widget.appBarHeight - widget.bottomBarHeight-60-20) / 21; // (30분길이)
+
     return ChangeNotifierProvider(
       create: (BuildContext context) => BoxSize(),
       child: Scaffold(
@@ -137,80 +138,38 @@ class _TimeTableState extends State<TimeTable> {
           ),
           body: Column(
             children: [
-              SizedBox( // 첫번째 행 (월,화,수,목,금)
-                height : (screen_height - widget.appBarHeight - widget.bottomBarHeight - 60)/ 21,
+              SizedBox(
+                height : basic_height * 21,
                 width: screen_width,
                 child: ListView.separated(
                   scrollDirection: Axis.horizontal,
-                  separatorBuilder: (context, index) => Container(color: Colors.black26,width:1),
-                  itemCount: row0.length,
-                  itemBuilder: (context, index) {
-                    return Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        width : (screen_width -5) / 6,
-                        child: Text('${row0[index]}', textAlign: TextAlign.center,),
-                      ),
-                    );
-                    },),
-              ),
-              Container( // 행 구분선
-                  color: Colors.black26,
-                  width: screen_width,
-                  height : 1,
-              ),
-              SizedBox(
-                width : screen_width,
-                height : (screen_height - widget.appBarHeight - widget.bottomBarHeight-60) / 21*20,
-                child: Row(
-                  children: [
-                    SizedBox( // 첫번째 열
-                      height: (screen_height - widget.appBarHeight - widget.bottomBarHeight -60) / 21*20,
-                      width: (screen_width-5) / 6,
-                      child: ListView.separated(
-                        separatorBuilder: (context, index) => Container(color: Colors.black26, height:1),
-                        itemCount: info0.length,
-                        itemBuilder: (context, index) {
+                  separatorBuilder: (context, index) => Container(color: Colors.black26, width:1),
+                  itemCount: 6,
+                  itemBuilder: (context, index_main) {
+                    return SizedBox(
+                      width: index_main == 0 ? (screen_width-6) / 11 : (screen_width-6) / 11*2,
+                      child: ListView.builder(
+                        //separatorBuilder: (context, index) => Divider(color: Colors.black26, height:1),
+                        itemCount:  index_main == 0 ? 11 : 21,
+                        itemBuilder: (context, index_each) {
                           return Container(
-                              width : (screen_width-5) / 6,
-                              height: (screen_height - widget.appBarHeight - widget.bottomBarHeight -60-10) / 21 * 2,
-                              child: Text('${info0[index]}', textAlign: TextAlign.center,),
-                          );
-                        },),
-                    ),
-                    Container( // 열 구분선
-                      color: Colors.black26,
-                      width: 1,
-                      height : (screen_height - widget.appBarHeight - widget.bottomBarHeight) / 21*20,
-                    ),
-                    SizedBox(
-                      width: (screen_width -5) / 6 * 5,
-                      child: ListView.separated(
-                        scrollDirection: Axis.horizontal,
-                        separatorBuilder: (context, index) => Container(color: Colors.black26, width:1),
-                        itemCount: 5,
-                        itemBuilder: (context, index_main) {
-                          return SizedBox(
-                            width: (screen_width-5) / 6,
-                            child: ListView.separated(
-                              separatorBuilder: (context, index) => Divider(color: Colors.black26, height:1),
-                              itemCount: info1[index_main].length,
-                              itemBuilder: (context, index_each) {
-                                return Container(
-                                  height: (screen_height - widget.appBarHeight - widget.bottomBarHeight-60-20) / 21,
-                                  child: Text('${info1[index_main][index_each][0]}'),
-                                  color: Colors.amber[info1[index_main][index_each][1]],
-                                );
-                              },
-                            ),
-                          );
-                          },
-                              ),
-                            ),
-                          ],
-                        ),
-            ),
-            ],
+                            // 첫번째 열이 아니거나 (시간열이 아니거나) || 시간 열 중에서도 맨 첫번째 행이 아니라면 기본적으로 30분 길이의 height
+                            height: index_main != 0 || info1[index_main][index_each][2] == 1 ?
+                                // 위 조건에 해당되는데 요일이 쓰여진 행이라면 21등분한 길이 (30분 길이)
+                            info1[index_main][index_each][0].length == 1 || info1[index_main][index_each][0].length == 0? basic_height
+                                // 위 조건에 해당되는데 시간표가 들어갈 행이라면 각 강의 시간에 맞는 길이
+                                : basic_height * info1[index_main][index_each][2]
+                            // 시간 열의 길이는 1시간 길이의 height
+                                : basic_height * 2,
+                            child: Text('${info1[index_main][index_each][0]}'),
+                            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black26, width: 1)),color: Colors.amber[info1[index_main][index_each][1]]),
+                  );
+                },
+              ),
+            );
+          },
+        ),
+              )],
           ),
              ),
 
