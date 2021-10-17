@@ -82,4 +82,10 @@ class Dataclass {
     "비고": note,
     "강의언어": language,
   };
+
+  Map<String, dynamic> toMap() {
+    return{
+      'name': name,
+    };
+  }
 }
