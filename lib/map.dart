@@ -46,11 +46,43 @@ class MapScreen extends StatefulWidget {
 class _MapScreenState extends State<MapScreen>
     with SingleTickerProviderStateMixin {
 
+  List<String> _showInfo = [];
+  String _buildingNum = "0";
+  bool _showMenu = false;
+  String _showMark = "0";
+  void showingOn(String bn) {
+    setState(() {
+      _showInfo.clear();
+      _showInfo.add(bn);
+    });
+
+  }
+  void showingOff() {
+    setState(() {
+      _showInfo.clear();
+    });
+  }
+  void currentBuildingNum(String bn) {
+    setState(() {
+      this._buildingNum = bn;
+    });
+  }
+  void showingMenu(String bn) {
+    setState(() {
+      this._showMenu = BUILDINGDATA[bn]![2];
+    });
+  }
+  void showingMark(String bn) {
+    setState(() {
+      this._showMark = bn;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final double _width = MediaQuery.of(context).size.width;
     final double _height = MediaQuery.of(context).size.height;
-    Showing showing = Provider.of<Showing>(context);
+    // Showing showing = Provider.of<Showing>(context);
     return Scaffold(
       backgroundColor: Color(0xffffffdd),
       appBar: AppBar(
@@ -111,7 +143,10 @@ class _MapScreenState extends State<MapScreen>
                   MapContainer(
                     imagePath: "assets/images/snumap.jpg",
                   ),
-                  Buildings(),
+                  Buildings(showInfo: _showInfo, buildingNum: _buildingNum,
+                  showMenu: _showMenu, showMark: _showMark, sOn: showingOn,
+                  sOff: showingOff, cBN: currentBuildingNum, sMenu: showingMenu,
+                  sMark: showingMark,),
                 ]),
                 backgroundDecoration: BoxDecoration(color: Colors.white10),
                 minScale: PhotoViewComputedScale.contained * 1,
@@ -123,13 +158,11 @@ class _MapScreenState extends State<MapScreen>
                   vsync: this,
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOutCubic,
-                  child: ChangeNotifierProvider(
-                    create: (BuildContext context) => Showing(),
-                    child: Container(
-                      height: showing.showInfo.isNotEmpty ? 150 : 0,
+                  child: Container(
+                      height: _showInfo.isNotEmpty ? 150 : 0,
                       child: Stack(
                           children: [
-                            Infobox(buildingnum: showing._buildingNum, showingmenu: showing._showMenu,),
+                            Infobox(buildingnum: _buildingNum, showingmenu: _showMenu,),
                             Align(
                               alignment: Alignment.topLeft,
                               child: IconButton(
@@ -137,13 +170,12 @@ class _MapScreenState extends State<MapScreen>
                                   padding: EdgeInsets.all(17),
                                   onPressed: () {
                                     setState(() {
-                                      showing.showingOff();
+                                      showingOff();
                                     });
-                                    print(showing._showInfo);
+                                    print(_showInfo);
                                   }),
                             ),
                           ]),
-                    ),
                   ),
                 ),
               ),
@@ -196,16 +228,29 @@ class MapContainer extends StatelessWidget {
   }
 }
 
-
 class Buildings extends StatefulWidget {
-  Buildings({Key? key}) : super(key: key);
+  List<String> showInfo;
+  String buildingNum;
+  bool showMenu;
+  String showMark;
+  Function sOn;
+  Function sOff;
+  Function cBN;
+  Function sMenu;
+  Function sMark;
+  Buildings({Key? key, required this.showInfo, required this.buildingNum,
+  required this.showMenu, required this.showMark, required this.sOn,
+  required this.sOff, required this.cBN, required this.sMenu, required this.sMark}) : super(key: key);
 
   @override
   _BuildingsState createState() => _BuildingsState();
 }
 
 class _BuildingsState extends State<Buildings> {
-
+  /*List<String> showInfo = super.showInfo;
+  String buildingNum;
+  bool showMenu;
+  String showMark;*/
   @override
   Widget build(BuildContext context) {
     double screen_height = MediaQuery.of(context).size.height - 50;
@@ -214,7 +259,6 @@ class _BuildingsState extends State<Buildings> {
     double image_height = 3508;
     double image_width = 2481;
     var bn = BUILDINGDATA.keys;
-    Showing showing = Provider.of<Showing>(context);
     return Center(
       child: Container(
         height: (image_height / screen_height < image_width / screen_width)
@@ -226,7 +270,7 @@ class _BuildingsState extends State<Buildings> {
         child: Stack(children: [
           for (String j in bn)
             Visibility(
-              visible: showing._showMark == j,
+              visible: widget.showMark == j,
               child: Align(
                 alignment: Alignment(BUILDINGDATA[j]![0]-0.005, BUILDINGDATA[j]![1]),
                 child: Icon(
@@ -239,20 +283,20 @@ class _BuildingsState extends State<Buildings> {
           GestureDetector(
             onTap: () {
               setState(() {
-                if (!showing._showInfo.remove(i)) {
-                  showing.showingOn(i);
-                  showing.showingMenu(i);
+                if (!widget.showInfo.remove(i)) {
+                  widget.sOn(i);
+                  widget.sMenu(i);
                 } else {
-                  showing.showingOff();
+                  widget.sOff();
                 }
-                showing.currentBuildingNum(i);
-                showing.showingMark(i);
+                widget.cBN(i);
+                widget.sMark(i);
               });
-              print(showing._showInfo);
-              print(showing._buildingNum);
+              print(widget.showInfo);
+              print(widget.buildingNum);
               print(BUILDINGDATA[i]![0]);
               print(BUILDINGDATA[i]![1]);
-              print(showing._showMenu);
+              print(widget.showMenu);
             },
             child: Align(
                 alignment: Alignment(BUILDINGDATA[i]![0], BUILDINGDATA[i]![1]),
@@ -269,6 +313,7 @@ class _BuildingsState extends State<Buildings> {
   }
 }
 
+/*
 class Showing with ChangeNotifier {
   List<String> _showInfo = [];
   String _buildingNum = "0";
@@ -303,7 +348,7 @@ class Showing with ChangeNotifier {
     notifyListeners();
   }
 }
-
+*/
 
 class Infobox extends StatefulWidget {
   String buildingnum;
@@ -319,7 +364,7 @@ class _InfoboxState extends State<Infobox> {
 
   @override
   Widget build(BuildContext context) {
-    Showing showing = Provider.of<Showing>(context);
+    //Showing showing = Provider.of<Showing>(context);
     return Stack(
         children: [
           Align(
