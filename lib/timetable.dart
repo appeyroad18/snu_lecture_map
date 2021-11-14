@@ -21,6 +21,8 @@ int count = 10;
 double screen_width = 0;
 double screen_height = 0;
 
+
+
 class TimeTable extends StatefulWidget {
   //final Storage? storage;
   double bottomBarHeight;
@@ -34,14 +36,14 @@ class TimeTable extends StatefulWidget {
 
 class _TimeTableState extends State<TimeTable> {
 
-  // [이름, color, 높이 (0: 시간 column, 1 :  첫번째 row, 2 : 나머지)]
+  // 강의명\n 강의실, color, 강의시간(높이)
   // 너비 (index_main으로 조절)
-  List info1 = [[["", 0, 1,0,0],["9", 0, 0,0,0],["10", 0, 0,0,0],["11", 0, 0,0,0],["12", 0, 0,0,0],["13", 0, 0,0,0],["14", 0, 0,0,0],["15", 0, 0,0,0],["16", 0, 0,0,0],["17", 0, 0,0,0],["18", 0, 0,0,0]],
-    [["월", 0, 1,0,0],["마케팅관리", 500,3],["",0,0],["",0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
-    [["화", 0, 1,0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
-    [["수", 0, 1,0,0],["마케팅관리", 500,3],["",0,0],["",0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
-    [["목", 0, 1,0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
-    [["금", 0, 1,0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]]];
+  List info1 = [[["", 0, 1],["9", 0, 2],["10", 0,2],["11", 0,2],["12", 0,2],["13", 0,2],["14", 0,2],["15", 0,2],["16", 0,2],["17", 0,2],["18", 0,2]],
+    [["월", 0, 1],["마케팅관리", 500,3, "58동 304호"],["마케팅관리",0,0,""],["",0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
+    [["화", 0, 1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
+    [["수", 0, 1],["마케팅관리", 500,3,""],["",0,0],["",0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
+    [["목", 0, 1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
+    [["금", 0, 1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]]];
 
   @override
   Widget build(BuildContext context) {
@@ -74,7 +76,7 @@ class _TimeTableState extends State<TimeTable> {
                   onPressed: () {
                     on_off = false;
                     Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => SelfAdd()));
+                        MaterialPageRoute(builder: (context) => AddLecture(info : info1)));
                   }
                 //_onButtonPressed(),
               ),
@@ -147,23 +149,46 @@ class _TimeTableState extends State<TimeTable> {
                   itemCount: 6,
                   itemBuilder: (context, index_main) {
                     return SizedBox(
-                      width: index_main == 0 ? (screen_width-6) / 11 : (screen_width-6) / 11*2,
+                      width: index_main == 0 ? (screen_width-6) / 11 : (screen_width-6) / 11*2, // 열 넓이
                       child: ListView.builder(
                         //separatorBuilder: (context, index) => Divider(color: Colors.black26, height:1),
                         itemCount:  index_main == 0 ? 11 : 21,
                         itemBuilder: (context, index_each) {
-                          return Container(
-                            // 첫번째 열이 아니거나 (시간열이 아니거나) || 시간 열 중에서도 맨 첫번째 행이 아니라면 기본적으로 30분 길이의 height
-                            height: index_main != 0 || info1[index_main][index_each][2] == 1 ?
-                                // 위 조건에 해당되는데 요일이 쓰여진 행이라면 21등분한 길이 (30분 길이)
-                            info1[index_main][index_each][0].length == 1 || info1[index_main][index_each][0].length == 0? basic_height
-                                // 위 조건에 해당되는데 시간표가 들어갈 행이라면 각 강의 시간에 맞는 길이
-                                : basic_height * info1[index_main][index_each][2]
-                            // 시간 열의 길이는 1시간 길이의 height
-                                : basic_height * 2,
-                            child: Text('${info1[index_main][index_each][0]}'),
-                            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black26, width: 1)),color: Colors.amber[info1[index_main][index_each][1]]),
-                  );
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder : (context) => LecturePage(lecture : info1[index_main][index_each]))
+                              );
+
+                              // 각각 강의마다 고유 번호를 달 생각은...?
+                              setState(() {
+                              });
+                            },
+                            onLongPress: () {
+                              // 바로 지워지긴 함 (연결된 container, 다른 요일의 container를 어떻게 이을 것인가..!)
+                              setState(() {
+                                info1[index_main][index_each] = ["", 0, 0, ""];
+                              });
+                            },
+                            child: Container(
+                              height : basic_height * info1[index_main][index_each][2],
+                              child: Container(
+                                padding: index_each != 0 ? EdgeInsets.all(5) : EdgeInsets.all(0),
+                                  // 각 리스트의 마지막 객체의 자료형이 String일때는 Column (강의명 + 강의실) : 그렇지 않으면 Text (시간 or 요일)
+                                  child : info1[index_main][index_each][info1[index_main][index_each].length-1] is String ?
+                                  Column(children:
+                                      [Text('${info1[index_main][index_each][0]}',
+                                      textAlign: index_main != 0 ? TextAlign.center : TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                                      Text('${info1[index_main][index_each][3]}',
+                                       textAlign: index_main != 0 ? TextAlign.center : TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                              ]) :
+                                  Text('${info1[index_main][index_each][0]}',
+                                    textAlign: index_main != 0 ? TextAlign.center : TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                            ),
+                              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black26, width: 1)),color: Colors.amber[info1[index_main][index_each][1]]),
+                  ),
+                          );
                 },
               ),
             );
@@ -172,9 +197,6 @@ class _TimeTableState extends State<TimeTable> {
               )],
           ),
              ),
-
-          //SingleChildScrollView(child: Table(bottomBarHeight: widget.bottomBarHeight, appBarHeight: widget.appBarHeight))
-
     );
   }
   void _onButtonPressed() {
@@ -185,7 +207,7 @@ class _TimeTableState extends State<TimeTable> {
             color: Color(0xFF737373),
             height: 80,
             child: Container(
-              child: _buildButtonMenu(),
+              child: _buildButtonMenu(info : info1),
               decoration: BoxDecoration(
                   color: Theme.of(context).canvasColor,
                   borderRadius: BorderRadius.only(
@@ -199,7 +221,8 @@ class _TimeTableState extends State<TimeTable> {
 }
 
 class _buildButtonMenu extends StatefulWidget {
-  const _buildButtonMenu({Key? key}) : super(key: key);
+  List info;
+  _buildButtonMenu({Key? key, required this.info}) : super(key: key);
 
   @override
   __buildButtonMenuState createState() => __buildButtonMenuState();
@@ -208,30 +231,42 @@ class _buildButtonMenu extends StatefulWidget {
 class __buildButtonMenuState extends State<_buildButtonMenu> {
   @override
   Widget build(BuildContext context) {
+    List info = widget.info;
 
-    void _showDeleteMessage () {
+    // 왜 바로 안바뀔까요..? (너무 느린가...?)
+    void deleteAll(List list) {
+      setState(() {
+        for (var i=0; i < list.length; i++) {
+          if (i != 0) {
+            for (var j=0; j < list[i].length; j++) {
+              if(j != 0) {
+                list[i][j][0] = "";
+                list[i][j][3] = "";
+              }}}}}
+      );
+  }
+
+    void showDeleteMessage(List list) {
       showDialog(
         context: context,
         builder: (BuildContext context) {
-          BoxSize _boxSize = Provider.of<BoxSize>(context);
-          // return object  of type Dialog
-          return CupertinoAlertDialog(
+          return AlertDialog(
+            shape : RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0)
+            ),
             title: Text("모든 강의를 삭제하시겠습니까?"),
             actions: <Widget>[
-              TextButton(
-                child: new Text("취소"),
-                onPressed: () {
-                  Navigator.pop(context);},),
-              TextButton(
-                child: new Text("확인"),
-                onPressed: () {
-                  Navigator.pop(context);
-                  print(lectureList);
-                  print(check_info);
-                  _boxSize.delete_all();
-                  print(lectureList);
-                },
-              ),
+                TextButton(
+                  child: new Text("취소"),
+                  onPressed: () {
+                    Navigator.pop(context);},),
+                TextButton(
+                  child: new Text("확인"),
+                  onPressed: () {
+                    Navigator.pop(context);
+                    deleteAll(list);
+                    },
+                )
             ],
           );
         },
@@ -244,13 +279,156 @@ class __buildButtonMenuState extends State<_buildButtonMenu> {
           title: Text("삭제"),
           onTap: () {
             Navigator.pop(context);
-            _showDeleteMessage ();
+            showDeleteMessage(info);
           },
         )],
     );
   }
-
 }
+
+class LecturePage extends StatefulWidget {
+  List lecture;
+  LecturePage({Key? key, required this.lecture}) : super(key: key);
+
+  @override
+  _LecturePageState createState() => _LecturePageState();
+}
+
+class _LecturePageState extends State<LecturePage> {
+  @override
+  Widget build(BuildContext context) {
+    List lecture = widget.lecture;
+    List itemGroup1 = ['강의명','교수명', '강의실', '강의시간', '색'];
+    List itemGroup2 = ['학점', '개설학과', '학년', '교과구분', '과정구분', '교과목 번호', '비고'];
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('강의정보', style: TextStyle(color: Colors.black),),
+        elevation: 1,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
+      body : Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: Container(
+              child: ListView.separated(
+                separatorBuilder: (BuildContext context, int index) => const Divider(),
+                itemCount : 2,
+                itemBuilder: (BuildContext context, int index) {
+                  return Container(
+                    height: index == 0 ? 25.0 * itemGroup1.length : 25.0 * itemGroup2.length,
+                    child : ListView.separated(
+                      separatorBuilder: (BuildContext context, int index) => const Divider(color: Colors.white, height: 5),
+                      itemCount : index == 0 ? itemGroup1.length : itemGroup2.length,
+                      itemBuilder: (BuildContext context, int index_each) {
+                        return Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Align(alignment: Alignment.centerLeft,
+                                    child:Text(index == 0 ? itemGroup1[index_each] : itemGroup2[index_each], style: TextStyle(color: Colors.black))),
+                              ),
+                              Expanded(child:Container(), flex : 1),
+                              Expanded(flex : 10, child: Align(alignment: Alignment.centerLeft, child:Text('hi'),)),
+                            ]
+                        );
+                      },
+                    )
+                  );
+                },
+              ),
+            ),
+      ),
+    );
+  }
+}
+
+class AddLecture extends StatefulWidget {
+  List info;
+  AddLecture({Key? key, required this.info}) : super(key: key);
+
+  @override
+  _AddLectureState createState() => _AddLectureState();
+}
+
+class _AddLectureState extends State<AddLecture> {
+  @override
+  Widget build(BuildContext context) {
+    List info = widget.info;
+    List lectureAdd = ["", 0, 0, ""];
+    String time = "시간";
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('시간표 추가', style: TextStyle(color: Colors.black),),
+          elevation: 1,
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+        ),
+        body : Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+              children : [
+                Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: TextField(
+                      cursorColor: Colors.grey,
+                      decoration: InputDecoration(hintText: "강의명"),
+                      onChanged: (value) {
+                        lectureAdd[0] = value;
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                  child: TextField(
+                    cursorColor: Colors.grey,
+                    decoration: InputDecoration(hintText: "교수명"),
+                    onChanged: (value) {
+
+                    },
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
+                  child: Align(alignment: Alignment.centerLeft,
+                      child: Text('요일 및 시간 선택')),
+                ),
+                TextButton(onPressed: () {
+                  showPicker(time);
+                  },
+                    child: Text(time))
+
+              ]
+          )
+        )
+    );
+  }
+
+  void showPicker(String time) {
+    showModalBottomSheet(
+        context: context,
+        builder: (context) {
+      return Container(
+          color: Colors.white,
+          height: 250,
+          child: Container(
+              child : CupertinoPicker(
+                  itemExtent: 30,
+                  magnification: 1,
+                  scrollController: FixedExtentScrollController(initialItem: 1),
+                  onSelectedItemChanged: (value) {
+                    setState() {
+                      time = value.toString();
+                    }
+                    },
+                 children : [Text('월'),Text('화'), Text('수'), Text('목'), Text('금')]
+          )
+          )
+      );
+        }
+        );
+  }
+}
+
 
 class SecondPage extends StatelessWidget {
   const SecondPage({Key? key}) : super(key: key);
@@ -302,6 +480,10 @@ var on_off = false;
 
 class SelfAdd extends StatefulWidget {
   const SelfAdd({Key? key}) : super(key: key);
+
+  void deleteAll(context) {
+
+  }
 
   @override
   _SelfAddState createState() => _SelfAddState();
