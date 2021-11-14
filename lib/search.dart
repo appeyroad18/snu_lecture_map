@@ -1,3 +1,6 @@
+import 'dart:core';
+
+
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -100,12 +103,14 @@ getDataFromSheet() async{
   }
 
  */
-
+/*
   var tempb = SearchingNameData("경제");
   for(int i=0;i<tempb.length;i++){
-    print("${tempb[i]} : ${dataclass[tempb[i]].lecture_time![0].StartTime}");
+    print("${tempb[i]} : ${dataclass[tempb[i]].lecture_time![0].EndTime}");
   }
 
+
+ */
 
 }
 
@@ -262,11 +267,10 @@ PreProcessingData(){
         idx=idx_new;
         //print("${coincidence}");
       }
-
     }
 
 
-    print("${dataclass[i].n14}");
+    //print("${dataclass[i].n14}");
 
     if(NumOfSlash_time==0) {
       int NumOfHyphen = 0;
@@ -285,23 +289,13 @@ PreProcessingData(){
         temp_lecturebr.Room = temp_room;
         dataclass[i].lecture_buildingroom=[];
         dataclass[i].lecture_buildingroom!.add(temp_lecturebr);
-        print("${dataclass[i].lecture_buildingroom![0].Building}");
+        //print("${dataclass[i].lecture_buildingroom![0].Building}");
       }
-
-
-
     }
-
-
-
-
-
-
-
   }
 
 
-  print("${dataclass.length}");
+  //print("${dataclass.length}");
   //수업 교시 전처리
 }
 
@@ -353,18 +347,88 @@ SearchingBuilding(String info){
 
 SaveData() async{
 
+  //Generate or Open Database
   final Future<Database> database = openDatabase(
-    join(await getDatabasesPath(), 'dataclass.db'),
+    join(await getDatabasesPath(), 'datanamed.db'),
     onCreate: (db, version) {
       return db.execute(
-        "CREATE TABLE data(name BLOB)",
+        "CREATE TABLE data(idx INTEGER PRIMARY KEY, name TEXT)",
       );
     },
     version: 1,
   );
   print("done");
 
-  Future<void> insertData(Dataclass dataclass) async {
+  //Function : insert Dataclass into DB
+  Future<void> insertData(Dataname dataname) async {
+
+    final Database db = await database;
+
+    await db.insert(
+      'data',
+      dataname.toMap(),
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+  }
+
+  //dataclass(dataname) 의 변수를 얻는 함수
+  Future<List<Dataname>> data() async {
+    final Database db = await database;
+
+    final List<Map<String, dynamic>> maps = await db.query('data');
+
+    return List.generate(maps.length, (i) {
+      return Dataname(
+        idx: maps[i]['idx'],
+        name: maps[i]['name'],
+      );
+    });
+  }
+
+  //db 수정 함수
+  Future<void> updateDataname(Dataname dataname) async {
+    final db = await database;
+
+    await db.update(
+      'data',
+      dataname.toMap(),
+      where: "idx = ?",
+      whereArgs: [dataname.idx],
+    );
+  }
+
+  //db 제거 함수
+  Future<void> deleteData(int idx) async {
+    // 데이터베이스 reference를 얻습니다.
+    final db = await database;
+
+    // 데이터베이스에서 Dog를 삭제합니다.
+    await db.delete(
+      'data',
+      where: "idx = ?",
+      whereArgs: [idx],
+    );
+  }
+
+  //db로부터 데이터를 얻어서 내부 변수로 추출
+  List<Dataname> datanames = await data();
+
+  ///*
+  //dataclass 적용용 test
+  //Generate or Open Database
+  final Future<Database> dataclassbase = openDatabase(
+    join(await getDatabasesPath(), 'datanameclass.db'),
+    onCreate: (db, version) {
+      return db.execute(
+        "CREATE TABLE data(idx INTEGER PRIMARY KEY, name TEXT)",
+      );
+    },
+    version: 1,
+  );
+  print("done");
+
+  //Function : insert Dataclass into DB
+  Future<void> insertDataclass(Dataclass dataclass) async {
 
     final Database db = await database;
 
@@ -375,7 +439,90 @@ SaveData() async{
     );
   }
 
-  await insertData(dataclass[2]);
+  //dataclass(dataname) 의 변수를 얻는 함수
+  Future<List<Dataclass>> datac() async {
+    final Database db = await database;
+
+    final List<Map<String, dynamic>> maps = await db.query('data');
+
+    return List.generate(maps.length, (i) {
+      return Dataclass(
+        idx: maps[i]['idx'],
+        name: maps[i]['name'],
+      );
+    });
+  }
+
+  //db 수정 함수
+  Future<void> updateDataclass(Dataclass dataclass) async {
+    final db = await database;
+
+    await db.update(
+      'data',
+      dataclass.toMap(),
+      where: "idx = ?",
+      whereArgs: [dataclass.idx],
+    );
+  }
+
+  //db 제거 함수
+  Future<void> deleteDataclass(int idx) async {
+    // 데이터베이스 reference를 얻습니다.
+    final db = await database;
+
+    // 데이터베이스에서 Dog를 삭제합니다.
+    await db.delete(
+      'data',
+      where: "idx = ?",
+      whereArgs: [idx],
+    );
+  }
+
+   //*/
+
+
+
+  //db insert test
+  final testdata = Dataname(
+    idx: 0,
+    name: "Junghyun",
+  );
+  await insertData(testdata);
+
+  //db update
+
+  await updateDataname(Dataname(
+    idx: 0,
+    name: "YeWon",
+
+  ));
+
+  //db check test
+  datanames = await data();
+  //print("${datanames[0].name},${datanames[0].idx}");
+
+
+  //dataclass용 test
+  /*
+  for(int i=0;i<dataclass.length;i++){
+    dataclass[i].idx = i;
+
+    await insertDataclass(dataclass[i]);
+  }
+
+   */
+
+  List<Dataclass> dataclasss = await datac();
+  print("start");
+  for(int i=0;i<dataclasss.length;i++){
+    print("${dataclasss[i].idx}:${dataclasss[i].name}");
+  }
+
+
+
+
+
+
 
 }
 

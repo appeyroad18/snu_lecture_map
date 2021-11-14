@@ -27,7 +27,7 @@ class SNUMap extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (BuildContext context) => BoxSize(),),
-        ChangeNotifierProvider(create: (BuildContext context) => Showing(),),
+        //ChangeNotifierProvider(create: (BuildContext context) => Showing(),),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,

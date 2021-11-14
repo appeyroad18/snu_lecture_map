@@ -9,8 +9,23 @@ class LectureBR{
   String? Room;
 }
 
+class Dataname{
+
+  int? idx;
+  String? name;
+
+  Dataname({this.idx, this.name});
+
+  Map<String, dynamic> toMap() {
+    return{
+      'idx': idx,
+      'name': name,
+    };
+  }
+}
 
 class Dataclass {
+  int? idx;
   String? curriculum_division;
   String? department;
   String? major;
@@ -33,7 +48,7 @@ class Dataclass {
   List<LectureBR>? lecture_buildingroom;
 
 
-  Dataclass({this.curriculum_division,this.department,this.major,this.comple_course,this.grade,this.class_number,this.lecture_number,this.name,this.credit,
+  Dataclass({this.idx,this.curriculum_division,this.department,this.major,this.comple_course,this.grade,this.class_number,this.lecture_number,this.name,this.credit,
     this.lecture_credit,this.experiment_credit,this.time,this.type,this.n14,this.professor,this.capacity,this.note,this.language,});
 
   factory Dataclass.fromJson(dynamic json){
@@ -85,6 +100,7 @@ class Dataclass {
 
   Map<String, dynamic> toMap() {
     return{
+      'idx': idx,
       'name': name,
     };
   }
