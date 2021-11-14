@@ -8,6 +8,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:snu_lecture_map/dataclass.dart';
+import 'package:snu_lecture_map/search.dart';
 
 String selectedLecture = '초기화';
 String selectedLecture_classroom = '강의실';
@@ -38,6 +39,11 @@ class _TimeTableState extends State<TimeTable> {
 
   // 강의명\n 강의실, color, 강의시간(높이)
   // 너비 (index_main으로 조절)
+  String test = dataclass[0].name!;
+
+  List<int> indexList = [];
+
+
   List info1 = [[["", 0, 1],["9", 0, 2],["10", 0,2],["11", 0,2],["12", 0,2],["13", 0,2],["14", 0,2],["15", 0,2],["16", 0,2],["17", 0,2],["18", 0,2]],
     [["월", 0, 1],["마케팅관리", 500,3, "58동 304호"],["마케팅관리",0,0,""],["",0,0],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
     [["화", 0, 1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1],["",0,1]],
@@ -160,6 +166,7 @@ class _TimeTableState extends State<TimeTable> {
                                 context,
                                 MaterialPageRoute(builder : (context) => LecturePage(lecture : info1[index_main][index_each]))
                             );
+                            print(test);
 
                             // 각각 강의마다 고유 번호를 달 생각은...?
                             setState(() {

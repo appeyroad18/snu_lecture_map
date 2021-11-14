@@ -58,7 +58,7 @@ class _SearchScreenState extends State<SearchScreen> {
 List<Dataclass> dataclass = [];
 
 getDataFromSheet() async{
-  var raw = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycby0aVRkupDPMY_9IQTyzSweHM4fhiRLzEMjccNABoC5EVTq2Ik/exec"));
+  var raw = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycbyE0fBSPH7BvNEnWMOTF3AXA74-DbZJTIzXL9X3cqZGtyvt3jJjvvSDN86iBtuYTVZQvg/exec"));
 
   var jsonData = convert.jsonDecode(raw.body);
 
@@ -89,8 +89,8 @@ getDataFromSheet() async{
   });
   //print('${dataclass[8075].time}');
   //print('${dataclass[8075].time!.indexOf('~')}');
-  double temp = double.tryParse(dataclass[8075].time!.substring(2,4))!;
-  temp += double.tryParse(dataclass[8075].time!.substring(5,7))!/60;
+  //double temp = double.tryParse(dataclass[8075].time!.substring(2,4))!;
+  //temp += double.tryParse(dataclass[8075].time!.substring(5,7))!/60;
   //print('$temp');
 
   PreProcessingData();
@@ -503,16 +503,15 @@ SaveData() async{
 
 
   //dataclass용 test
-  /*
-  for(int i=0;i<dataclass.length;i++){
-    dataclass[i].idx = i;
 
-    await insertDataclass(dataclass[i]);
-  }
-
-   */
+  // for(int i=0;i<dataclass.length;i++){
+  //   dataclass[i].idx = i;
+  //
+  //   await insertDataclass(dataclass[i]);
+  // }
 
   List<Dataclass> dataclasss = await datac();
+
   print("start");
   for(int i=0;i<dataclasss.length;i++){
     print("${dataclasss[i].idx}:${dataclasss[i].name}");
