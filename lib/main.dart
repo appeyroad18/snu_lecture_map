@@ -11,9 +11,11 @@ import 'package:flutter/services.dart';
 
 
 void main(){
+  WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIOverlays([
     SystemUiOverlay.bottom
   ]);
+  //runApp(Home());
   runApp(SNUMap());
 }
 
