@@ -54,149 +54,150 @@ class _TimeTableState extends State<TimeTable> {
     return ChangeNotifierProvider(
       create: (BuildContext context) => BoxSize(),
       child: Scaffold(
-          appBar: AppBar(
-            title: Text(
-              '시간표',
-              style: TextStyle(color: Colors.black),
+        appBar: AppBar(
+          title: Text(
+            '시간표',
+            style: TextStyle(color: Colors.black),
+          ),
+          elevation: 1,
+          backgroundColor: Colors.white,
+          iconTheme: IconThemeData(color: Colors.black),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.search),
+              color: Colors.black,
+              onPressed: () {
+                showSearch(context: context, delegate: DataSearch());
+              },
             ),
-            elevation: 1,
-            backgroundColor: Colors.white,
-            iconTheme: IconThemeData(color: Colors.black),
-            actions: [
-              IconButton(
-                icon: Icon(Icons.search),
+            IconButton(
+                icon: Icon(Icons.add_box_outlined),
                 color: Colors.black,
                 onPressed: () {
-                  showSearch(context: context, delegate: DataSearch());
-                },
-              ),
-              IconButton(
-                  icon: Icon(Icons.add_box_outlined),
-                  color: Colors.black,
-                  onPressed: () {
-                    on_off = false;
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (context) => AddLecture(info : info1)));
-                  }
-                //_onButtonPressed(),
-              ),
-              IconButton(
-                icon: Icon(Icons.settings),
-                color: Colors.black,
-                onPressed: () {
-                  _onButtonPressed();
-                },
+                  on_off = false;
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => AddLecture(info : info1)));
+                }
+              //_onButtonPressed(),
+            ),
+            IconButton(
+              icon: Icon(Icons.settings),
+              color: Colors.black,
+              onPressed: () {
+                _onButtonPressed();
+              },
+            ),
+          ],
+        ),
+        drawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              ListTile(
+                contentPadding: EdgeInsets.fromLTRB(20, 30, 10, 10),
+                title: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "2021 여름학기",
+                        style: TextStyle(color: Colors.black, fontSize: 20),
+                      ),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "시간표",
+                          style:
+                          TextStyle(color: Colors.black54, fontSize: 15),
+                        ),
+                      ),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => SecondPage()));
+                          },
+                          child: Text(
+                            "시간표1",
+                            style: TextStyle(
+                                color: Colors.black54, fontSize: 15),
+                          )),
+                      TextButton(
+                        onPressed: () {},
+                        child: Text(
+                          "시간표2",
+                          style:
+                          TextStyle(color: Colors.black54, fontSize: 15),
+                        ),
+                      )
+                    ]),
               ),
             ],
           ),
-          drawer: Drawer(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                ListTile(
-                  contentPadding: EdgeInsets.fromLTRB(20, 30, 10, 10),
-                  title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "2021 여름학기",
-                          style: TextStyle(color: Colors.black, fontSize: 20),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            "시간표",
-                            style:
-                            TextStyle(color: Colors.black54, fontSize: 15),
-                          ),
-                        ),
-                        TextButton(
-                            onPressed: () {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => SecondPage()));
-                            },
-                            child: Text(
-                              "시간표1",
-                              style: TextStyle(
-                                  color: Colors.black54, fontSize: 15),
-                            )),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            "시간표2",
-                            style:
-                            TextStyle(color: Colors.black54, fontSize: 15),
-                          ),
-                        )
-                      ]),
-                ),
-              ],
-            ),
-          ),
-          body: Column(
-            children: [
-              SizedBox(
-                height : basic_height * 21,
-                width: screen_width,
-                child: ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  separatorBuilder: (context, index) => Container(color: Colors.black26, width:1),
-                  itemCount: 6,
-                  itemBuilder: (context, index_main) {
-                    return SizedBox(
-                      width: index_main == 0 ? (screen_width-6) / 11 : (screen_width-6) / 11*2, // 열 넓이
-                      child: ListView.builder(
-                        //separatorBuilder: (context, index) => Divider(color: Colors.black26, height:1),
-                        itemCount:  index_main == 0 ? 11 : 21,
-                        itemBuilder: (context, index_each) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.push(
+        ),
+        body: Column(
+          children: [
+            SizedBox(
+              height : basic_height * 21,
+              width: screen_width,
+              child: ListView.separated(
+                scrollDirection: Axis.horizontal,
+                separatorBuilder: (context, index) => Container(color: Colors.black26, width:1),
+                itemCount: 6,
+                itemBuilder: (context, index_main) {
+                  return SizedBox(
+                    width: index_main == 0 ? (screen_width-6) / 11 : (screen_width-6) / 11*2, // 열 넓이
+                    child: ListView.builder(
+                      //separatorBuilder: (context, index) => Divider(color: Colors.black26, height:1),
+                      itemCount:  index_main == 0 ? 11 : 21,
+                      itemBuilder: (context, index_each) {
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
                                 context,
                                 MaterialPageRoute(builder : (context) => LecturePage(lecture : info1[index_main][index_each]))
-                              );
+                            );
 
-                              // 각각 강의마다 고유 번호를 달 생각은...?
-                              setState(() {
-                              });
-                            },
-                            onLongPress: () {
-                              // 바로 지워지긴 함 (연결된 container, 다른 요일의 container를 어떻게 이을 것인가..!)
-                              setState(() {
-                                info1[index_main][index_each] = ["", 0, 0, ""];
-                              });
-                            },
-                            child: Container(
-                              height : basic_height * info1[index_main][index_each][2],
-                              child: Container(
-                                padding: index_each != 0 ? EdgeInsets.all(5) : EdgeInsets.all(0),
-                                  // 각 리스트의 마지막 객체의 자료형이 String일때는 Column (강의명 + 강의실) : 그렇지 않으면 Text (시간 or 요일)
-                                  child : info1[index_main][index_each][info1[index_main][index_each].length-1] is String ?
-                                  Column(children:
-                                      [Text('${info1[index_main][index_each][0]}',
-                                      textAlign: index_main != 0 ? TextAlign.center : TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis,),
-                                      Text('${info1[index_main][index_each][3]}',
-                                       textAlign: index_main != 0 ? TextAlign.center : TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                            // 각각 강의마다 고유 번호를 달 생각은...?
+                            setState(() {
+                            });
+                          },
+                          onLongPress: () {
+                            // 바로 지워지긴 함 (연결된 container, 다른 요일의 container를 어떻게 이을 것인가..!)
+                            setState(() {
+                              info1[index_main][index_each] = ["", 0, 0, ""];
+                            });
+                          },
+                          child: Container(
+                            height : basic_height * info1[index_main][index_each][2],
+                            child: Container( // 굳이 없어도 될듯. column으로 구성 변경하기
+                              padding: index_each != 0 ? EdgeInsets.all(5) : EdgeInsets.all(0),
+                              // 각 리스트의 마지막 객체의 자료형이 String일 때는 Column (강의명 + 강의실) : 그렇지 않으면 Text (시간 or 요일)
+                              child : info1[index_main][index_each][info1[index_main][index_each].length-1] is String ?
+                              Column(children:
+                              [Text('${info1[index_main][index_each][0]}',
+                                textAlign: index_main != 0 ? TextAlign.center : TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 10),),
+                                Text('${info1[index_main][index_each][3]}',
+                                  textAlign: index_main != 0 ? TextAlign.center : TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis, style: TextStyle(fontSize: 10),),
                               ]) :
-                                  Text('${info1[index_main][index_each][0]}',
-                                    textAlign: index_main != 0 ? TextAlign.center : TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis,),
+                              Text('${info1[index_main][index_each][0]}',
+                                textAlign: index_main != 0 ? TextAlign.center : TextAlign.right, maxLines: 2, overflow: TextOverflow.ellipsis,
+                              ),
                             ),
-                              decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black26, width: 1)),color: Colors.amber[info1[index_main][index_each][1]]),
-                  ),
-                          );
+                            decoration: BoxDecoration(border: Border(bottom: BorderSide(color: Colors.black26, width: 1)),color: Colors.amber[info1[index_main][index_each][1]]), // 내용물이 없을 경우(height == 0) 다르게 처리
+                          ),
+                        );
+                      },
+                    ),
+                  );
                 },
               ),
-            );
-          },
+            )],
         ),
-              )],
-          ),
-             ),
+      ),
     );
   }
   void _onButtonPressed() {
@@ -244,7 +245,7 @@ class __buildButtonMenuState extends State<_buildButtonMenu> {
                 list[i][j][3] = "";
               }}}}}
       );
-  }
+    }
 
     void showDeleteMessage(List list) {
       showDialog(
@@ -252,21 +253,21 @@ class __buildButtonMenuState extends State<_buildButtonMenu> {
         builder: (BuildContext context) {
           return AlertDialog(
             shape : RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10.0)
+                borderRadius: BorderRadius.circular(10.0)
             ),
             title: Text("모든 강의를 삭제하시겠습니까?"),
             actions: <Widget>[
-                TextButton(
-                  child: new Text("취소"),
-                  onPressed: () {
-                    Navigator.pop(context);},),
-                TextButton(
-                  child: new Text("확인"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    deleteAll(list);
-                    },
-                )
+              TextButton(
+                child: new Text("취소"),
+                onPressed: () {
+                  Navigator.pop(context);},),
+              TextButton(
+                child: new Text("확인"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  deleteAll(list);
+                },
+              )
             ],
           );
         },
@@ -310,33 +311,33 @@ class _LecturePageState extends State<LecturePage> {
       body : Padding(
         padding: const EdgeInsets.all(20.0),
         child: Container(
-              child: ListView.separated(
-                separatorBuilder: (BuildContext context, int index) => const Divider(),
-                itemCount : 2,
-                itemBuilder: (BuildContext context, int index) {
-                  return Container(
-                    height: index == 0 ? 25.0 * itemGroup1.length : 25.0 * itemGroup2.length,
-                    child : ListView.separated(
-                      separatorBuilder: (BuildContext context, int index) => const Divider(color: Colors.white, height: 5),
-                      itemCount : index == 0 ? itemGroup1.length : itemGroup2.length,
-                      itemBuilder: (BuildContext context, int index_each) {
-                        return Row(
-                            children: [
-                              Expanded(
-                                flex: 2,
-                                child: Align(alignment: Alignment.centerLeft,
-                                    child:Text(index == 0 ? itemGroup1[index_each] : itemGroup2[index_each], style: TextStyle(color: Colors.black))),
-                              ),
-                              Expanded(child:Container(), flex : 1),
-                              Expanded(flex : 10, child: Align(alignment: Alignment.centerLeft, child:Text('hi'),)),
-                            ]
-                        );
-                      },
-                    )
-                  );
-                },
-              ),
-            ),
+          child: ListView.separated(
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+            itemCount : 2,
+            itemBuilder: (BuildContext context, int index) {
+              return Container(
+                  height: index == 0 ? 25.0 * itemGroup1.length : 25.0 * itemGroup2.length,
+                  child : ListView.separated(
+                    separatorBuilder: (BuildContext context, int index) => const Divider(color: Colors.white, height: 5),
+                    itemCount : index == 0 ? itemGroup1.length : itemGroup2.length,
+                    itemBuilder: (BuildContext context, int index_each) {
+                      return Row(
+                          children: [
+                            Expanded(
+                              flex: 2,
+                              child: Align(alignment: Alignment.centerLeft,
+                                  child:Text(index == 0 ? itemGroup1[index_each] : itemGroup2[index_each], style: TextStyle(color: Colors.black))),
+                            ),
+                            Expanded(child:Container(), flex : 1),
+                            Expanded(flex : 10, child: Align(alignment: Alignment.centerLeft, child:Text('hi'),)),
+                          ]
+                      );
+                    },
+                  )
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -364,41 +365,41 @@ class _AddLectureState extends State<AddLecture> {
           iconTheme: IconThemeData(color: Colors.black),
         ),
         body : Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: Column(
-              children : [
-                Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+                children : [
+                  Padding(
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                     child: TextField(
                       cursorColor: Colors.grey,
                       decoration: InputDecoration(hintText: "강의명"),
                       onChanged: (value) {
                         lectureAdd[0] = value;
-                    },
+                      },
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                  child: TextField(
-                    cursorColor: Colors.grey,
-                    decoration: InputDecoration(hintText: "교수명"),
-                    onChanged: (value) {
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
+                    child: TextField(
+                      cursorColor: Colors.grey,
+                      decoration: InputDecoration(hintText: "교수명"),
+                      onChanged: (value) {
 
-                    },
+                      },
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
-                  child: Align(alignment: Alignment.centerLeft,
-                      child: Text('요일 및 시간 선택')),
-                ),
-                TextButton(onPressed: () {
-                  showPicker(time);
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(10, 30, 10, 0),
+                    child: Align(alignment: Alignment.centerLeft,
+                        child: Text('요일 및 시간 선택')),
+                  ),
+                  TextButton(onPressed: () {
+                    showPicker(time);
                   },
-                    child: Text(time))
+                      child: Text(time))
 
-              ]
-          )
+                ]
+            )
         )
     );
   }
@@ -407,25 +408,25 @@ class _AddLectureState extends State<AddLecture> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-      return Container(
-          color: Colors.white,
-          height: 250,
-          child: Container(
-              child : CupertinoPicker(
-                  itemExtent: 30,
-                  magnification: 1,
-                  scrollController: FixedExtentScrollController(initialItem: 1),
-                  onSelectedItemChanged: (value) {
-                    setState() {
-                      time = value.toString();
-                    }
-                    },
-                 children : [Text('월'),Text('화'), Text('수'), Text('목'), Text('금')]
-          )
-          )
-      );
+          return Container(
+              color: Colors.white,
+              height: 250,
+              child: Container(
+                  child : CupertinoPicker(
+                      itemExtent: 30,
+                      magnification: 1,
+                      scrollController: FixedExtentScrollController(initialItem: 1),
+                      onSelectedItemChanged: (value) {
+                        setState() {
+                          time = value.toString();
+                        }
+                      },
+                      children : [Text('월'),Text('화'), Text('수'), Text('목'), Text('금')]
+                  )
+              )
+          );
         }
-        );
+    );
   }
 }
 
@@ -795,20 +796,20 @@ class _TableState extends State<Table> {
     List info0 = ["","9","10","11","12","13","14","15","16","17","18"];
     List info1 = [['월'],['대학영어1'], ['초급중국어1'], ['수학1']];
     return Row(
-        children: [
+      children: [
 
-          ListView.builder(
-            itemCount : 21,
-            itemBuilder: (BuildContext context, int index) {
-              return Container(
+        ListView.builder(
+          itemCount : 21,
+          itemBuilder: (BuildContext context, int index) {
+            return Container(
                 color: Colors.black26,
                 height: 30, //(screen_height - widget.appBarHeight - widget.bottomBarHeight - 50) / 21,
                 child : Center(child :Text('hi'),)
 
-              );
-            },
-          ),
-        ],
+            );
+          },
+        ),
+      ],
     );
   }
 }
@@ -1111,7 +1112,7 @@ class BoxSize with ChangeNotifier {
       }
     }
     for (var i in before_list) {
-    lectureList.add(i);}
+      lectureList.add(i);}
     print(lectureList);
     print(before_list);
     before_list = [];
@@ -1172,16 +1173,16 @@ class BoxSize with ChangeNotifier {
         horizontal = 13;
       }
 
-    List colors = [
-      Colors.red,
-      Colors.orange,
-      Colors.yellow,
-      Colors.green,
-      Colors.blue
-    ];
-    int index = lectureList.length;
-    int mykey = count;
-    int mykey_check = mykey;
+      List colors = [
+        Colors.red,
+        Colors.orange,
+        Colors.yellow,
+        Colors.green,
+        Colors.blue
+      ];
+      int index = lectureList.length;
+      int mykey = count;
+      int mykey_check = mykey;
 
       if (single == true) {
         check_info.add(
@@ -1413,8 +1414,8 @@ class DataSearch extends SearchDelegate<String> {
         String place = each[3];
         selectedinfo[2] = place;
         selectedLecture_classroom = place;
-        }
-      };
+      }
+    };
 
     return ListView(
       padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
