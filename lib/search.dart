@@ -58,7 +58,7 @@ class _SearchScreenState extends State<SearchScreen> {
 List<Dataclass> dataclass = [];
 
 getDataFromSheet() async{
-  var raw = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycbyE0fBSPH7BvNEnWMOTF3AXA74-DbZJTIzXL9X3cqZGtyvt3jJjvvSDN86iBtuYTVZQvg/exec"));
+  var raw = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycbxuF-i3S7TGsgYTSAma5Nc0PryGK5LqakWP9xMOzw/exec"));
 
   var jsonData = convert.jsonDecode(raw.body);
 
@@ -115,6 +115,10 @@ getDataFromSheet() async{
 }
 
 PreProcessingData(){
+
+  for(int i=0;i<dataclass.length;i++){
+    dataclass[i].idx = i;
+  }
   for(int i = 0 ; i<dataclass.length ; i++)
   {
     //수업 교시 전처리
@@ -346,81 +350,13 @@ SearchingBuilding(String info){
 }
 
 SaveData() async{
-
-  //Generate or Open Database
-  final Future<Database> database = openDatabase(
-    join(await getDatabasesPath(), 'datanamed.db'),
-    onCreate: (db, version) {
-      return db.execute(
-        "CREATE TABLE data(idx INTEGER PRIMARY KEY, name TEXT)",
-      );
-    },
-    version: 1,
-  );
-  print("done");
-
-  //Function : insert Dataclass into DB
-  Future<void> insertData(Dataname dataname) async {
-
-    final Database db = await database;
-
-    await db.insert(
-      'data',
-      dataname.toMap(),
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
-
-  //dataclass(dataname) 의 변수를 얻는 함수
-  Future<List<Dataname>> data() async {
-    final Database db = await database;
-
-    final List<Map<String, dynamic>> maps = await db.query('data');
-
-    return List.generate(maps.length, (i) {
-      return Dataname(
-        idx: maps[i]['idx'],
-        name: maps[i]['name'],
-      );
-    });
-  }
-
-  //db 수정 함수
-  Future<void> updateDataname(Dataname dataname) async {
-    final db = await database;
-
-    await db.update(
-      'data',
-      dataname.toMap(),
-      where: "idx = ?",
-      whereArgs: [dataname.idx],
-    );
-  }
-
-  //db 제거 함수
-  Future<void> deleteData(int idx) async {
-    // 데이터베이스 reference를 얻습니다.
-    final db = await database;
-
-    // 데이터베이스에서 Dog를 삭제합니다.
-    await db.delete(
-      'data',
-      where: "idx = ?",
-      whereArgs: [idx],
-    );
-  }
-
-  //db로부터 데이터를 얻어서 내부 변수로 추출
-  List<Dataname> datanames = await data();
-
-  ///*
   //dataclass 적용용 test
   //Generate or Open Database
-  final Future<Database> dataclassbase = openDatabase(
-    join(await getDatabasesPath(), 'datanameclass.db'),
+  final Future<Database> database = openDatabase(
+    join(await getDatabasesPath(), 'dataclass1.db'),
     onCreate: (db, version) {
       return db.execute(
-        "CREATE TABLE data(idx INTEGER PRIMARY KEY, name TEXT)",
+        "CREATE TABLE dataclass(idx INTEGER PRIMARY KEY, curriculum_division TEXT, department TEXT, major TEXT, comple_course TEXT, grade TEXT, class_number TEXT, lecture_number TEXT, name TEXT, credit TEXT, lecture_credit TEXT, experiment_credit TEXT, time TEXT, type TEXT, n14 TEXT, professor TEXT, capacity TEXT, note TEXT, language TEXT)",
       );
     },
     version: 1,
@@ -433,7 +369,7 @@ SaveData() async{
     final Database db = await database;
 
     await db.insert(
-      'data',
+      'dataclass',
       dataclass.toMap(),
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
@@ -443,12 +379,29 @@ SaveData() async{
   Future<List<Dataclass>> datac() async {
     final Database db = await database;
 
-    final List<Map<String, dynamic>> maps = await db.query('data');
+    final List<Map<String, dynamic>> maps = await db.query('dataclass');
 
     return List.generate(maps.length, (i) {
       return Dataclass(
         idx: maps[i]['idx'],
+        curriculum_division: maps[i]['curriculum_division'],
+        department: maps[i]['department'],
+        major: maps[i]['major'],
+        comple_course: maps[i]['comple_course'],
+        grade: maps[i]['grade'],
+        class_number: maps[i]['class_number'],
+        lecture_number: maps[i]['lecture_number'],
         name: maps[i]['name'],
+        credit: maps[i]['credit'],
+        lecture_credit: maps[i]['lecture_credit'],
+        experiment_credit: maps[i]['experiment_credit'],
+        time: maps[i]['time'],
+        type: maps[i]['type'],
+        n14: maps[i]['n14'],
+        professor: maps[i]['professor'],
+        capacity: maps[i]['capacity'],
+        note: maps[i]['note'],
+        language: maps[i]['language'],
       );
     });
   }
@@ -458,7 +411,7 @@ SaveData() async{
     final db = await database;
 
     await db.update(
-      'data',
+      'dataclass',
       dataclass.toMap(),
       where: "idx = ?",
       whereArgs: [dataclass.idx],
@@ -472,7 +425,7 @@ SaveData() async{
 
     // 데이터베이스에서 Dog를 삭제합니다.
     await db.delete(
-      'data',
+      'dataclass',
       where: "idx = ?",
       whereArgs: [idx],
     );
@@ -480,42 +433,30 @@ SaveData() async{
 
    //*/
 
-
-
-  //db insert test
-  final testdata = Dataname(
-    idx: 0,
-    name: "Junghyun",
-  );
-  await insertData(testdata);
-
-  //db update
-
-  await updateDataname(Dataname(
-    idx: 0,
-    name: "YeWon",
-
-  ));
-
-  //db check test
-  datanames = await data();
-  //print("${datanames[0].name},${datanames[0].idx}");
-
-
+  /*
   //dataclass용 test
+  for(int i=0;i<dataclass.length;i++){
+    await deleteDataclass(i);
+  }
 
-  // for(int i=0;i<dataclass.length;i++){
-  //   dataclass[i].idx = i;
-  //
-  //   await insertDataclass(dataclass[i]);
-  // }
+
+   */
+
+
+
+  for(int i=0;i<dataclass.length;i++){
+    await insertDataclass(dataclass[i]);
+  }
+
+
 
   List<Dataclass> dataclasss = await datac();
-
   print("start");
   for(int i=0;i<dataclasss.length;i++){
-    print("${dataclasss[i].idx}:${dataclasss[i].name}");
+    print("a ${dataclass[i].idx}: ${dataclass[i].curriculum_division},${dataclass[i].department},${dataclass[i].major},${dataclass[i].comple_course},${dataclass[i].grade},${dataclass[i].class_number},${dataclass[i].lecture_number},${dataclass[i].name},${dataclass[i].credit},${dataclass[i].lecture_credit},${dataclass[i].experiment_credit},${dataclass[i].time},${dataclass[i].n14},${dataclass[i].professor},${dataclass[i].capacity},${dataclass[i].note},${dataclass[i].language}");
+    print("b ${dataclasss[i].idx}: ${dataclasss[i].curriculum_division},${dataclasss[i].department},${dataclasss[i].major},${dataclasss[i].comple_course},${dataclasss[i].grade},${dataclasss[i].class_number},${dataclasss[i].lecture_number},${dataclasss[i].name},${dataclasss[i].credit},${dataclasss[i].lecture_credit},${dataclasss[i].experiment_credit},${dataclasss[i].time},${dataclasss[i].n14},${dataclasss[i].professor},${dataclasss[i].capacity},${dataclasss[i].note},${dataclasss[i].language}");
   }
+
 
 
 
@@ -526,342 +467,3 @@ SaveData() async{
 }
 
 
-
-class Home extends StatefulWidget {
-
-  @override
-  _HomeState createState() => _HomeState();
-}
-
-class _HomeState extends State<Home> {
-
-  List<Dataclass> dataclass = [];
-
-  getDataFromSheet() async{
-    var raw = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycby0aVRkupDPMY_9IQTyzSweHM4fhiRLzEMjccNABoC5EVTq2Ik/exec"));
-
-    var jsonData = convert.jsonDecode(raw.body);
-
-    jsonData.forEach((element) {
-      //print('$element');
-      Dataclass data = new Dataclass();
-      data.curriculum_division = element['교과구분'];
-      data.department = element['개설대학'];
-      data.major = element['개설학과'];
-      data.comple_course = element['이수과정'];
-      data.grade = element['학년'];
-      data.class_number = element['교과목번호'];
-      data.lecture_number = element['강좌번호'];
-      data.name = element['교과목명'];
-      data.credit = element['학점'];
-      data.lecture_credit = element['강의'];
-      data.experiment_credit = element['실습'];
-      data.time = element['수업교시'];
-      data.type = element['수업형태'];
-      data.n14 = element['강의실'];
-      data.professor = element['담당교수'];
-      data.capacity = element['정원'];
-      data.note = element['비고'];
-      data.language = element['강의언어'];
-
-      dataclass.add(data);
-      //print('length of DATAS : ${dataclass.length}');
-    });
-    //print('${dataclass[8075].time}');
-    //print('${dataclass[8075].time!.indexOf('~')}');
-    double temp = double.tryParse(dataclass[8075].time!.substring(2,4))!;
-    temp += double.tryParse(dataclass[8075].time!.substring(5,7))!/60;
-    //print('$temp');
-
-    PreProcessingData();
-    SaveData();
-
-/*
-    var tempa = SearchingBuilding("301");
-    for(int i=0;i<tempa.length;i++){
-      print("${tempa[i]}");
-    }
-
- */
-  }
-
-  PreProcessingData(){
-    for(int i = 0 ; i<dataclass.length ; i++)
-    {
-      //수업 교시 전처리
-      int NumOfSlash_time = 0;
-      List<LectureTime> lecturetime = [];
-
-      if(dataclass[i].time != '^^^'){
-        for(int j = 0 ; j<dataclass[i].time!.length ; j++)
-        {
-          if(dataclass[i].time![j]=='/')
-          {
-            NumOfSlash_time++;
-          }
-        }
-
-        for(int j = 0 ; j<NumOfSlash_time+1 ; j++)
-        {
-          LectureTime newlecturetime = new LectureTime();
-          newlecturetime.day=999;
-          newlecturetime.StartTime=999;
-          newlecturetime.EndTime=999;
-
-
-          //day 지정
-          switch(dataclass[i].time![15*j])
-              {
-            case '월':
-              newlecturetime.day = 1;
-              break;
-            case '화':
-              newlecturetime.day = 2;
-              break;
-            case '수':
-              newlecturetime.day = 3;
-              break;
-            case '목':
-              newlecturetime.day = 4;
-              break;
-            case '금':
-              newlecturetime.day = 5;
-              break;
-            case '토':
-              newlecturetime.day = 6;
-              break;
-            case '일':
-              newlecturetime.day = 0;
-              break;
-          }
-          //StartTime 지정
-          double temp = double.tryParse(dataclass[i].time!.substring(2+15*j,4+15*j))!;
-          double temp_end = double.tryParse(dataclass[i].time!.substring(5+15*j,7+15*j))!/60;
-          if(temp_end>=0.15 && temp_end<=0.5)
-          {
-            temp_end=0.5;
-          }
-          if(temp_end>=0.65 && temp_end<=0.99)
-          {
-            temp_end=1;
-          }
-          temp+=temp_end;
-
-          double new_temp=0;
-          new_temp=2*temp-17;
-
-          newlecturetime.StartTime=new_temp;
-          //EndTime 지정
-          temp=0;
-          temp_end=0;
-          temp = double.tryParse(dataclass[i].time!.substring(8+15*j,10+15*j))!;
-          temp_end = double.tryParse(dataclass[i].time!.substring(11+15*j,13+15*j))!/60;
-          if(temp_end>=0.15 && temp_end<=0.5)
-          {
-            temp_end=0.5;
-          }
-          if(temp_end>=0.65 && temp_end<=0.99)
-          {
-            temp_end=1;
-          }
-          temp+=temp_end;
-
-          new_temp=0;
-          new_temp=2*temp-17;
-
-
-          newlecturetime.EndTime=new_temp;
-
-          lecturetime.add(newlecturetime);
-        }
-      }
-      else{
-        LectureTime newlecturetime = new LectureTime();
-        newlecturetime.day=999;
-        newlecturetime.StartTime=999;
-        newlecturetime.EndTime=999;
-        lecturetime.add(newlecturetime);
-      }
-
-      dataclass[i].lecture_time = lecturetime;
-      //print('${dataclass[i].lecture_time![0].StartTime!}');
-    }
-
-    //강의동 전처리
-
-    for(int i = 0 ; i<dataclass.length ; i++)
-    {
-      int NumOfSlash_time = 0;
-      List<int> SlashIndex = List.generate(10, (index) => 0);
-      List<String> SlicedString = List.generate(10, (index) => "0");
-      if (dataclass[i].n14![0]=='/' || dataclass[i].n14![0]=='*') {
-        dataclass[i].n14 = dataclass[i].n14!.substring(1);
-      }
-      if (dataclass[i].n14![dataclass[i].n14!.length-1]=='/') {
-        dataclass[i].n14 = dataclass[i].n14!.substring(0,dataclass[i].n14!.length-1);
-      }
-      for(int j = 0 ; j<dataclass[i].n14!.length ; j++) {
-
-        if (dataclass[i].n14![j] == '/') {
-          NumOfSlash_time++;
-          SlashIndex[NumOfSlash_time]=j;
-        }
-      }
-      if(NumOfSlash_time>0) {
-        for (int k = 0; k <= NumOfSlash_time; k++) {
-          if (k == 0) {
-            SlicedString[k] = dataclass[i].n14!.substring(0, SlashIndex[k + 1]);
-          }
-          else if (k == NumOfSlash_time) {
-            SlicedString[k] = dataclass[i].n14!.substring(SlashIndex[k] + 1);
-          }
-          else {
-            SlicedString[k] = dataclass[i].n14!.substring(
-                SlashIndex[k] + 1, SlashIndex[k + 1]);
-          }
-          //print("${SlicedString[k]}");
-        }
-        var temp = '0';
-        bool coincidence = true;
-
-        int idx = SlicedString[0].indexOf("-");
-        temp = SlicedString[0].substring(0, idx);
-
-        for(int l=1;l<=NumOfSlash_time;l++){
-          int idx_new = SlicedString[l].indexOf("-");
-          var temp_new = SlicedString[l].substring(0,idx_new);
-          //print("${temp_new}");
-          if(temp_new != temp){
-            coincidence = false;
-          }
-          temp=temp_new;
-          idx=idx_new;
-          //print("${coincidence}");
-        }
-
-      }
-
-
-      print("${dataclass[i].n14}");
-
-      if(NumOfSlash_time==0) {
-        int NumOfHyphen = 0;
-        List<int> HyphenIndex = List.generate(10, (index) => 0);
-        for (int j = 0; j < dataclass[i].n14!.length; j++) {
-          if (dataclass[i].n14![j] == '-') {
-            NumOfHyphen++;
-            HyphenIndex[NumOfHyphen] = j;
-          }
-        }
-        if (NumOfHyphen == 1) {
-          var temp_building = dataclass[i].n14!.substring(0, HyphenIndex[1]);
-          var temp_room = dataclass[i].n14!.substring(HyphenIndex[1] + 1);
-          LectureBR temp_lecturebr = new LectureBR();
-          temp_lecturebr.Building = temp_building;
-          temp_lecturebr.Room = temp_room;
-          dataclass[i].lecture_buildingroom=[];
-          dataclass[i].lecture_buildingroom!.add(temp_lecturebr);
-          //print("${dataclass[i].lecture_buildingroom![0].Building}");
-        }
-
-
-
-      }
-
-
-
-
-
-
-
-    }
-
-
-    print("${dataclass.length}");
-    //수업 교시 전처리
-  }
-
-  SearchingNameData(String info){
-    List<int> coincidence = [];
-    for (int i=0; i<dataclass.length;i++){
-      var haystack_size = dataclass[i].name!.length;
-      var needle_size = info.length;
-      for(int j=0;j<haystack_size - needle_size;++j){
-        int k=0;
-        for(k=0;k<needle_size;++k){
-          if(dataclass[i].name![j+k] == info[k]){
-            continue;
-          }
-          break;
-        }
-        if(k==needle_size){
-          coincidence.add(i);
-        }
-      }
-    }
-    return coincidence;
-  }
-
-  SearchingBuilding(String info){
-    List<int> coincidence = [];
-    for (int i=0; i<dataclass.length;i++){
-
-      if(dataclass[i].lecture_buildingroom!= null)
-      {
-        for(int j=0; j<dataclass[i].lecture_buildingroom!.length; j++) {
-          var haystack_size = dataclass[i].lecture_buildingroom![j].Building!.length;
-          var needle_size = info.length;
-          for (int l = 0; l < haystack_size - needle_size; ++l) {
-            int k = 0;
-            for (k = 0; k < needle_size; ++k) {
-              if (dataclass[i].lecture_buildingroom![j].Building![l + k]== info[k]) {
-                continue;
-              }
-              break;
-            }
-            if (k == needle_size) {
-              coincidence.add(i);
-            }
-          }
-        }
-      }
-
-    }
-    return coincidence;
-  }
-
-  SaveData() async{
-    final Future<Database> database = openDatabase(
-      join(await getDatabasesPath(), 'assets/data/dogs.db'),
-      onCreate: (db, version) {
-        return db.execute(
-        "CREATE TABLE dogs(id INTEGER PRIMARY KEY, name TEXT, age INTEGER)",
-        );
-      },
-    version: 1,
-    );
-    print("done");
-  }
-
-  @override
-
-  void initState(){
-    super.initState();
-    getDataFromSheet();
-
-
-
-  }
-
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Students"),
-        elevation: 0,
-      ),
-      body: Container(
-
-      ),
-    );
-  }
-}

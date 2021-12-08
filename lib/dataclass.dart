@@ -9,20 +9,6 @@ class LectureBR{
   String? Room;
 }
 
-class Dataname{
-
-  int? idx;
-  String? name;
-
-  Dataname({this.idx, this.name});
-
-  Map<String, dynamic> toMap() {
-    return{
-      'idx': idx,
-      'name': name,
-    };
-  }
-}
 
 class Dataclass {
   int? idx;
@@ -101,7 +87,24 @@ class Dataclass {
   Map<String, dynamic> toMap() {
     return{
       'idx': idx,
+      'curriculum_division': curriculum_division,
+      'department': department,
+      'major': major,
+      'comple_course': comple_course,
+      'grade': grade,
+      'class_number': class_number,
+      'lecture_number': lecture_number,
       'name': name,
+      'credit': credit,
+      'lecture_credit': lecture_credit,
+      'experiment_credit': experiment_credit,
+      'time': time,
+      'type': type,
+      'n14': n14,
+      'professor': professor,
+      'capacity': capacity,
+      'note': note,
+      'language': language,
     };
   }
 }
