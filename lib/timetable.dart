@@ -39,7 +39,7 @@ class _TimeTableState extends State<TimeTable> {
 
   // 강의명\n 강의실, color, 강의시간(높이)
   // 너비 (index_main으로 조절)
-  String test = dataclass[0].name!;
+  //String test = dataclass[0].name!;
 
   List<int> indexList = [];
 
@@ -166,7 +166,7 @@ class _TimeTableState extends State<TimeTable> {
                                 context,
                                 MaterialPageRoute(builder : (context) => LecturePage(lecture : info1[index_main][index_each]))
                             );
-                            print(test);
+                            //print(test);
 
                             // 각각 강의마다 고유 번호를 달 생각은...?
                             setState(() {
