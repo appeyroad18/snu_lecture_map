@@ -391,7 +391,7 @@ class _InfoboxState extends State<Infobox> {
                             // showing._showLectures = !showing._showLectures;
                             // Navigator.push(context,
                             // MaterialPageRoute(builder: (context) => SearchLecture()));
-                            showSearch(context: context, delegate: DataSearch(), query: widget.buildingnum);
+                            // showSearch(context: context, delegate: DataSearch(), query: widget.buildingnum);
                           });
                         },
                         child: Text("강의 보기"),

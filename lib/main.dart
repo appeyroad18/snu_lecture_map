@@ -24,12 +24,7 @@ class SNUMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (BuildContext context) => BoxSize(),),
-        //ChangeNotifierProvider(create: (BuildContext context) => Showing(),),
-      ],
-      child: MaterialApp(
+    return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'SNUMap',
         theme: ThemeData(
@@ -39,7 +34,6 @@ class SNUMap extends StatelessWidget {
             )
         ),
         home: MainPage(),
-      ),
     );
   }
 }
