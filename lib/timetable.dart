@@ -31,7 +31,7 @@ class Lecture {
   int idx = 0;
   String name = "";
   String professor = "";
-  LectureTime time = LectureTime(3, 1, 5);
+  LectureTime time = LectureTime(3, 1, 7);
 
   Lecture(this.idx, this.name, this.professor);
 }
@@ -99,10 +99,10 @@ class TimeTableState extends State<TimeTable> {
             IconButton(
               icon: Icon(Icons.search),
               color: Colors.black,
-              onPressed: () {
-                print(info);
-                Navigator.push(context,
+              onPressed: () async {
+                final value = await Navigator.push(context,
                     MaterialPageRoute(builder: (context) => LectureListView(info)));
+                setState(() {});
                 //showSearch(context: context, delegate: DataSearch());
               },
             ),
@@ -501,20 +501,18 @@ class _LectureListViewState extends State<LectureListView> {
                   double startTime = lecturess[index].time.StartTime;
                   double endTime = lecturess[index].time.EndTime;
 
-                  info[lecturess[index].time.day][lecturess[index].time.StartTime] = lecturess[index];
-                  /*
-                  for (var i = startTime; i <= endTime; i++) {
+                  for (var i = startTime; i < endTime; i++) {
                     if (i == startTime) {
                       info[lecturess[index].time.day][i] = lecturess[index];
                     } else {
-                      Lecture newLecture = lecturess[index];
+                      Lecture newLecture = new Lecture(lecturess[index].idx, "","");
                       newLecture.time.EndTime = newLecture.time.StartTime;
                       info[lecturess[index].time.day][i] = newLecture;
                     }
                     print(info[lecturess[index].time.day][i].time);
                   }
 
-                   */
+
 
                 });
 
