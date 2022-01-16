@@ -16,20 +16,85 @@ void main(){
     SystemUiOverlay.bottom
   ]);
   //runApp(Home());
-  runApp(SNUMap());
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: SplashScreen(),
+    );
+  }
+}
+
+
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({Key? key}) : super(key: key);
+
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState(){
+    super.initState();
+    Timer(
+      Duration(milliseconds: 1500),
+        () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SNUMap())),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    var screenWidth = MediaQuery.of(context).size.width;
+    return //WillPopScope(
+        //onWillPop: () async => false,
+        //child: MediaQuery(
+          //data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+          //child:
+      new Scaffold(
+            backgroundColor: Color(0xffaeddef),
+            body: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                    child: Container(
+                      width: screenWidth*0.3,
+                      height: screenWidth*0.3,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          image: AssetImage('assets/images/flutterlogo.png'),
+                        )
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: screenWidth*0.4,
+                  ),
+                  Text('© SNU APPEYROAD 2022, -----',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Colors.black54,
+                    ),
+                  )
+                ],
+              )
+            //),
+        //),
+    );
+  }
 }
 
 class SNUMap extends StatelessWidget {
   const SNUMap({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (BuildContext context) => BoxSize(),),
-        //ChangeNotifierProvider(create: (BuildContext context) => Showing(),),
-      ],
-      child: MaterialApp(
+    return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'SNUMap',
         theme: ThemeData(
@@ -39,7 +104,6 @@ class SNUMap extends StatelessWidget {
             )
         ),
         home: MainPage(),
-      ),
     );
   }
 }
