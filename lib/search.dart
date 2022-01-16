@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:html';
 
 
 import 'package:flutter/material.dart';
@@ -30,7 +31,7 @@ class _SearchScreenState extends State<SearchScreen> {
             child: InkWell(
               onTap: (){
                 print("get course catalog");
-                getDataFromSheet();
+                saveData();
               },
               child: Container(
                 decoration: BoxDecoration(
@@ -57,13 +58,12 @@ class _SearchScreenState extends State<SearchScreen> {
 
 List<Dataclass> dataclass = [];
 
-getDataFromSheet() async{
+update() async{
   var raw = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycbxuF-i3S7TGsgYTSAma5Nc0PryGK5LqakWP9xMOzw/exec"));
 
   var jsonData = convert.jsonDecode(raw.body);
 
   jsonData.forEach((element) {
-    //print('$element');
     Dataclass data = new Dataclass();
     data.curriculum_division = element['교과구분'];
     data.department = element['개설대학'];
@@ -85,36 +85,14 @@ getDataFromSheet() async{
     data.language = element['강의언어'];
 
     dataclass.add(data);
-    //print('length of DATAS : ${dataclass.length}');
   });
-  //print('${dataclass[8075].time}');
-  //print('${dataclass[8075].time!.indexOf('~')}');
-  //double temp = double.tryParse(dataclass[8075].time!.substring(2,4))!;
-  //temp += double.tryParse(dataclass[8075].time!.substring(5,7))!/60;
-  //print('$temp');
 
-  PreProcessingData();
-  SaveData();
-
-/*
-  var tempa = SearchingBuilding("301");
-  for(int i=0;i<tempa.length;i++){
-    print("${tempa[i]}");
-  }
-
- */
-/*
-  var tempb = SearchingNameData("경제");
-  for(int i=0;i<tempb.length;i++){
-    print("${tempb[i]} : ${dataclass[tempb[i]].lecture_time![0].EndTime}");
-  }
-
-
- */
+  preProcessingData();
+  saveData();
 
 }
 
-PreProcessingData(){
+preProcessingData(){
 
   for(int i=0;i<dataclass.length;i++){
     dataclass[i].idx = i;
@@ -274,7 +252,6 @@ PreProcessingData(){
     }
 
 
-    //print("${dataclass[i].n14}");
 
     if(NumOfSlash_time==0) {
       int NumOfHyphen = 0;
@@ -298,12 +275,10 @@ PreProcessingData(){
     }
   }
 
-
-  //print("${dataclass.length}");
   //수업 교시 전처리
 }
 
-SearchingNameData(String info){
+searchingName(String info){
   List<int> coincidence = [];
   for (int i=0; i<dataclass.length;i++){
     var haystack_size = dataclass[i].name!.length;
@@ -324,7 +299,7 @@ SearchingNameData(String info){
   return coincidence;
 }
 
-SearchingBuilding(String info){
+searchingBuilding(String info){
   List<int> coincidence = [];
   for (int i=0; i<dataclass.length;i++){
 
@@ -349,11 +324,24 @@ SearchingBuilding(String info){
   return coincidence;
 }
 
-SaveData() async{
+sql_OpenGenerate () async{
   //dataclass 적용용 test
   //Generate or Open Database
-  final Future<Database> database = openDatabase(
-    join(await getDatabasesPath(), 'dataclass1.db'),
+  Future<Database> database = openDatabase(
+      join(await getDatabasesPath(), 'dataclass2.db'),
+      onCreate: (db, version) {
+  return db.execute(
+  "CREATE TABLE dataclass(idx INTEGER PRIMARY KEY, curriculum_division TEXT, department TEXT, major TEXT, comple_course TEXT, grade TEXT, class_number TEXT, lecture_number TEXT, name TEXT, credit TEXT, lecture_credit TEXT, experiment_credit TEXT, time TEXT, type TEXT, n14 TEXT, professor TEXT, capacity TEXT, note TEXT, language TEXT)",
+  );
+  },
+  version: 1,
+  );
+  print("done");
+}
+
+sql_InsertAllData () async{
+  Future<Database> database = openDatabase(
+    join(await getDatabasesPath(), 'dataclass2.db'),
     onCreate: (db, version) {
       return db.execute(
         "CREATE TABLE dataclass(idx INTEGER PRIMARY KEY, curriculum_division TEXT, department TEXT, major TEXT, comple_course TEXT, grade TEXT, class_number TEXT, lecture_number TEXT, name TEXT, credit TEXT, lecture_credit TEXT, experiment_credit TEXT, time TEXT, type TEXT, n14 TEXT, professor TEXT, capacity TEXT, note TEXT, language TEXT)",
@@ -361,12 +349,10 @@ SaveData() async{
     },
     version: 1,
   );
-  print("done");
+  Database db = await database;
 
   //Function : insert Dataclass into DB
   Future<void> insertDataclass(Dataclass dataclass) async {
-
-    final Database db = await database;
 
     await db.insert(
       'dataclass',
@@ -375,93 +361,120 @@ SaveData() async{
     );
   }
 
-  //dataclass(dataname) 의 변수를 얻는 함수
-  Future<List<Dataclass>> datac() async {
-    final Database db = await database;
-
-    final List<Map<String, dynamic>> maps = await db.query('dataclass');
-
-    return List.generate(maps.length, (i) {
-      return Dataclass(
-        idx: maps[i]['idx'],
-        curriculum_division: maps[i]['curriculum_division'],
-        department: maps[i]['department'],
-        major: maps[i]['major'],
-        comple_course: maps[i]['comple_course'],
-        grade: maps[i]['grade'],
-        class_number: maps[i]['class_number'],
-        lecture_number: maps[i]['lecture_number'],
-        name: maps[i]['name'],
-        credit: maps[i]['credit'],
-        lecture_credit: maps[i]['lecture_credit'],
-        experiment_credit: maps[i]['experiment_credit'],
-        time: maps[i]['time'],
-        type: maps[i]['type'],
-        n14: maps[i]['n14'],
-        professor: maps[i]['professor'],
-        capacity: maps[i]['capacity'],
-        note: maps[i]['note'],
-        language: maps[i]['language'],
-      );
-    });
-  }
-
-  //db 수정 함수
-  Future<void> updateDataclass(Dataclass dataclass) async {
-    final db = await database;
-
-    await db.update(
-      'dataclass',
-      dataclass.toMap(),
-      where: "idx = ?",
-      whereArgs: [dataclass.idx],
-    );
-  }
-
-  //db 제거 함수
-  Future<void> deleteDataclass(int idx) async {
-    // 데이터베이스 reference를 얻습니다.
-    final db = await database;
-
-    // 데이터베이스에서 Dog를 삭제합니다.
-    await db.delete(
-      'dataclass',
-      where: "idx = ?",
-      whereArgs: [idx],
-    );
-  }
-
-   //*/
-
-  /*
-  //dataclass용 test
-  for(int i=0;i<dataclass.length;i++){
-    await deleteDataclass(i);
-  }
-
-
-   */
-
-
-
   for(int i=0;i<dataclass.length;i++){
     await insertDataclass(dataclass[i]);
   }
+}
+
+Future<List<Dataclass>> sql_GetDataFromSql() async {
+
+  Future<Database> database = openDatabase(
+    join(await getDatabasesPath(), 'dataclass2.db'),
+    onCreate: (db, version) {
+      return db.execute(
+        "CREATE TABLE dataclass(idx INTEGER PRIMARY KEY, curriculum_division TEXT, department TEXT, major TEXT, comple_course TEXT, grade TEXT, class_number TEXT, lecture_number TEXT, name TEXT, credit TEXT, lecture_credit TEXT, experiment_credit TEXT, time TEXT, type TEXT, n14 TEXT, professor TEXT, capacity TEXT, note TEXT, language TEXT)",
+      );
+    },
+    version: 1,
+  );
+  Database db = await database;
 
 
+  final List<Map<String, dynamic>> maps = await db.query('dataclass');
 
-  List<Dataclass> dataclasss = await datac();
-  print("start");
-  for(int i=0;i<dataclasss.length;i++){
-    print("a ${dataclass[i].idx}: ${dataclass[i].curriculum_division},${dataclass[i].department},${dataclass[i].major},${dataclass[i].comple_course},${dataclass[i].grade},${dataclass[i].class_number},${dataclass[i].lecture_number},${dataclass[i].name},${dataclass[i].credit},${dataclass[i].lecture_credit},${dataclass[i].experiment_credit},${dataclass[i].time},${dataclass[i].n14},${dataclass[i].professor},${dataclass[i].capacity},${dataclass[i].note},${dataclass[i].language}");
-    print("b ${dataclasss[i].idx}: ${dataclasss[i].curriculum_division},${dataclasss[i].department},${dataclasss[i].major},${dataclasss[i].comple_course},${dataclasss[i].grade},${dataclasss[i].class_number},${dataclasss[i].lecture_number},${dataclasss[i].name},${dataclasss[i].credit},${dataclasss[i].lecture_credit},${dataclasss[i].experiment_credit},${dataclasss[i].time},${dataclasss[i].n14},${dataclasss[i].professor},${dataclasss[i].capacity},${dataclasss[i].note},${dataclasss[i].language}");
+  return List.generate(maps.length, (i) {
+    return Dataclass(
+      idx: maps[i]['idx'],
+      curriculum_division: maps[i]['curriculum_division'],
+      department: maps[i]['department'],
+      major: maps[i]['major'],
+      comple_course: maps[i]['comple_course'],
+      grade: maps[i]['grade'],
+      class_number: maps[i]['class_number'],
+      lecture_number: maps[i]['lecture_number'],
+      name: maps[i]['name'],
+      credit: maps[i]['credit'],
+      lecture_credit: maps[i]['lecture_credit'],
+      experiment_credit: maps[i]['experiment_credit'],
+      time: maps[i]['time'],
+      type: maps[i]['type'],
+      n14: maps[i]['n14'],
+      professor: maps[i]['professor'],
+      capacity: maps[i]['capacity'],
+      note: maps[i]['note'],
+      language: maps[i]['language'],
+    );
+  });
+}
+
+//db 제거 함수
+Future<void> sql_DeleteSql() async {
+  Future<Database> database = openDatabase(
+    join(await getDatabasesPath(), 'dataclass2.db'),
+    onCreate: (db, version) {
+      return db.execute(
+        "CREATE TABLE dataclass(idx INTEGER PRIMARY KEY, curriculum_division TEXT, department TEXT, major TEXT, comple_course TEXT, grade TEXT, class_number TEXT, lecture_number TEXT, name TEXT, credit TEXT, lecture_credit TEXT, experiment_credit TEXT, time TEXT, type TEXT, n14 TEXT, professor TEXT, capacity TEXT, note TEXT, language TEXT)",
+      );
+    },
+    version: 1,
+  );
+  Database db = await database;
+
+  for(int i=0;i<dataclass.length;i++){
+    await db.delete(
+      'dataclass',
+      where: "idx = ?",
+      whereArgs: [i],
+    );
   }
+}
+
+//db 수정 함수
+Future<void> sql_UpdateSql(Dataclass dataclass) async {
+  Future<Database> database = openDatabase(
+    join(await getDatabasesPath(), 'dataclass2.db'),
+    onCreate: (db, version) {
+      return db.execute(
+        "CREATE TABLE dataclass(idx INTEGER PRIMARY KEY, curriculum_division TEXT, department TEXT, major TEXT, comple_course TEXT, grade TEXT, class_number TEXT, lecture_number TEXT, name TEXT, credit TEXT, lecture_credit TEXT, experiment_credit TEXT, time TEXT, type TEXT, n14 TEXT, professor TEXT, capacity TEXT, note TEXT, language TEXT)",
+      );
+    },
+    version: 1,
+  );
+  Database db = await database;
+
+  await db.update(
+    'dataclass',
+    dataclass.toMap(),
+    where: "idx = ?",
+    whereArgs: [dataclass.idx],
+  );
+}
+
+saveData() async{
+
+  print("sql_start");
+
+  /*
+  //dataclass용 test
+  await sql_DeleteSql();
+
+  print("delete complete");
+
+  await sql_InsertAllData();
+
+  print("insert complete");
+*/
+
+  dataclass = await sql_GetDataFromSql();
+  print("load complete");
+  preProcessingData();
+  print("preprocessing complete");
 
 
-
-
-
-
+  for(int i=0;i<dataclass.length;i++){
+    print("a ${dataclass[i].idx}: ${dataclass[i].curriculum_division},${dataclass[i].department},${dataclass[i].major},${dataclass[i].comple_course},${dataclass[i].grade},${dataclass[i].class_number},${dataclass[i].lecture_number},${dataclass[i].name},${dataclass[i].credit},${dataclass[i].lecture_credit},${dataclass[i].experiment_credit},${dataclass[i].time},${dataclass[i].n14},${dataclass[i].professor},${dataclass[i].capacity},${dataclass[i].note},${dataclass[i].language}");
+    //print("b ${dataclass[i].idx}: ${dataclasss[i].curriculum_division},${dataclasss[i].department},${dataclasss[i].major},${dataclasss[i].comple_course},${dataclasss[i].grade},${dataclasss[i].class_number},${dataclasss[i].lecture_number},${dataclasss[i].name},${dataclasss[i].credit},${dataclasss[i].lecture_credit},${dataclasss[i].experiment_credit},${dataclasss[i].time},${dataclasss[i].n14},${dataclasss[i].professor},${dataclasss[i].capacity},${dataclasss[i].note},${dataclasss[i].language}");
+  }
 
 
 }
