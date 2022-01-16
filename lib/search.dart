@@ -1,5 +1,5 @@
 import 'dart:core';
-import 'dart:html';
+// import 'dart:html';
 
 
 import 'package:flutter/material.dart';
@@ -87,8 +87,8 @@ update() async{
     dataclass.add(data);
   });
 
-  preProcessingData();
-  saveData();
+  // preProcessingData();
+  // saveData();
 
 }
 
@@ -454,16 +454,16 @@ saveData() async{
 
   print("sql_start");
 
-  /*
+  // update();
   //dataclass용 test
-  await sql_DeleteSql();
+  // await sql_DeleteSql();
 
-  print("delete complete");
+  // print("delete complete");
 
-  await sql_InsertAllData();
+  // await sql_InsertAllData();
 
   print("insert complete");
-*/
+
 
   dataclass = await sql_GetDataFromSql();
   print("load complete");

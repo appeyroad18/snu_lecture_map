@@ -247,7 +247,7 @@ class TimeTableState extends State<TimeTable> {
                                 // 여기 await 처리가 필요할 거 같은데 어떻게 해야 할지 모르겠어요 ㅜㅜ (이것 때문에 즉시 사라지지 않아요!)
                                 // _delete()가 void 함수여서 안된다고 합니다...
                                 if (info[index_five][index_twenty] != -1) {
-                                  _delete(info[index_five][index_twenty]);
+                                  final temp = await _delete(info[index_five][index_twenty]);
                                   setState(() {});
                                 }
                               },
@@ -278,7 +278,7 @@ class TimeTableState extends State<TimeTable> {
     );
   }
 
-  void _delete(Lecture lecture) {
+  Future<int> _delete(Lecture lecture) async{
     showDialog(
         context: context,
         barrierDismissible: false, //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
@@ -324,6 +324,7 @@ class TimeTableState extends State<TimeTable> {
             ],
           );
         });
+    return 1;
   }
 
   void _onButtonPressed() {
@@ -521,7 +522,7 @@ class _LectureListViewState extends State<LectureListView> {
                               double endTime = lecturesList[index]
                                   .time[time_index].EndTime;
 
-                              for (var i = startTime; i < endTime; i++) {
+                              for (int i = startTime.toInt(); i < endTime; i++) {
                                 if (i == startTime) {
                                   info[lecturesList[index].time[time_index]
                                       .day - 1][i] = lecturesList[index];

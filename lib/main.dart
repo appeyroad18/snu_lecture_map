@@ -43,10 +43,28 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState(){
     super.initState();
-    Timer(
-      Duration(milliseconds: 1500),
-        () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SNUMap())),
-    );
+    _init();
+
+    // WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    //   dataclass = sql_GetDataFromSql();
+    // });
+
+    // dataclass = sql_GetDataFromSql.then((value) => null);
+
+    // Timer(
+    //   Duration(milliseconds: 1500),
+    //     () => Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SNUMap())),
+    // );
+    // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SNUMap()));
+  }
+
+  void _init() async{
+    dataclass = await sql_GetDataFromSql();
+    preProcessingData();
+    // print("sql finish");
+    // int i=0;
+    // print("a ${dataclass[i].idx}: ${dataclass[i].curriculum_division},${dataclass[i].department},${dataclass[i].major},${dataclass[i].comple_course},${dataclass[i].grade},${dataclass[i].class_number},${dataclass[i].lecture_number},${dataclass[i].name},${dataclass[i].credit},${dataclass[i].lecture_credit},${dataclass[i].experiment_credit},${dataclass[i].time},${dataclass[i].n14},${dataclass[i].professor},${dataclass[i].capacity},${dataclass[i].note},${dataclass[i].language}");
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SNUMap()));
   }
 
   @override
