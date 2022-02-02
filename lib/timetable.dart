@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
 import 'dart:io';
@@ -8,6 +9,8 @@ import 'dart:math';
 import 'package:snu_lecture_map/dataclass.dart';
 import 'package:snu_lecture_map/search.dart';
 
+double appBar = 0;
+double bottomBar = 0;
 double height = 0;
 double vertical = 0;
 double screen_width = 0;
@@ -74,16 +77,16 @@ class TimeTableState extends State<TimeTable> {
   List day = [["", 0, 1],["월", 0, 1],["화", 0, 1],["수", 0, 1],["목", 0, 1],["금", 0, 1]];
   List time = [["9", 0, 2],["10", 0,2],["11", 0,2],["12", 0,2],["13", 0,2],["14", 0,2],["15", 0,2],["16", 0,2],["17", 0,2],["18", 0,2]];
   List<dynamic> info = [
-  [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
-  new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),],
-  [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
-  new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),],
-  [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
-  new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),],
-  [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
-  new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),],
-  [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
-  new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white)]
+    [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
+      new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),],
+    [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
+      new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),],
+    [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
+      new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),],
+    [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
+      new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),],
+    [new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white),
+      new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [],Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white), new Lecture(-1, "", "", [], Colors.white)]
   ];
 
 
@@ -93,132 +96,134 @@ class TimeTableState extends State<TimeTable> {
     screen_width = MediaQuery.of(context).size.width;
     screen_height = MediaQuery.of(context).size.height;
     double basic_height = (screen_height - widget.appBarHeight - widget.bottomBarHeight-60-20) / 21; // (30분길이)
+    appBar = widget.appBarHeight;
+    bottomBar = widget.bottomBarHeight;
 
     return Scaffold(
-        appBar: AppBar(
-          title: Text(
-            '시간표',
-            style: TextStyle(color: Colors.black),
+      appBar: AppBar(
+        title: Text(
+          '시간표',
+          style: TextStyle(color: Colors.black),
+        ),
+        elevation: 1,
+        backgroundColor: Colors.white,
+        iconTheme: IconThemeData(color: Colors.black),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            color: Colors.black,
+            onPressed: () async {
+              final value = await Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LectureListView(info)));
+              setState(() {});
+              //showSearch(context: context, delegate: DataSearch());
+            },
           ),
-          elevation: 1,
-          backgroundColor: Colors.white,
-          iconTheme: IconThemeData(color: Colors.black),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search),
+          IconButton(
+              icon: Icon(Icons.add_box_outlined),
               color: Colors.black,
               onPressed: () async {
                 final value = await Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LectureListView(info)));
+                    MaterialPageRoute(builder: (context) => AddLecture(info : info)));
                 setState(() {});
-                //showSearch(context: context, delegate: DataSearch());
-              },
-            ),
-            IconButton(
-                icon: Icon(Icons.add_box_outlined),
-                color: Colors.black,
-                onPressed: () async {
-                  final value = await Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => AddLecture(info : info)));
-                  setState(() {});
-                }
-              //_onButtonPressed(),
-            ),
-            IconButton(
-              icon: Icon(Icons.settings),
-              color: Colors.black,
-              onPressed: () {
-                _onButtonPressed();
-              },
-            ),
-          ],
-        ),
-        drawer: Drawer(
-          child: ListView(
-            padding: EdgeInsets.zero,
-            children: [
-              ListTile(
-                contentPadding: EdgeInsets.fromLTRB(20, 30, 10, 10),
-                title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "2021 여름학기",
-                        style: TextStyle(color: Colors.black, fontSize: 20),
+              }
+            //_onButtonPressed(),
+          ),
+          IconButton(
+            icon: Icon(Icons.settings),
+            color: Colors.black,
+            onPressed: () {
+              _onButtonPressed();
+            },
+          ),
+        ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: [
+            ListTile(
+              contentPadding: EdgeInsets.fromLTRB(20, 30, 10, 10),
+              title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "2021 여름학기",
+                      style: TextStyle(color: Colors.black, fontSize: 20),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "시간표",
+                        style:
+                        TextStyle(color: Colors.black54, fontSize: 15),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      TextButton(
-                        onPressed: () {},
-                        child: Text(
-                          "시간표",
-                          style:
-                          TextStyle(color: Colors.black54, fontSize: 15),
-                        ),
-                      ),
-                      TextButton(
-                          onPressed: () {
-                            /*
+                    ),
+                    TextButton(
+                        onPressed: () {
+                          /*
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                     builder: (context) => SecondPage()));
 
                              */
-                          },
-                          child: Text(
-                            "시간표1",
-                            style: TextStyle(
-                                color: Colors.black54, fontSize: 15),
-                          )),
-                      TextButton(
-                        onPressed: () {},
+                        },
                         child: Text(
-                          "시간표2",
-                          style:
-                          TextStyle(color: Colors.black54, fontSize: 15),
-                        ),
-                      )
-                    ]),
-              ),
-            ],
-          ),
+                          "시간표1",
+                          style: TextStyle(
+                              color: Colors.black54, fontSize: 15),
+                        )),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "시간표2",
+                        style:
+                        TextStyle(color: Colors.black54, fontSize: 15),
+                      ),
+                    )
+                  ]),
+            ),
+          ],
         ),
-        body: Column(
-          children: [
-            SizedBox(
+      ),
+      body: Column(
+        children: [
+          SizedBox(
               height : basic_height,
               width: screen_width,
               child: ListView.separated(
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index_day) {
                     return SizedBox(
-                      width: index_day == 0 ? (screen_width-6) / 11 : (screen_width-6) / 11*2,
-                      child: Text(day[index_day][0])
+                        width: index_day == 0 ? (screen_width-6) / 11 : (screen_width-6) / 11*2,
+                        child: Text(day[index_day][0])
                     );
                   },
                   separatorBuilder: (context, index) => Container(color: Colors.black26, width:1),
                   itemCount: day.length)
-            ),
-            Container(color: Colors.black26, height:1),
-            Row(
-              children: [
-                SizedBox(
-                    height : basic_height*20+10,
-                    width: (screen_width-6) / 11,
-                    child: ListView.separated(
-                        itemBuilder: (context, index_time) {
-                          return SizedBox(
-                              height: basic_height*2,
-                              child: Text(time[index_time][0])
-                          );
-                        },
-                        separatorBuilder: (context, index) => Container(color: Colors.black26, height:1),
-                        itemCount: time.length)
-                ),
-                Container(color: Colors.black26, width:1, height: basic_height*20+10,),
-                SizedBox(
+          ),
+          Container(color: Colors.black26, height:1),
+          Row(
+            children: [
+              SizedBox(
+                  height : basic_height*20+10,
+                  width: (screen_width-6) / 11,
+                  child: ListView.separated(
+                      itemBuilder: (context, index_time) {
+                        return SizedBox(
+                            height: basic_height*2,
+                            child: Text(time[index_time][0])
+                        );
+                      },
+                      separatorBuilder: (context, index) => Container(color: Colors.black26, height:1),
+                      itemCount: time.length)
+              ),
+              Container(color: Colors.black26, width:1, height: basic_height*20+10,),
+              SizedBox(
                   height : basic_height * 20+10,
                   width: (screen_width-6) / 11*10,
                   child: ListView.separated(
@@ -227,105 +232,136 @@ class TimeTableState extends State<TimeTable> {
                     itemCount: 5,
                     itemBuilder: (context, index_five) {
                       return SizedBox(
-                        width: (screen_width-6) / 11*2,
-                        child: ListView.separated(
-                          itemCount: 20,
-                          separatorBuilder: (context, index) => Container(color: Colors.black26, height:0.5),
-                          itemBuilder: (context, index_twenty) {
-                            return GestureDetector(
-
-                              onTap: () async {
-                                if (info[index_five][index_twenty] != -1) {
-                                  final value = await Navigator.push(context,
-                                      MaterialPageRoute(builder: (context) =>
-                                          LecturePage(
-                                              lecture: info[index_five][index_twenty])));
-                                  setState(() {});
-                                }
-                              },
-                              onLongPress: () async {
-                                // 여기 await 처리가 필요할 거 같은데 어떻게 해야 할지 모르겠어요 ㅜㅜ (이것 때문에 즉시 사라지지 않아요!)
-                                // _delete()가 void 함수여서 안된다고 합니다...
-                                if (info[index_five][index_twenty] != -1) {
-                                  final temp = await _delete(info[index_five][index_twenty]);
-                                  setState(() {});
-                                }
-                              },
-                              child: Container(
-                                color: info[index_five][index_twenty].color,
-                                height: info[index_five][index_twenty].idx == -1 ? basic_height :
-                                basic_height * (info[index_five][index_twenty].time[0].EndTime - info[index_five][index_twenty].time[0].StartTime),
-                                child: Column(
-                                  children: [
-                                    Text('${info[index_five][index_twenty].name}'),
-                                    //Text('${info[index_five][index_twenty].professor}')
-                                  ],
-                                )
-                              ),
-                            );
-                          },
-                        )
+                          width: (screen_width-6) / 11*2,
+                          child: ListView.separated(
+                            itemCount: 20,
+                            separatorBuilder: (context, index) => Container(color: Colors.black26, height:0.5),
+                            itemBuilder: (context, index_twenty) {
+                              return GestureDetector(
+                                onTap: () async {
+                                  if (info[index_five][index_twenty].idx != -1) {
+                                    final value = await Navigator.push(context,
+                                        MaterialPageRoute(builder: (context) =>
+                                            LecturePage(
+                                                lecture: info[index_five][index_twenty])));
+                                    setState(() {});
+                                  }
+                                },
+                                onLongPress: () async {
+                                  if (info[index_five][index_twenty].idx != -1) {
+                                    await _delete(info[index_five][index_twenty]);
+                                    setState(() {});
+                                  }
+                                },
+                                child: Container(
+                                    color: info[index_five][index_twenty].color,
+                                    height: info[index_five][index_twenty].idx == -1 ? basic_height :
+                                    basic_height * (info[index_five][index_twenty].time[0].EndTime - info[index_five][index_twenty].time[0].StartTime),
+                                    child: Column(
+                                      children: [
+                                        Text('${info[index_five][index_twenty].name}'),
+                                        //Text('${info[index_five][index_twenty].professor}')
+                                      ],
+                                    )
+                                ),
+                              );
+                            },
+                          )
                       );
                     },
                   )
 
-                ),
-              ],
-            ),
-            Container(color: Colors.black26, height:1),
+              ),
             ],
-        ),
+          ),
+          Container(color: Colors.black26, height:1),
+        ],
+      ),
     );
   }
 
-  Future<int> _delete(Lecture lecture) async{
-    showDialog(
-        context: context,
-        barrierDismissible: false, //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)),
-            title: Column(
-              children: <Widget>[
-                new Text("강의 삭제"),
-              ],
-            ),
-            content: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "${lecture.name}을(를) 정말 삭제하시겠습니까?",
-                ),
-              ],
-            ),
-            actions: <Widget>[
-              new TextButton(
-                child: new Text("확인"),
+  Future _delete(Lecture lecture) => showDialog(
+    context: context,
+    barrierDismissible: false, //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
+    builder: (BuildContext context) => StatefulBuilder(
+        builder: (context, setState) => AlertDialog(
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0)),
+          title: Column(
+            children: <Widget>[
+              new Text("강의 삭제"),
+            ],
+          ),
+          content: StatefulBuilder(
+              builder: (BuildContext context, StateSetter setState) {
+                return Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "${lecture.name}을(를) 정말 삭제하시겠습니까?",
+                    ),
+                  ],
+                );
+              }
+          ),
+          actions: <Widget>[
+            new TextButton(
+                child: new Text("취소"),
                 onPressed: () {
                   Navigator.pop(context);
-
-                  for (var i=0; i < info.length; i++) {
-                    for (var j=0; j < info[i].length; j++ ) {
-                      if (info[i][j].idx == lecture.idx) {
-                        info[i][j] = new Lecture(-1, "", "", [], Colors.white);
-                      }
+                }
+            ),
+            new TextButton(
+              child: new Text("확인"),
+              onPressed: () {
+                for (var i = 0; i < info.length; i++) {
+                  for (var j = 0; j < info[i].length; j++) {
+                    if (info[i][j].idx == lecture.idx) {
+                      info[i][j] = new Lecture(-1, "", "", [], Colors.white);
                     }
                   }
-                },
-              ),
-              new TextButton(
-                  child: new Text("취소"),
-                  onPressed: () {
-                    Navigator.pop(context);
-                  }
-              ),
-            ],
-          );
-        });
-    return 1;
-  }
+                }
+                this.setState(() {});
+                Navigator.pop(context);
+              },
+            ),
+
+          ],
+        )
+    ),
+  );
+
+  Future _deleteAll() => showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape : RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10.0)
+        ),
+        title: Text("모든 강의를 삭제하시겠습니까?"),
+        actions: <Widget>[
+          new TextButton(
+            child: new Text("취소"),
+            onPressed: () {
+              Navigator.pop(context);},),
+          new TextButton(
+            child: new Text("확인"),
+            onPressed: () {
+              for (var i=0; i < info.length; i++) {
+                for (var j = 0; j < info[i].length; j++) {
+                  info[i][j] = new Lecture(-1, "", "", [], Colors.white);
+                }
+              }
+              this.setState(() {});
+              Navigator.pop(context);
+            },
+          )
+        ],
+      );
+    },
+  );
 
   void _onButtonPressed() {
     showModalBottomSheet(
@@ -335,7 +371,14 @@ class TimeTableState extends State<TimeTable> {
             color: Color(0xFF737373),
             height: 80,
             child: Container(
-              child: _buildButtonMenu(info : info),
+              child: Column(
+                children: [SizedBox(height: 20),
+                  ListTile(
+                    leading: Icon(Icons.delete),
+                    title: Text("삭제"),
+                    onTap: () {
+                      Navigator.pop(context);
+                      _deleteAll();},)],),
               decoration: BoxDecoration(
                   color: Theme.of(context).canvasColor,
                   borderRadius: BorderRadius.only(
@@ -348,68 +391,6 @@ class TimeTableState extends State<TimeTable> {
   }
 }
 
-class _buildButtonMenu extends StatefulWidget {
-  List info;
-  _buildButtonMenu({Key? key, required this.info}) : super(key: key);
-
-  @override
-  __buildButtonMenuState createState() => __buildButtonMenuState();
-}
-
-class __buildButtonMenuState extends State<_buildButtonMenu> {
-  @override
-  Widget build(BuildContext context) {
-    List info = widget.info;
-
-    // 모두 삭제하기
-    // 바로 적용되지 않음 -> async await 어디에 추가해야 할까요..?
-    void deleteAll() {
-      for (var i=0; i < info.length; i++) {
-        for (var j = 0; j < info[i].length; j++) {
-          info[i][j] = new Lecture(-1, "", "", [], Colors.white);
-        }
-      }
-    }
-
-    void showDeleteMessage(List list) {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            shape : RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.0)
-            ),
-            title: Text("모든 강의를 삭제하시겠습니까?"),
-            actions: <Widget>[
-              TextButton(
-                child: new Text("취소"),
-                onPressed: () {
-                  Navigator.pop(context);},),
-              TextButton(
-                child: new Text("확인"),
-                onPressed: () {
-                  Navigator.pop(context);
-                  deleteAll();
-                },
-              )
-            ],
-          );
-        },
-      );
-    }
-    return Column(
-      children: [SizedBox(height: 20),
-        ListTile(
-          leading: Icon(Icons.delete),
-          title: Text("삭제"),
-          onTap: () {
-            Navigator.pop(context);
-            showDeleteMessage(info);
-          },
-        )],
-    );
-  }
-}
 
 class LecturePage extends StatefulWidget {
   Lecture lecture;
@@ -427,6 +408,7 @@ class _LecturePageState extends State<LecturePage> {
     List itemName = ['index', '강의명', '교수명', '강의시간'];
     //List itemGroup1 = ['강의명','교수명', '강의실', '강의시간', '색'];
     //List itemGroup2 = ['학점', '개설학과', '학년', '교과구분', '과정구분', '교과목 번호', '비고'];
+
     return Scaffold(
       appBar: AppBar(
         title: Text('강의정보', style: TextStyle(color: Colors.black),),
@@ -437,22 +419,22 @@ class _LecturePageState extends State<LecturePage> {
       body : Padding(
         padding: const EdgeInsets.all(20.0),
         child: Container(
-          child: ListView.separated(
-              itemBuilder: (BuildContext context, int index) {
-                return Row(
-                    children: [
-                      Expanded(
-                        flex: 2,
-                        child: Align(alignment: Alignment.centerLeft,
-                            child:Text(itemName[index])),
-                      ),
-                      Expanded(child:Container(), flex : 1),
-                      Expanded(flex : 10, child: Align(alignment: Alignment.centerLeft, child:Text(lectureInfo[index]),)),
-                    ]
-                );
-              },
-              separatorBuilder: (context, index) => Container(color: Colors.black26, height:0.5),
-              itemCount: itemName.length)
+            child: ListView.separated(
+                itemBuilder: (BuildContext context, int index) {
+                  return Row(
+                      children: [
+                        Expanded(
+                          flex: 2,
+                          child: Align(alignment: Alignment.centerLeft,
+                              child:Text(itemName[index])),
+                        ),
+                        Expanded(child:Container(), flex : 1),
+                        Expanded(flex : 10, child: Align(alignment: Alignment.centerLeft, child:Text(lectureInfo[index]),)),
+                      ]
+                  );
+                },
+                separatorBuilder: (context, index) => Container(color: Colors.black26, height:0.5),
+                itemCount: itemName.length)
         ),
       ),
     );
@@ -467,8 +449,8 @@ class LectureTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        title: Text(_lecture.name),
-        subtitle: Text(_lecture.professor),
+      title: Text(_lecture.name),
+      subtitle: Text(_lecture.professor),
     );
   }
 }
@@ -488,77 +470,84 @@ class _LectureListViewState extends State<LectureListView> {
     List<dynamic> info = widget._info;
 
     return Scaffold(
-      appBar: AppBar(
-        title: Text('시간표를 검색하세요'),
-      ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(8),
-        itemCount: lecturesList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            child: LectureTile(lecturesList[index]),
-            onTap: () {
-              showDialog(
-                context: context,
-                builder: (BuildContext context) {
-                  return AlertDialog(
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10.0)
-                    ),
-                    title: Text("${lecturesList[index].name}을(를) 추가하시겠습니까?"),
-                    actions: <Widget>[
-                      TextButton(
-                        child: new Text("취소"),
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },),
-                      TextButton(
-                          child: new Text("확인"),
-                          onPressed: () {
-                            for (var time_index = 0; time_index <
-                                lecturesList[index].time.length; time_index++) {
-                              double startTime = lecturesList[index]
-                                  .time[time_index].StartTime;
-                              double endTime = lecturesList[index]
-                                  .time[time_index].EndTime;
+        appBar: AppBar(
+          title: Text('시간표를 검색하세요'),
+        ),
+        body: Opacity(
+          opacity: 0.5,
+          child: Ink(
+            color: Colors.black12,
+            child: ListView.builder(
+                padding: const EdgeInsets.all(8),
+                itemCount: lecturesList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return GestureDetector(
+                      child: LectureTile(lecturesList[index]),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0)
+                              ),
+                              title: Text("${lecturesList[index].name}을(를) 추가하시겠습니까?"),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: new Text("취소"),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },),
+                                TextButton(
+                                    child: new Text("확인"),
+                                    onPressed: () {
+                                      for (var time_index = 0; time_index <
+                                          lecturesList[index].time.length; time_index++) {
+                                        double startTime = lecturesList[index]
+                                            .time[time_index].StartTime;
+                                        double endTime = lecturesList[index]
+                                            .time[time_index].EndTime;
 
-                              for (int i = startTime.toInt(); i < endTime; i++) {
-                                if (i == startTime) {
-                                  info[lecturesList[index].time[time_index]
-                                      .day - 1][i] = lecturesList[index];
-                                  info[lecturesList[index].time[time_index]
-                                      .day - 1][i].color = colorsList[0];
-                                } else {
-                                  Lecture newLecture = new Lecture(
-                                      lecturesList[index].idx, "", "",
-                                      [LectureTime(0, 0, 0)], colorsList[0]);
-                                  info[lecturesList[index].time[time_index]
-                                      .day - 1][i] = newLecture;
-                                }
-                              }
-                            }
+                                        for (int i = startTime.toInt(); i < endTime; i++) {
+                                          if (i == startTime) {
+                                            info[lecturesList[index].time[time_index]
+                                                .day - 1][i] = lecturesList[index];
+                                            info[lecturesList[index].time[time_index]
+                                                .day - 1][i].color = colorsList[0];
+                                          } else {
+                                            Lecture newLecture = new Lecture(
+                                                lecturesList[index].idx, "", "",
+                                                [LectureTime(0, 0, 0)], colorsList[0]);
+                                            info[lecturesList[index].time[time_index]
+                                                .day - 1][i] = newLecture;
+                                          }
+                                        }
+                                      }
 
-                            colorsList.add(colorsList[0]);
-                            for (var i = 0; i < colorsList.length - 1; i++) {
-                              colorsList[i] = colorsList[i + 1];
-                            }
-                            print(colorsList);
+                                      colorsList.add(colorsList[0]);
+                                      for (var i = 0; i < colorsList.length - 1; i++) {
+                                        colorsList[i] = colorsList[i + 1];
+                                      }
+                                      print(colorsList);
 
-                            Navigator.pop(context);
-                          }
-                      ),
-                    ],
+                                      Navigator.pop(context);
+                                    }
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
                   );
-                },
-              );
-            }
-          );
-        }
-      )
+                }
+            ),
+          ),
+        )
 
     );
   }
 }
+
 
 class AddLecture extends StatefulWidget {
   List info;
@@ -567,6 +556,10 @@ class AddLecture extends StatefulWidget {
   @override
   _AddLectureState createState() => _AddLectureState();
 }
+
+bool tf = false;
+List item = ['강의명', '교수', '',['time', 'place', 1],['time', 'place', 0], ['time', 'place', 0],['time', 'place', 0], ['time', 'place', 0]];
+int cnt = 4;
 
 class _AddLectureState extends State<AddLecture> {
   @override
@@ -648,29 +641,104 @@ class _AddLectureState extends State<AddLecture> {
         ),
         body : Padding(
             padding: const EdgeInsets.all(20.0),
-            child: Column(
-                children : [
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextField(
-                      cursorColor: Colors.grey,
-                      decoration: InputDecoration(hintText: "강의명"),
-                      onChanged: (value) {
-                        lecture.name = value;
+            child: ListView.builder(
+                itemCount: item.length,
+                itemBuilder: (BuildContext context, int index) {
+                  if (index == 0 || index == 1) {
+                    return Row(
+                        children: [
+                          Expanded(
+                            flex: 2,
+                            child: Align(alignment: Alignment.centerLeft,
+                                child: Text(item[index])),
+                          ),
+                          Expanded(child: Container(), flex: 1),
+                          Expanded(flex: 10,
+                              child: Align(
+                                alignment: Alignment.centerLeft,
+                                child: TextField(
+                                    style: TextStyle(fontSize: 14),
+                                    cursorColor: Colors.grey,
+                                    decoration: InputDecoration(
+                                        border: InputBorder.none,
+                                        hintText: "입력하세요"),
+                                    onChanged: (value) {
+                                      if (index == 0) {
+                                        lecture.name = value;}
+                                      else{
+                                        lecture.professor = value;}
+                                    }),
+                              )
+                          ),
+                        ]
+                    );
+                  }
+                  else if (index == 2) {
+                    return TextButton(
+                      child: Text('시간 및 장소 추가'),
+                      onPressed: () {
+                        item[cnt][2] = 1;
+                        cnt ++;
+                        setState(() {});
+                        print(item);
+                        print(cnt);
                       },
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
-                    child: TextField(
-                      cursorColor: Colors.grey,
-                      decoration: InputDecoration(hintText: "교수명"),
-                      onChanged: (value) {
-                        lecture.professor = value;
-                      },
-                    ),
-                  ),
-                  Padding(
+                    );
+                  }
+                  else {
+                    if (item[index][2] == 1) {
+                      return Column(
+                        children: [
+                          Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Align(alignment: Alignment.centerLeft,
+                                      child: Text('시간')),
+                                ),
+                                Expanded(child: Container(), flex: 1),
+                                Expanded(flex: 10,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(item[index][0]),)),
+                              ]
+                          ),
+                          Row(
+                              children: [
+                                Expanded(
+                                  flex: 2,
+                                  child: Align(alignment: Alignment.centerLeft,
+                                      child: Text('장소')),
+                                ),
+                                Expanded(child: Container(), flex: 1),
+                                Expanded(flex: 10,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: TextField(
+                                          style: TextStyle(fontSize: 14),
+                                          cursorColor: Colors.grey,
+                                          decoration: InputDecoration(
+                                              border: InputBorder.none,
+                                              hintText: "입력하세요"),
+                                          onChanged: (value) {
+                                          }),)),
+                              ]
+                          ),
+                        ],
+                      );
+                    }
+                    else {
+                      return Container();
+                    }
+                  }
+                }
+            )
+        )
+    );
+
+
+
+    /*Padding(
                     padding: const EdgeInsets.fromLTRB(10, 10, 10, 0),
                     child: TextField(
                       cursorColor: Colors.grey,
@@ -705,17 +773,14 @@ class _AddLectureState extends State<AddLecture> {
                     ),
                   ),
 
-                  /*TextButton(onPressed: () {
+                   */
+
+    /*TextButton(onPressed: () {
                     showPicker(time);
                   },
                       child: Text(time))
 
                    */
-
-                ]
-            )
-        )
-    );
   }
 
   void showPicker(String time) {
