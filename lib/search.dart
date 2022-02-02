@@ -30,33 +30,62 @@ class _SearchScreenState extends State<SearchScreen> {
             alignment: Alignment(0.8, -0.9),
             child: InkWell(
               onTap: (){
-                print("get course catalog");
-                saveData();
+                print("update");
+                button_Update();
               },
               child: Container(
                 decoration: BoxDecoration(
                   border: Border.all(),
                   borderRadius: BorderRadius.all(Radius.circular(3.0)),
                 ),
-
                 child : Padding(
-
-                  child: Text("refresh course catalog"),
+                  child: Text("update"),
                   padding: EdgeInsets.all(10.0),
                 ),
               ),
             ),
-
+          ),
+          Align(
+            alignment: Alignment(0.8, -0.7),
+            child: InkWell(
+              onTap: (){
+                print("load");
+                button_Load();
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(),
+                  borderRadius: BorderRadius.all(Radius.circular(3.0)),
+                ),
+                child : Padding(
+                  child: Text("load"),
+                  padding: EdgeInsets.all(10.0),
+                ),
+              ),
+            ),
           ),
         ],
       ),
-
-
     );
   }
 }
 
 List<Dataclass> dataclass = [];
+
+button_Update() async{
+  await update();
+  await preProcessingData();
+  await sql_DeleteSql();
+  await sql_InsertAllData();
+}
+
+button_Load() async{
+  dataclass = await sql_GetDataFromSql();
+  print("load complete");
+  preProcessingData();
+  print("preprocessing complete");
+}
+
 
 update() async{
   var raw = await http.get(Uri.parse("https://script.google.com/macros/s/AKfycbxuF-i3S7TGsgYTSAma5Nc0PryGK5LqakWP9xMOzw/exec"));
@@ -272,6 +301,18 @@ preProcessingData(){
         dataclass[i].lecture_buildingroom!.add(temp_lecturebr);
         //print("${dataclass[i].lecture_buildingroom![0].Building}");
       }
+      /*
+      if (NumOfHyphen == 0) {
+        var temp_building = dataclass[i].n14!.substring(0, HyphenIndex[1]);
+        var temp_room = dataclass[i].n14!.substring(HyphenIndex[1] + 1);
+        LectureBR temp_lecturebr = new LectureBR();
+        temp_lecturebr.Building = temp_building;
+        temp_lecturebr.Room = temp_room;
+        dataclass[i].lecture_buildingroom=[];
+        dataclass[i].lecture_buildingroom!.add(temp_lecturebr);
+        //print("${dataclass[i].lecture_buildingroom![0].Building}");
+      }
+      */
     }
   }
 
