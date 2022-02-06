@@ -31,7 +31,9 @@ dependencies:
 
   flutter_picker: ^2.0.2
 
-  http: ^0.13.3
+  http: ^0.13.4
+
+  html: ^0.15.0
 
   sqflite: ^2.0.0
 

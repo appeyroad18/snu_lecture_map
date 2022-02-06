@@ -5,6 +5,7 @@ import 'package:snu_lecture_map/search.dart';
 import 'package:snu_lecture_map/timetable.dart';
 import 'package:snu_lecture_map/buildingdata.dart';
 import 'package:snu_lecture_map/setting.dart';
+import 'package:snu_lecture_map/menuCrawling.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -94,7 +95,7 @@ class _MapScreenState extends State<MapScreen>
           IconButton(
             icon: Icon(Icons.restaurant_menu_sharp),
             onPressed: (){
-
+              getMenuInfo();
             },
           )
         ],
@@ -351,9 +352,9 @@ class Showing with ChangeNotifier {
 */
 
 class Infobox extends StatefulWidget {
-  String buildingnum;
-  bool showingmenu;
-  Infobox({required this.buildingnum, required this.showingmenu, Key? key}) : super(key: key);
+  final String buildingnum;
+  final bool showingmenu;
+  const Infobox({Key? key, required this.buildingnum, required this.showingmenu,}) : super(key: key);
 
   @override
   _InfoboxState createState() => _InfoboxState();
@@ -456,7 +457,7 @@ class _BuildingInfoState extends State<BuildingInfo> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           Text(
-            BUILDINGDATA[widget.buildingnumber]![3],
+            BUILDINGDATA[widget.buildingnumber]![3]!=null ? BUILDINGDATA[widget.buildingnumber]![3] : "---",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
         ],
