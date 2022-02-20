@@ -18,13 +18,26 @@ double screen_height = 0;
 List lecturesList = dataclass;
 
 // dataclass에 color도 넣어주세요!
-List colorsList = [
-  Colors.red,
-  Colors.orange,
-  Colors.yellow,
-  Colors.green,
-  Colors.blue];
+List colors= [
+  0xFFFCE4EC, // pink
+  0xFFFFB74D, // yellow
+  0xFF9CCC65, // lightGreen
+  0xFF90CAF9, // blue
+  0xFFE1BEE7, // purple
+];
 
+List colorList = [[0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF]
+];
+
+// Dataclass newLecture = new Dataclass(idx: -1);
+int count = 0;
+List item = ['강의명', '교수', ''];
+List<LectureTime> lectureTimeList= [];
 
 class TimeTable extends StatefulWidget {
   double bottomBarHeight;
@@ -42,9 +55,7 @@ class TimeTableState extends State<TimeTable> {
   // 너비 (index_main으로 조절)
   //String test = dataclass[0].name!;
 
-  List<int> indexList = [];
   List day = [["", 0, 1],["월", 0, 1],["화", 0, 1],["수", 0, 1],["목", 0, 1],["금", 0, 1]];
-  List time = [["9", 0, 2],["10", 0,2],["11", 0,2],["12", 0,2],["13", 0,2],["14", 0,2],["15", 0,2],["16", 0,2],["17", 0,2],["18", 0,2],];
   List<dynamic> info = [["9","10","11","12", "13","14", "15", "16", "17", "18"],
     [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1)],
     [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1)],
@@ -87,6 +98,8 @@ class TimeTableState extends State<TimeTable> {
               icon: Icon(Icons.add_box_outlined),
               color: Colors.black,
               onPressed: () async {
+                lectureTimeList = await [];
+                item = await ['강의명', '교수', ''];
                 final value = await Navigator.push(context,
                     MaterialPageRoute(builder: (context) => AddLecture(info : info)));
                 setState(() {});
@@ -194,8 +207,8 @@ class TimeTableState extends State<TimeTable> {
                               height: basic_height*2,
                               child: Text(info[index_h][index_v]),
                               decoration: BoxDecoration(
-                                border: Border(right : BorderSide(color: Colors.grey, width: 1)
-                                )
+                                border: Border(right : BorderSide(color: Colors.grey, width: 1),),
+                                color: Color(colorList[0][0])
                               )
                             );
                           }
@@ -222,7 +235,7 @@ class TimeTableState extends State<TimeTable> {
                                     : info[index_h][index_v].time == "-"? 0 : basic_height * (info[index_h][index_v].lecture_time[0].EndTime - info[index_h][index_v].lecture_time[0].StartTime),
                                 decoration: BoxDecoration(
                                   border: Border(right : index_h != 5 ? BorderSide(color: Colors.grey, width: 1) : BorderSide(color: Colors.grey, width: 0)),
-                                  //color: info[index_h-1][index_v].color,
+                                  color: Color(colorList[index_h][index_v])
                                 ),
                                 child: (info[index_h][index_v].name == null) ? Text("") :
                                 Column(
@@ -285,6 +298,7 @@ class TimeTableState extends State<TimeTable> {
                   for (var j = 0; j < info[i].length; j++) {
                     if (info[i][j].idx == lecture.idx) {
                       info[i][j] = Dataclass(idx: -1);
+                      colorList[i][j] = 0xFFFFFFFF;
                     }
                   }
                 }
@@ -318,6 +332,7 @@ class TimeTableState extends State<TimeTable> {
               for (var i=1; i < info.length; i++) {
                 for (var j = 0; j < info[i].length; j++) {
                   info[i][j] = Dataclass(idx: -1);
+                  colorList[i][j] = 0xFFFFFFFF;
                 }
               }
               this.setState(() {});
@@ -440,7 +455,7 @@ class _LectureListViewState extends State<LectureListView> {
           title: Text('시간표를 검색하세요'),
         ),
         body: Opacity(
-          opacity: 0.5,
+          opacity: 1,
           child: ListView.builder(
               padding: const EdgeInsets.all(8),
               itemCount: lecturesList.length,
@@ -473,27 +488,31 @@ class _LectureListViewState extends State<LectureListView> {
                                           .lecture_time[time_index].StartTime;
                                       double endTime = lecturesList[index]
                                           .lecture_time[time_index].EndTime;
+                                      print(day);
+                                      print(startTime);
+                                      print(endTime);
 
                                       for (int i = startTime.toInt()-1; i < endTime-1; i++) {
-                                        if (i == startTime) {
+                                        if (i == startTime-1) {
                                           info[day][i] = lecturesList[index];
-                                          // info[day - 1][i].color = colorsList[0];
+                                          colorList[day][i] = colors[0];
                                         } else {
                                           Dataclass newLecture = new Dataclass(
                                               idx: lecturesList[index].idx,
                                           time: "-");
                                           info[day][i] = newLecture;
+                                          colorList[day][i] = 0xFFFFFFFF;
                                         }
                                       }
                                     }
 
-                                    colorsList.add(colorsList[0]);
-                                    for (var i = 0; i < colorsList.length - 1; i++) {
-                                      colorsList[i] = colorsList[i + 1];
-                                    }
-                                    print(colorsList);
-                                    Navigator.pop(context);
+                                    print(info);
+                                    print(colorList);
 
+                                    colors.add(colors[0]);
+                                    colors.removeAt(0);
+                                    print(colors);
+                                    Navigator.pop(context);
                                   }
                               ),
                             ],
@@ -519,15 +538,12 @@ class AddLecture extends StatefulWidget {
   _AddLectureState createState() => _AddLectureState();
 }
 
-int count = 0;
-List item = ['강의명', '교수', ''];
-
 
 class _AddLectureState extends State<AddLecture> {
   @override
   Widget build(BuildContext context) {
     List info = widget.info;
-    Dataclass lecture = new Dataclass(idx: -1);
+    Dataclass newLecture = new Dataclass(idx: -1, professor: "", n14 : "" );
 
     return Scaffold(
         appBar: AppBar(
@@ -539,7 +555,7 @@ class _AddLectureState extends State<AddLecture> {
             new IconButton(
               icon: new Icon(Icons.check),
               onPressed: () {
-                if (lecture.name == null || lecture.lecture_time != null) {
+                if (newLecture.name == null || newLecture.lecture_time != null) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -547,7 +563,7 @@ class _AddLectureState extends State<AddLecture> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)
                         ),
-                        title: lecture.name == null  ? Text("강의명을 입력하세요") : Text("시간을 선택하세요"),
+                        title: newLecture.name == null  ? Text("강의명을 입력하세요") : Text("시간을 선택하세요"),
                         actions: <Widget>[
                           TextButton(
                             child: new Text("확인"),
@@ -562,7 +578,7 @@ class _AddLectureState extends State<AddLecture> {
                 }
                 else {
                   count ++;
-                  lecture.idx = 10000000 + count;
+                  newLecture.idx = 10000000 + count;
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -581,40 +597,49 @@ class _AddLectureState extends State<AddLecture> {
                             child: new Text("확인"),
                             onPressed: () {
 
-                              /*
-                              for (var time_index = 0; time_index <
-                                        lecturesList[index].lecture_time.length; time_index++) {
+                              List dataClasses = [];
 
-                                      int day = lecturesList[index].lecture_time[time_index].day;
-                                      double startTime = lecturesList[index]
-                                          .lecture_time[time_index].StartTime;
-                                      double endTime = lecturesList[index]
-                                          .lecture_time[time_index].EndTime;
-
-                                      for (int i = startTime.toInt()-1; i < endTime-1; i++) {
-                                        if (i == startTime) {
-                                          info[day][i] = lecturesList[index];
-                                          // info[day - 1][i].color = colorsList[0];
-                                        } else {
-                                          Dataclass newLecture = new Dataclass(
-                                              idx: lecturesList[index].idx,
-                                          time: "-");
-                                          info[day][i] = newLecture;
-                                        }
-                                      }
-                               */
-
-                              colorsList.add(colorsList[0]);
-                              for (var i = 0; i < colorsList.length - 1; i++) {
-                                colorsList[i] = colorsList[i + 1];
+                              for (int i = 3; i < item.length; i++) {
+                                if (item[i][2] != 0) {
+                                  LectureTime lectureTime = new LectureTime();
+                                  lectureTime.day = item[i][2][0];
+                                  lectureTime.StartTime = item[i][2][1].toDouble();
+                                  lectureTime.EndTime = item[i][2][2].toDouble();
+                                  lectureTimeList.add(lectureTime);
+                                }
                               }
-                              print(colorsList);
-                              //lecture.color = colorsList[0];
-                              colorsList.add(colorsList[0]);
-                              colorsList.removeAt(0);
+
+                              print(dataClasses);
+                              for (int i = 0; i < lectureTimeList.length; i++) {
+                                Dataclass eachLecture = new Dataclass(idx: newLecture.idx, name: newLecture.name, professor: newLecture.professor);
+                                eachLecture.lecture_time = [lectureTimeList[i]];
+                                dataClasses.add(eachLecture);
+                              }
+
+                              print(dataClasses);
+                              for (int time_index = 0; time_index < dataClasses.length; time_index++) {
+                                int day = dataClasses[time_index].lecture_time![0].day!;
+                                double startTime = dataClasses[time_index].lecture_time![0].StartTime!;
+                                double endTime = dataClasses[time_index].lecture_time![0].EndTime!;
+
+                                for (int i = startTime.toInt()-1; i < endTime-1; i++) {
+                                  if (i == startTime-1) {
+                                    info[day][i] = dataClasses[time_index];
+                                    colorList[day][i] = colors[0];
+                                  } else {
+                                    Dataclass newLecture = new Dataclass(
+                                        idx: dataClasses[time_index].idx,
+                                        time: "-");
+                                    info[day][i] = newLecture;
+                                    colorList[day][i] = 0xFFFFFFFF;
+                                  }
+                                }
+                              }
+
+                              colors.add(colors[0]);
+                              colors.removeAt(0);
 
                               Navigator.pop(context);
-                              //info[day][startTime] = lecture;
                             },
                           )
                         ],
@@ -651,9 +676,9 @@ class _AddLectureState extends State<AddLecture> {
                                         hintText: "입력하세요"),
                                     onChanged: (value) {
                                       if (index == 0) {
-                                        lecture.name = value;}
+                                        newLecture.name = value;}
                                       else{
-                                        lecture.professor = value;}
+                                        newLecture.professor = value;}
                                     }),
                               )
                           ),
@@ -664,7 +689,7 @@ class _AddLectureState extends State<AddLecture> {
                     return TextButton(
                       child: Text('시간 및 장소 추가'),
                       onPressed: () {
-                        item.add([1, "시간을 선택하세요", []]);
+                        item.add([1, "시간을 선택하세요", 0]);
                         setState(() {});
                         print(item);
                       },
@@ -689,18 +714,7 @@ class _AddLectureState extends State<AddLecture> {
                                         child: Text(item[index][1]),
                                       onTap: () {
                                         List _ = showPickerModal(index);
-                                        print(item[index][2]);
-                                        if (item[index][2][0] != null ) {
-                                          print(item[index][2]);
-                                          LectureTime lectureTime = new LectureTime();
-                                          lectureTime.day = item[index][2][0];
-                                          lectureTime.StartTime =
-                                          item[index][2][1];
-                                          lectureTime.EndTime = item[index][2][2];
-                                          lecture.lecture_time?.add(
-                                              lectureTime);
-                                          print(lecture);
-                                        }
+                                        setState(() {});
                                       }),
                                     )
                                 ),
@@ -725,6 +739,7 @@ class _AddLectureState extends State<AddLecture> {
                                               border: InputBorder.none,
                                               hintText: "입력하세요"),
                                           onChanged: (value) {
+                                            newLecture.n14 = value;
                                           }),)),
                                 Expanded(
                                     flex: 1,
@@ -751,7 +766,6 @@ class _AddLectureState extends State<AddLecture> {
     );
 
   }
-
   List PickerData = [
     ["월", "화", "수", "목", "금"],
     [9, 10, 11, 12, 13, 14, 15, 16, 17, 18],
@@ -770,13 +784,12 @@ class _AddLectureState extends State<AddLecture> {
           double startTime = value[1].toDouble();
           double endTime = value[3].toDouble();
 
-          if (value[2] == "30") {
+          if (value[2] == 1) {
             startTime += 0.5;
           }
-          if (value[4] == "30") {
+          if (value[4] == 1) {
             endTime += 0.5;
           }
-
 
           if (startTime >= endTime) {
             showDialog(
@@ -812,8 +825,9 @@ class _AddLectureState extends State<AddLecture> {
             List hour = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19];
             List minute = [0, 1];
             item[index][2] = [value[0]+1, hour[value[1]] + minute[value[2]], hour[value[3]] + minute[value[4]]];
+
+            setState(() {});
           }
-          setState(() {});
         }
     ).showModal(this.context);//_scaffoldKey.currentState);
     return timeList;
