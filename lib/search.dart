@@ -24,10 +24,13 @@ class _SearchScreenState extends State<SearchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+
+      ),
       body: Stack(
         children: [
           Align(
-            alignment: Alignment(0.8, -0.9),
+            alignment: Alignment(0.8, 0.9),
             child: InkWell(
               onTap: (){
                 print("update");
@@ -46,7 +49,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ),
           ),
           Align(
-            alignment: Alignment(0.8, -0.7),
+            alignment: Alignment(0.8, 0.7),
             child: InkWell(
               onTap: (){
                 print("load");
@@ -75,8 +78,11 @@ List<Dataclass> dataclass = [];
 button_Update() async{
   await update();
   await preProcessingData();
+  print("Start Insert");
   await sql_DeleteSql();
+  print("Delete complete");
   await sql_InsertAllData();
+  print("Insert complete");
 }
 
 button_Load() async{
@@ -516,8 +522,4 @@ saveData() async{
     print("a ${dataclass[i].idx}: ${dataclass[i].curriculum_division},${dataclass[i].department},${dataclass[i].major},${dataclass[i].comple_course},${dataclass[i].grade},${dataclass[i].class_number},${dataclass[i].lecture_number},${dataclass[i].name},${dataclass[i].credit},${dataclass[i].lecture_credit},${dataclass[i].experiment_credit},${dataclass[i].time},${dataclass[i].n14},${dataclass[i].professor},${dataclass[i].capacity},${dataclass[i].note},${dataclass[i].language}");
     //print("b ${dataclass[i].idx}: ${dataclasss[i].curriculum_division},${dataclasss[i].department},${dataclasss[i].major},${dataclasss[i].comple_course},${dataclasss[i].grade},${dataclasss[i].class_number},${dataclasss[i].lecture_number},${dataclasss[i].name},${dataclasss[i].credit},${dataclasss[i].lecture_credit},${dataclasss[i].experiment_credit},${dataclasss[i].time},${dataclasss[i].n14},${dataclasss[i].professor},${dataclasss[i].capacity},${dataclasss[i].note},${dataclasss[i].language}");
   }
-
-
 }
-
-
