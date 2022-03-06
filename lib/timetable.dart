@@ -1,11 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-//import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_picker/flutter_picker.dart';
 
-import 'dart:io';
-import 'dart:math';
 import 'package:snu_lecture_map/dataclass.dart';
 import 'package:snu_lecture_map/search.dart';
 
@@ -17,13 +14,12 @@ double screen_width = 0;
 double screen_height = 0;
 List lecturesList = dataclass;
 
-// dataclass에 color도 넣어주세요!
 List colors= [
-  0xFFFCE4EC, // pink
-  0xFFFFB74D, // yellow
-  0xFF9CCC65, // lightGreen
-  0xFF90CAF9, // blue
-  0xFFE1BEE7, // purple
+  [0xFFFCE4EC, -1], // pink
+  [0xFFFFB74D, -1], // yellow
+  [0xFF9CCC65, -1],// lightGreen
+  [0xFF90CAF9, -1],// blue
+  [0xFFE1BEE7, -1],// purple
 ];
 
 List colorList = [[0xFFFFFFFF],
@@ -34,7 +30,6 @@ List colorList = [[0xFFFFFFFF],
   [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF]
 ];
 
-// Dataclass newLecture = new Dataclass(idx: -1);
 int count = 0;
 List item = ['강의명', '교수', ''];
 List<LectureTime> lectureTimeList= [];
@@ -50,10 +45,6 @@ class TimeTable extends StatefulWidget {
 }
 
 class TimeTableState extends State<TimeTable> {
-
-  // 강의명\n 강의실, color, 강의시간(높이)
-  // 너비 (index_main으로 조절)
-  //String test = dataclass[0].name!;
 
   List day = [["", 0, 1],["월", 0, 1],["화", 0, 1],["수", 0, 1],["목", 0, 1],["금", 0, 1]];
   List<dynamic> info = [["9","10","11","12", "13","14", "15", "16", "17", "18"],
@@ -176,82 +167,81 @@ class TimeTableState extends State<TimeTable> {
                 scrollDirection: Axis.horizontal,
                 itemCount: day.length,
                 itemBuilder: (context, index_day) {
-                    return Container(
-                        width: index_day == 0 ? (screen_width) / 11 : (screen_width) / 11*2,
-                        child: Text(day[index_day][0]),
-                        decoration: BoxDecoration(
-                            border: Border(right : index_day != 5 ? BorderSide(color: Colors.grey, width: 1) : BorderSide(color: Colors.grey, width: 0)
-                            )
-                        )
-                    );
-                  },
+                  return Container(
+                      width: index_day == 0 ? (screen_width) / 11 : (screen_width) / 11*2,
+                      child: Text(day[index_day][0]),
+                      decoration: BoxDecoration(
+                          border: Border(right : index_day != 5 ? BorderSide(color: Colors.grey, width: 1) : BorderSide(color: Colors.grey, width: 0)
+                          )
+                      )
+                  );
+                },
               )
           ),
           Container(color: Colors.grey, height:1),
           SizedBox(
-            height : basic_height*20,
-            width: screen_width,
-            child:  ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 6,
-              itemBuilder: (context, index_h) {
-                return SizedBox(
-                    width: (index_h == 0) ? (screen_width) / 11 : (screen_width) / 11*2,
-                    child: ListView.separated(
-                      itemCount: (index_h == 0) ? 10 : 20,
-                      separatorBuilder: (context, index) => Divider(height: 0, thickness: 1, color: Colors.grey),
-                      itemBuilder: (context, index_v) {
-                        if (index_h == 0) {
-                          return Container(
-                              width : (screen_width) / 11,
-                              height: basic_height*2,
-                              child: Text(info[index_h][index_v]),
-                              decoration: BoxDecoration(
-                                border: Border(right : BorderSide(color: Colors.grey, width: 1),),
-                                color: Color(colorList[0][0])
-                              )
+              height : basic_height*20,
+              width: screen_width,
+              child:  ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 6,
+                itemBuilder: (context, index_h) {
+                  return SizedBox(
+                      width: (index_h == 0) ? (screen_width) / 11 : (screen_width) / 11*2,
+                      child: ListView.separated(
+                        itemCount: (index_h == 0) ? 10 : 20,
+                        separatorBuilder: (context, index) => Divider(height: 0, thickness: 1, color: Colors.grey),
+                        itemBuilder: (context, index_v) {
+                          if (index_h == 0) {
+                            return Container(
+                                width : (screen_width) / 11,
+                                height: basic_height*2,
+                                child: Text(info[index_h][index_v]),
+                                decoration: BoxDecoration(
+                                    border: Border(right : BorderSide(color: Colors.grey, width: 1),),
+                                    color: Color(colorList[0][0])
+                                )
                             );
                           }
-                        else {
-                          return GestureDetector(
-                            onTap: () async {
-                              if (info[index_h][index_v].idx != -1) {
-                                final value = await Navigator.push(context,
-                                    MaterialPageRoute(builder: (context) =>
-                                        LecturePage(
-                                            lecture: info[index_h][index_v])));
-                                setState(() {});
-                              }
-                            },
-                            onLongPress: () async {
-                              if (info[index_h][index_v].idx != -1) {
-                                print('hi');
-                                await _delete(info[index_h][index_v]);
-                                setState(() {});
-                              }
-                            },
-                            child: Container(
-                                height: info[index_h][index_v].idx == -1 ? basic_height
-                                    : info[index_h][index_v].time == "-"? 0 : basic_height * (info[index_h][index_v].lecture_time[0].EndTime - info[index_h][index_v].lecture_time[0].StartTime),
-                                decoration: BoxDecoration(
-                                  border: Border(right : index_h != 5 ? BorderSide(color: Colors.grey, width: 1) : BorderSide(color: Colors.grey, width: 0)),
-                                  color: Color(colorList[index_h][index_v])
-                                ),
-                                child: (info[index_h][index_v].name == null) ? Text("") :
-                                Column(
-                                  children: [
-                                    Text('${info[index_h][index_v].name}'),
-                                    //Text('${info[index_five][index_twenty].professor}')
-                                  ],
-                                )
-                            ),
-                          );
-                        }
-                      },
-                    )
-                );
-               },
-            )
+                          else {
+                            return GestureDetector(
+                              onTap: () async {
+                                if (info[index_h][index_v].idx != -1) {
+                                  final value = await Navigator.push(context,
+                                      MaterialPageRoute(builder: (context) =>
+                                          LecturePage(
+                                              lecture: info[index_h][index_v])));
+                                  setState(() {});
+                                }
+                              },
+                              onLongPress: () async {
+                                if (info[index_h][index_v].idx != -1) {
+                                  await _delete(info[index_h][index_v]);
+                                  setState(() {});
+                                }
+                              },
+                              child: Container(
+                                  height: info[index_h][index_v].idx == -1 ? basic_height
+                                      : info[index_h][index_v].time == "-"? 0 : basic_height * (info[index_h][index_v].lecture_time[0].EndTime - info[index_h][index_v].lecture_time[0].StartTime),
+                                  decoration: BoxDecoration(
+                                      border: Border(right : index_h != 5 ? BorderSide(color: Colors.grey, width: 1) : BorderSide(color: Colors.grey, width: 0)),
+                                      color: Color(colorList[index_h][index_v])
+                                  ),
+                                  child: (info[index_h][index_v].name == null) ? Text("") :
+                                  Column(
+                                    children: [
+                                      Text('${info[index_h][index_v].name}'),
+                                      //Text('${info[index_five][index_twenty].professor}')
+                                    ],
+                                  )
+                              ),
+                            );
+                          }
+                        },
+                      )
+                  );
+                },
+              )
           ),
           Container(color: Colors.grey, height:1),
         ],
@@ -302,6 +292,15 @@ class TimeTableState extends State<TimeTable> {
                     }
                   }
                 }
+
+                for (int i = 0; i < colors.length; i++) {
+                  if (colors[i][1] == lecture.idx) {
+                    colors[i][1] = -1;
+                    break;
+                  }
+                }
+                print(colors);
+
                 this.setState(() {});
                 Navigator.pop(context);
               },
@@ -335,6 +334,12 @@ class TimeTableState extends State<TimeTable> {
                   colorList[i][j] = 0xFFFFFFFF;
                 }
               }
+
+              for (int i = 0; i < colors.length; i++) {
+                colors[i][1] = -1;
+              }
+              print(colors);
+
               this.setState(() {});
               Navigator.pop(context);
             },
@@ -464,60 +469,104 @@ class _LectureListViewState extends State<LectureListView> {
                     child: LectureTile(lecturesList[index]),
                     onTap: () {
                       showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10.0)
-                            ),
-                            title: Text("${lecturesList[index].name}을(를) 추가하시겠습니까?"),
-                            actions: <Widget>[
-                              TextButton(
-                                child: new Text("취소"),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },),
-                              TextButton(
-                                  child: new Text("확인"),
-                                  onPressed: () {
-                                    for (var time_index = 0; time_index <
-                                        lecturesList[index].lecture_time.length; time_index++) {
+                          context: context,
+                          builder: (BuildContext context) {
+                            bool filled = false;
+                            for (int time_index = 0; time_index <
+                                lecturesList[index].lecture_time
+                                    .length; time_index++) {
+                              int day = lecturesList[index]
+                                  .lecture_time[time_index].day;
+                              double startTime = lecturesList[index]
+                                  .lecture_time[time_index].StartTime;
+                              double endTime = lecturesList[index]
+                                  .lecture_time[time_index].EndTime;
 
-                                      int day = lecturesList[index].lecture_time[time_index].day;
-                                      double startTime = lecturesList[index]
-                                          .lecture_time[time_index].StartTime;
-                                      double endTime = lecturesList[index]
-                                          .lecture_time[time_index].EndTime;
-                                      print(day);
-                                      print(startTime);
-                                      print(endTime);
+                              for (int i = startTime.toInt() - 1; i <
+                                  endTime - 1; i++) {
+                                if (info[day][i].idx != -1) {
+                                  filled = true;
+                                }
+                              }
+                            }
 
-                                      for (int i = startTime.toInt()-1; i < endTime-1; i++) {
-                                        if (i == startTime-1) {
-                                          info[day][i] = lecturesList[index];
-                                          colorList[day][i] = colors[0];
-                                        } else {
-                                          Dataclass newLecture = new Dataclass(
-                                              idx: lecturesList[index].idx,
-                                          time: "-");
-                                          info[day][i] = newLecture;
-                                          colorList[day][i] = 0xFFFFFFFF;
+                            if (filled) {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0)
+                                ),
+                                title: Text("겹치는 시간대의 강의가 존재합니다"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: new Text("확인"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },
+                                  ),
+                                ],
+                              );
+                            }
+                            else {
+                              return AlertDialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10.0)
+                                ),
+                                title: Text(
+                                    "${lecturesList[index].name}을(를) 추가하시겠습니까?"),
+                                actions: <Widget>[
+                                  TextButton(
+                                    child: new Text("취소"),
+                                    onPressed: () {
+                                      Navigator.pop(context);
+                                    },),
+                                  TextButton(
+                                      child: new Text("확인"),
+                                      onPressed: () {
+                                        int color = 0xFFFFFFFF;
+                                        for (int i = 0; i < colors.length; i++) {
+                                          if (colors[i][1] == -1) {
+                                            color = colors[i][0];
+                                            colors[i][1] = lecturesList[index].idx;
+                                            break;
+                                          }
                                         }
+                                        print(colors);
+
+                                        for (int time_index = 0; time_index <
+                                            lecturesList[index].lecture_time
+                                                .length; time_index++) {
+                                          int day = lecturesList[index]
+                                              .lecture_time[time_index].day;
+                                          double startTime = lecturesList[index]
+                                              .lecture_time[time_index].StartTime;
+                                          double endTime = lecturesList[index]
+                                              .lecture_time[time_index].EndTime;
+
+                                          for (int i = startTime.toInt() - 1; i <
+                                              endTime - 1; i++) {
+                                            if (i == startTime - 1) {
+                                              info[day][i] = lecturesList[index];
+                                              colorList[day][i] = color;
+                                            } else {
+                                              Dataclass newLecture = new Dataclass(
+                                                  idx: lecturesList[index].idx,
+                                                  time: "-");
+                                              info[day][i] = newLecture;
+                                              colorList[day][i] = 0xFFFFFFFF;
+                                            }
+                                          }
+                                        }
+
+                                        print(info);
+                                        print(colorList);
+                                        print(colors);
+                                        Navigator.pop(context);
                                       }
-                                    }
-
-                                    print(info);
-                                    print(colorList);
-
-                                    colors.add(colors[0]);
-                                    colors.removeAt(0);
-                                    print(colors);
-                                    Navigator.pop(context);
-                                  }
-                              ),
-                            ],
-                          );
-                        },
+                                  ),
+                                ],
+                              );
+                            }
+                          }
                       );
                     }
                 );
@@ -541,9 +590,9 @@ class AddLecture extends StatefulWidget {
 
 class _AddLectureState extends State<AddLecture> {
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context_) {
     List info = widget.info;
-    Dataclass newLecture = new Dataclass(idx: -1, professor: "", n14 : "" );
+    Dataclass newLecture = new Dataclass(idx: -1, name: "", professor: "", n14 : "" );
 
     return Scaffold(
         appBar: AppBar(
@@ -555,7 +604,9 @@ class _AddLectureState extends State<AddLecture> {
             new IconButton(
               icon: new Icon(Icons.check),
               onPressed: () {
-                if (newLecture.name == null || newLecture.lecture_time != null) {
+                print(newLecture.name);
+                print(item);
+                if (newLecture.name == "" || item.length <= 3) {
                   showDialog(
                     context: context,
                     builder: (BuildContext context) {
@@ -563,7 +614,7 @@ class _AddLectureState extends State<AddLecture> {
                         shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10.0)
                         ),
-                        title: newLecture.name == null  ? Text("강의명을 입력하세요") : Text("시간을 선택하세요"),
+                        title: item.length <= 3 ? Text("시간을 선택하세요") : Text("강의명을 입력하세요"),
                         actions: <Widget>[
                           TextButton(
                             child: new Text("확인"),
@@ -580,71 +631,107 @@ class _AddLectureState extends State<AddLecture> {
                   count ++;
                   newLecture.idx = 10000000 + count;
                   showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0)
-                        ),
-                        title: Text("강의를 추가하시겠습니까?"),
-                        actions: <Widget>[
-                          TextButton(
-                            child: new Text("취소"),
-                            onPressed: () {
-                              Navigator.pop(context);
-                            },),
-                          TextButton(
-                            child: new Text("확인"),
-                            onPressed: () {
+                      context: context,
+                      builder: (BuildContext context) {
+                        List dataClasses = [];
 
-                              List dataClasses = [];
+                        for (int i = 3; i < item.length; i++) {
+                          if (item[i][2] != 0) {
+                            LectureTime lectureTime = new LectureTime();
+                            lectureTime.day = item[i][2][0];
+                            lectureTime.StartTime = item[i][2][1].toDouble();
+                            lectureTime.EndTime = item[i][2][2].toDouble();
+                            lectureTimeList.add(lectureTime);
+                          }
+                        }
 
-                              for (int i = 3; i < item.length; i++) {
-                                if (item[i][2] != 0) {
-                                  LectureTime lectureTime = new LectureTime();
-                                  lectureTime.day = item[i][2][0];
-                                  lectureTime.StartTime = item[i][2][1].toDouble();
-                                  lectureTime.EndTime = item[i][2][2].toDouble();
-                                  lectureTimeList.add(lectureTime);
-                                }
-                              }
+                        for (int i = 0; i < lectureTimeList.length; i++) {
+                          Dataclass eachLecture = new Dataclass(idx: newLecture.idx, name: newLecture.name, professor: newLecture.professor);
+                          eachLecture.lecture_time = [lectureTimeList[i]];
+                          dataClasses.add(eachLecture);
+                        }
 
-                              print(dataClasses);
-                              for (int i = 0; i < lectureTimeList.length; i++) {
-                                Dataclass eachLecture = new Dataclass(idx: newLecture.idx, name: newLecture.name, professor: newLecture.professor);
-                                eachLecture.lecture_time = [lectureTimeList[i]];
-                                dataClasses.add(eachLecture);
-                              }
+                        bool filled = false;
+                        for (int time_index = 0; time_index < dataClasses.length; time_index++) {
+                          int day = dataClasses[time_index].lecture_time![0].day!;
+                          double startTime = dataClasses[time_index].lecture_time![0].StartTime!;
+                          double endTime = dataClasses[time_index].lecture_time![0].EndTime!;
 
-                              print(dataClasses);
-                              for (int time_index = 0; time_index < dataClasses.length; time_index++) {
-                                int day = dataClasses[time_index].lecture_time![0].day!;
-                                double startTime = dataClasses[time_index].lecture_time![0].StartTime!;
-                                double endTime = dataClasses[time_index].lecture_time![0].EndTime!;
+                          for (int i = startTime.toInt()-1; i < endTime-1; i++) {
+                            if (info[day][i].idx != -1) {
+                              filled = true;
+                            }
+                          }
+                        }
 
-                                for (int i = startTime.toInt()-1; i < endTime-1; i++) {
-                                  if (i == startTime-1) {
-                                    info[day][i] = dataClasses[time_index];
-                                    colorList[day][i] = colors[0];
-                                  } else {
-                                    Dataclass newLecture = new Dataclass(
-                                        idx: dataClasses[time_index].idx,
-                                        time: "-");
-                                    info[day][i] = newLecture;
-                                    colorList[day][i] = 0xFFFFFFFF;
+                        if (filled) {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)
+                            ),
+                            title: Text("겹치는 시간대의 강의가 존재합니다"),
+                            actions: <Widget>[
+                              TextButton(
+                                child: new Text("확인"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },
+                              ),
+                            ],
+                          );
+                        }
+
+                        else {
+                          return AlertDialog(
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10.0)
+                            ),
+                            title: Text("강의를 추가하시겠습니까?"),
+                            actions: <Widget>[
+                              TextButton(
+                                child: new Text("취소"),
+                                onPressed: () {
+                                  Navigator.pop(context);
+                                },),
+                              TextButton(
+                                child: new Text("확인"),
+                                onPressed: () {
+                                  int color = 0xFFFFFFFF;
+                                  for (int i = 0; i < colors.length; i++) {
+                                    if (colors[i][1] == -1) {
+                                      color = colors[i][0];
+                                      colors[i][1] = newLecture.idx;
+                                      break;
+                                    }
                                   }
-                                }
-                              }
+                                  print(colors);
 
-                              colors.add(colors[0]);
-                              colors.removeAt(0);
+                                  for (int time_index = 0; time_index < dataClasses.length; time_index++) {
+                                    int day = dataClasses[time_index].lecture_time![0].day!;
+                                    double startTime = dataClasses[time_index].lecture_time![0].StartTime!;
+                                    double endTime = dataClasses[time_index].lecture_time![0].EndTime!;
 
-                              Navigator.pop(context);
-                            },
-                          )
-                        ],
-                      );
-                    },
+                                    for (int i = startTime.toInt()-1; i < endTime-1; i++) {
+                                      if (i == startTime-1) {
+                                        info[day][i] = dataClasses[time_index];
+                                        colorList[day][i] = color;
+                                      } else {
+                                        Dataclass newLecture = new Dataclass(
+                                            idx: dataClasses[time_index].idx,
+                                            time: "-");
+                                        info[day][i] = newLecture;
+                                        colorList[day][i] = 0xFFFFFFFF;
+                                      }
+                                    }
+                                  }
+                                  Navigator.pop(context);
+                                  Navigator.pop(context_);
+                                },
+                              )
+                            ],
+                          );
+                        };
+                      }
                   );
                 }
               },
@@ -676,7 +763,9 @@ class _AddLectureState extends State<AddLecture> {
                                         hintText: "입력하세요"),
                                     onChanged: (value) {
                                       if (index == 0) {
-                                        newLecture.name = value;}
+                                        newLecture.name = value;
+                                        print(newLecture.name);
+                                      }
                                       else{
                                         newLecture.professor = value;}
                                     }),
@@ -711,11 +800,11 @@ class _AddLectureState extends State<AddLecture> {
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: GestureDetector(
-                                        child: Text(item[index][1]),
-                                      onTap: () {
-                                        List _ = showPickerModal(index);
-                                        setState(() {});
-                                      }),
+                                          child: Text(item[index][1]),
+                                          onTap: () {
+                                            List _ = showPickerModal(index);
+                                            setState(() {});
+                                          }),
                                     )
                                 ),
                               ]
