@@ -120,7 +120,7 @@ class _SearchScreenState extends State<SearchScreen> {
             ignoreCase: true,
           ));
       for (int i = 0; i < names.length; i++) {
-        if (true /*regExp.hasMatch(names[i])*/) {
+        if (regExp.hasMatch(names[i])) {
           //입력한 문자와 일치하는 검색 결과 필터
           tempList.add(names[i]);
         }
