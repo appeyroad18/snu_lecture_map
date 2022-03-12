@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:korea_regexp/get_regexp.dart';
 import 'package:korea_regexp/models/regexp_options.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SearchScreen extends StatefulWidget {
   double bottomBarHeight;
@@ -145,20 +146,18 @@ List<String> datalist = [];
 
 button_Update() async {
   await update();
+  showToast("Update Complete");
   await preProcessingData();
-  print("Start Insert");
   await sql_DeleteSql();
-  print("Delete complete");
+  showToast("Delete complete");
   await sql_InsertAllData();
-  print("Insert complete");
+  showToast("Insert complete");
 }
 
 button_Load() async {
   dataclass = await sql_GetDataFromSql();
-  print("load complete");
   preProcessingData();
-  print("preprocessing complete");
-  print("${dataclass.length}");
+  showToast("${dataclass.length} components load complete");
 }
 
 update() async {
@@ -576,4 +575,14 @@ saveData() async {
         "a ${dataclass[i].idx}: ${dataclass[i].curriculum_division},${dataclass[i].department},${dataclass[i].major},${dataclass[i].comple_course},${dataclass[i].grade},${dataclass[i].class_number},${dataclass[i].lecture_number},${dataclass[i].name},${dataclass[i].credit},${dataclass[i].lecture_credit},${dataclass[i].experiment_credit},${dataclass[i].time},${dataclass[i].n14},${dataclass[i].professor},${dataclass[i].capacity},${dataclass[i].note},${dataclass[i].language}");
     //print("b ${dataclass[i].idx}: ${dataclasss[i].curriculum_division},${dataclasss[i].department},${dataclasss[i].major},${dataclasss[i].comple_course},${dataclasss[i].grade},${dataclasss[i].class_number},${dataclasss[i].lecture_number},${dataclasss[i].name},${dataclasss[i].credit},${dataclasss[i].lecture_credit},${dataclasss[i].experiment_credit},${dataclasss[i].time},${dataclasss[i].n14},${dataclasss[i].professor},${dataclasss[i].capacity},${dataclasss[i].note},${dataclasss[i].language}");
   }
+}
+
+void showToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    backgroundColor: Colors.white,
+    textColor: Colors.black,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+  );
 }
