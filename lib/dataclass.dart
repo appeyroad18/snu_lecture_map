@@ -1,14 +1,13 @@
-class LectureTime{
+class LectureTime {
   int? day;
   double? StartTime;
   double? EndTime;
 }
 
-class LectureBR{
+class LectureBR {
   String? Building;
   String? Room;
 }
-
 
 class Dataclass {
   int? idx;
@@ -33,11 +32,29 @@ class Dataclass {
   List<LectureTime>? lecture_time;
   List<LectureBR>? lecture_buildingroom;
 
+  Dataclass({
+    this.idx,
+    this.curriculum_division,
+    this.department,
+    this.major,
+    this.comple_course,
+    this.grade,
+    this.class_number,
+    this.lecture_number,
+    this.name,
+    this.credit,
+    this.lecture_credit,
+    this.experiment_credit,
+    this.time,
+    this.type,
+    this.n14,
+    this.professor,
+    this.capacity,
+    this.note,
+    this.language,
+  });
 
-  Dataclass({this.idx,this.curriculum_division,this.department,this.major,this.comple_course,this.grade,this.class_number,this.lecture_number,this.name,this.credit,
-    this.lecture_credit,this.experiment_credit,this.time,this.type,this.n14,this.professor,this.capacity,this.note,this.language,});
-
-  factory Dataclass.fromJson(dynamic json){
+  factory Dataclass.fromJson(dynamic json) {
     return Dataclass(
       curriculum_division: "${json['교과구분']}",
       department: "${json['개설대학']}",
@@ -57,35 +74,32 @@ class Dataclass {
       capacity: "${json['정원']}",
       note: "${json['비고']}",
       language: "${json['강의언어']}",
-
-
-
     );
   }
 
   Map toJson() => {
-    "교과구분": curriculum_division,
-    "개설대학": department,
-    "개설학과": major,
-    "이수과정": comple_course,
-    "학년": grade,
-    "교과목번호": class_number,
-    "강좌번호": lecture_number,
-    "교과목명": name,
-    "학점": credit,
-    "강의": lecture_credit,
-    "실습": experiment_credit,
-    "수업교시": time,
-    "수업형태": type,
-    "강의실": n14,
-    "담당교수": professor,
-    "정원": capacity,
-    "비고": note,
-    "강의언어": language,
-  };
+        "교과구분": curriculum_division,
+        "개설대학": department,
+        "개설학과": major,
+        "이수과정": comple_course,
+        "학년": grade,
+        "교과목번호": class_number,
+        "강좌번호": lecture_number,
+        "교과목명": name,
+        "학점": credit,
+        "강의": lecture_credit,
+        "실습": experiment_credit,
+        "수업교시": time,
+        "수업형태": type,
+        "강의실": n14,
+        "담당교수": professor,
+        "정원": capacity,
+        "비고": note,
+        "강의언어": language,
+      };
 
   Map<String, dynamic> toMap() {
-    return{
+    return {
       'idx': idx,
       'curriculum_division': curriculum_division,
       'department': department,
