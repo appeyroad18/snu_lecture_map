@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
 import 'package:korea_regexp/get_regexp.dart';
 import 'package:korea_regexp/models/regexp_options.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class SearchScreen extends StatefulWidget {
   double bottomBarHeight;
@@ -23,8 +24,7 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final TextEditingController _filter =
-      new TextEditingController(); // TextEditingController
+  final TextEditingController _filter = new TextEditingController();
 
   String _searchText = ""; // 검색창에 user가 타이핑한 문자열
 
@@ -143,22 +143,26 @@ class _SearchScreenState extends State<SearchScreen> {
 List<Dataclass> dataclass = [];
 List<String> datalist = [];
 
-button_Update() async {
+void button_Update() async {
+  dataclass.clear();
   await update();
-  await preProcessingData();
-  print("Start Insert");
-  await sql_DeleteSql();
-  print("Delete complete");
-  await sql_InsertAllData();
-  print("Insert complete");
-}
-
-button_Load() async {
-  dataclass = await sql_GetDataFromSql();
-  print("load complete");
+  print("update complete");
+  showToast("Update Complete");
   preProcessingData();
   print("preprocessing complete");
-  print("${dataclass.length}");
+  sql_DeleteSql();
+  print("delete complete");
+  showToast("Delete complete");
+  sql_InsertAllData();
+  print("insert complete");
+  showToast("Insert complete");
+}
+
+void button_Load() async {
+  dataclass.clear();
+  dataclass = await sql_GetDataFromSql();
+  preProcessingData();
+  showToast("${dataclass.length} components load complete");
 }
 
 update() async {
@@ -168,7 +172,7 @@ update() async {
   var jsonData = convert.jsonDecode(raw.body);
 
   jsonData.forEach((element) {
-    Dataclass data = new Dataclass();
+    Dataclass data = Dataclass();
     data.curriculum_division = element['교과구분'];
     data.department = element['개설대학'];
     data.major = element['개설학과'];
@@ -191,11 +195,13 @@ update() async {
     dataclass.add(data);
   });
 
+  jsonData.clear();
+
   // preProcessingData();
   // saveData();
 }
 
-preProcessingData() {
+void preProcessingData() {
   for (int i = 0; i < dataclass.length; i++) {
     dataclass[i].idx = i;
   }
@@ -212,7 +218,7 @@ preProcessingData() {
       }
 
       for (int j = 0; j < NumOfSlash_time + 1; j++) {
-        LectureTime newlecturetime = new LectureTime();
+        LectureTime newlecturetime = LectureTime();
         newlecturetime.day = 999;
         newlecturetime.StartTime = 999;
         newlecturetime.EndTime = 999;
@@ -283,22 +289,23 @@ preProcessingData() {
         lecturetime.add(newlecturetime);
       }
     } else {
-      LectureTime newlecturetime = new LectureTime();
+      LectureTime newlecturetime = LectureTime();
       newlecturetime.day = 999;
       newlecturetime.StartTime = 999;
       newlecturetime.EndTime = 999;
       lecturetime.add(newlecturetime);
     }
-
+    datalist.clear();
     for (int i = 0; i < dataclass.length; i++) {
       datalist.add(dataclass[i].name!);
     }
     dataclass[i].lecture_time = lecturetime;
+    lecturetime.clear();
     //print('${dataclass[i].lecture_time![0].StartTime!}');
   }
 
   //강의동 전처리
-
+/*
   for (int i = 0; i < dataclass.length; i++) {
     int NumOfSlash_time = 0;
     List<int> SlashIndex = List.generate(10, (index) => 0);
@@ -359,13 +366,14 @@ preProcessingData() {
       if (NumOfHyphen == 1) {
         var temp_building = dataclass[i].n14!.substring(0, HyphenIndex[1]);
         var temp_room = dataclass[i].n14!.substring(HyphenIndex[1] + 1);
-        LectureBR temp_lecturebr = new LectureBR();
+        LectureBR temp_lecturebr = LectureBR();
         temp_lecturebr.Building = temp_building;
         temp_lecturebr.Room = temp_room;
         dataclass[i].lecture_buildingroom = [];
         dataclass[i].lecture_buildingroom!.add(temp_lecturebr);
         //print("${dataclass[i].lecture_buildingroom![0].Building}");
       }
+      HyphenIndex.clear();
       /*
       if (NumOfHyphen == 0) {
         var temp_building = dataclass[i].n14!.substring(0, HyphenIndex[1]);
@@ -379,12 +387,18 @@ preProcessingData() {
       }
       */
     }
-  }
 
+
+    SlicedString.clear();
+    SlashIndex.clear();
+
+
+  }
+*/
   //수업 교시 전처리
 }
 
-searchingName(String info) {
+List<int> searchingName(String info) {
   List<int> coincidence = [];
   for (int i = 0; i < dataclass.length; i++) {
     var haystack_size = dataclass[i].name!.length;
@@ -405,7 +419,7 @@ searchingName(String info) {
   return coincidence;
 }
 
-searchingBuilding(String info) {
+List<int> searchingBuilding(String info) {
   List<int> coincidence = [];
   for (int i = 0; i < dataclass.length; i++) {
     for (int j = 0; j < dataclass[i].lecture_buildingroom!.length; j++) {
@@ -430,7 +444,7 @@ searchingBuilding(String info) {
   return coincidence;
 }
 
-sql_OpenGenerate() async {
+void sql_OpenGenerate() async {
   //dataclass 적용용 test
   //Generate or Open Database
   Future<Database> database = openDatabase(
@@ -445,7 +459,7 @@ sql_OpenGenerate() async {
   print("done");
 }
 
-sql_InsertAllData() async {
+void sql_InsertAllData() async {
   Future<Database> database = openDatabase(
     join(await getDatabasesPath(), 'dataclass2.db'),
     onCreate: (db, version) {
@@ -469,6 +483,7 @@ sql_InsertAllData() async {
   for (int i = 0; i < dataclass.length; i++) {
     await insertDataclass(dataclass[i]);
   }
+  db.close();
 }
 
 Future<List<Dataclass>> sql_GetDataFromSql() async {
@@ -530,6 +545,7 @@ Future<void> sql_DeleteSql() async {
       whereArgs: [i],
     );
   }
+  db.close();
 }
 
 //db 수정 함수
@@ -551,9 +567,10 @@ Future<void> sql_UpdateSql(Dataclass dataclass) async {
     where: "idx = ?",
     whereArgs: [dataclass.idx],
   );
+  db.close();
 }
 
-saveData() async {
+void saveData() async {
   print("sql_start");
 
   // update();
@@ -576,4 +593,14 @@ saveData() async {
         "a ${dataclass[i].idx}: ${dataclass[i].curriculum_division},${dataclass[i].department},${dataclass[i].major},${dataclass[i].comple_course},${dataclass[i].grade},${dataclass[i].class_number},${dataclass[i].lecture_number},${dataclass[i].name},${dataclass[i].credit},${dataclass[i].lecture_credit},${dataclass[i].experiment_credit},${dataclass[i].time},${dataclass[i].n14},${dataclass[i].professor},${dataclass[i].capacity},${dataclass[i].note},${dataclass[i].language}");
     //print("b ${dataclass[i].idx}: ${dataclasss[i].curriculum_division},${dataclasss[i].department},${dataclasss[i].major},${dataclasss[i].comple_course},${dataclasss[i].grade},${dataclasss[i].class_number},${dataclasss[i].lecture_number},${dataclasss[i].name},${dataclasss[i].credit},${dataclasss[i].lecture_credit},${dataclasss[i].experiment_credit},${dataclasss[i].time},${dataclasss[i].n14},${dataclasss[i].professor},${dataclasss[i].capacity},${dataclasss[i].note},${dataclasss[i].language}");
   }
+}
+
+void showToast(String message) {
+  Fluttertoast.showToast(
+    msg: message,
+    backgroundColor: Colors.white,
+    textColor: Colors.black,
+    toastLength: Toast.LENGTH_SHORT,
+    gravity: ToastGravity.BOTTOM,
+  );
 }

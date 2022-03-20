@@ -9,12 +9,9 @@ import 'package:snu_lecture_map/setting.dart';
 import 'package:snu_lecture_map/timetable.dart';
 import 'package:flutter/services.dart';
 
-
-void main(){
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  SystemChrome.setEnabledSystemUIOverlays([
-    SystemUiOverlay.bottom
-  ]);
+  SystemChrome.setEnabledSystemUIOverlays([SystemUiOverlay.bottom]);
   //runApp(Home());
   runApp(MyApp());
 }
@@ -31,7 +28,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
 
@@ -41,7 +37,7 @@ class SplashScreen extends StatefulWidget {
 
 class _SplashScreenState extends State<SplashScreen> {
   @override
-  void initState(){
+  void initState() {
     super.initState();
     _init();
 
@@ -58,13 +54,14 @@ class _SplashScreenState extends State<SplashScreen> {
     // Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SNUMap()));
   }
 
-  void _init() async{
+  void _init() async {
     dataclass = await sql_GetDataFromSql();
     preProcessingData();
-    // print("sql finish");
+    print("sql finish");
     // int i=0;
     // print("a ${dataclass[i].idx}: ${dataclass[i].curriculum_division},${dataclass[i].department},${dataclass[i].major},${dataclass[i].comple_course},${dataclass[i].grade},${dataclass[i].class_number},${dataclass[i].lecture_number},${dataclass[i].name},${dataclass[i].credit},${dataclass[i].lecture_credit},${dataclass[i].experiment_credit},${dataclass[i].time},${dataclass[i].n14},${dataclass[i].professor},${dataclass[i].capacity},${dataclass[i].note},${dataclass[i].language}");
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SNUMap()));
+    Navigator.pushReplacement(
+        context, MaterialPageRoute(builder: (context) => SNUMap()));
   }
 
   @override
@@ -73,38 +70,38 @@ class _SplashScreenState extends State<SplashScreen> {
     return //WillPopScope(
         //onWillPop: () async => false,
         //child: MediaQuery(
-          //data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
-          //child:
-      new Scaffold(
+        //data: MediaQuery.of(context).copyWith(textScaleFactor: 1.0),
+        //child:
+        new Scaffold(
             backgroundColor: Color(0xffaeddef),
             body: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: Container(
-                      width: screenWidth*0.3,
-                      height: screenWidth*0.3,
-                      decoration: BoxDecoration(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: Container(
+                    width: screenWidth * 0.3,
+                    height: screenWidth * 0.3,
+                    decoration: BoxDecoration(
                         image: DecorationImage(
-                          image: AssetImage('assets/images/flutterlogo.png'),
-                        )
-                      ),
-                    ),
+                      image: AssetImage('assets/images/flutterlogo.png'),
+                    )),
                   ),
-                  SizedBox(
-                    height: screenWidth*0.4,
+                ),
+                SizedBox(
+                  height: screenWidth * 0.4,
+                ),
+                Text(
+                  '© SNU APPEYROAD 2022, -----',
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.black54,
                   ),
-                  Text('© SNU APPEYROAD 2022, -----',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: Colors.black54,
-                    ),
-                  )
-                ],
-              )
+                )
+              ],
+            )
             //),
-        //),
-    );
+            //),
+            );
   }
 }
 
@@ -113,15 +110,14 @@ class SNUMap extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        title: 'SNUMap',
-        theme: ThemeData(
-            textTheme: Theme.of(context).textTheme.apply(
-              bodyColor: Colors.black,
-              displayColor: Colors.blue,
-            )
-        ),
-        home: MainPage(),
+      debugShowCheckedModeBanner: false,
+      title: 'SNUMap',
+      theme: ThemeData(
+          textTheme: Theme.of(context).textTheme.apply(
+                bodyColor: Colors.black,
+                displayColor: Colors.blue,
+              )),
+      home: MainPage(),
     );
   }
 }
@@ -198,13 +194,25 @@ class _MainPageState extends State<MainPage> {
       //   title: const Text('SNU Lecture Map'),
       // ),
       body: Builder(
-        builder: (context){
-          double _appBarHeight = Scaffold.of(context).appBarMaxHeight??0;
+        builder: (context) {
+          double _appBarHeight = Scaffold.of(context).appBarMaxHeight ?? 0;
           List<Widget> _widgetOption = [
-            MapScreen(bottomBarHeight: bottomBarHeight, appBarHeight: _appBarHeight,),
-            SearchScreen(bottomBarHeight: bottomBarHeight, appBarHeight: _appBarHeight,),
-            TimeTable(bottomBarHeight: bottomBarHeight, appBarHeight: _appBarHeight,),
-            SettingScreen(bottomBarHeight: bottomBarHeight, appBarHeight: _appBarHeight,),
+            MapScreen(
+              bottomBarHeight: bottomBarHeight,
+              appBarHeight: _appBarHeight,
+            ),
+            SearchScreen(
+              bottomBarHeight: bottomBarHeight,
+              appBarHeight: _appBarHeight,
+            ),
+            TimeTable(
+              bottomBarHeight: bottomBarHeight,
+              appBarHeight: _appBarHeight,
+            ),
+            SettingScreen(
+              bottomBarHeight: bottomBarHeight,
+              appBarHeight: _appBarHeight,
+            ),
           ];
           return IndexedStack(
             index: _selectedIndex,
@@ -237,7 +245,7 @@ class _MainPageState extends State<MainPage> {
           currentIndex: _selectedIndex,
           selectedItemColor: Colors.black,
           unselectedItemColor: Colors.grey,
-          onTap: (int index){
+          onTap: (int index) {
             setState(() {
               _selectedIndex = index;
             });
