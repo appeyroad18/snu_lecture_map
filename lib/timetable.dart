@@ -275,6 +275,7 @@ class TimeTableState extends State<TimeTable> {
     );
   }
 
+  
   Future _delete(Dataclass lecture) => showDialog(
     context: context,
     barrierDismissible: false, //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
