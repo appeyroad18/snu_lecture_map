@@ -637,7 +637,6 @@ class _LectureListViewState extends State<LectureListView> {
               }
           ),
         )
-
     );
   }
 }
@@ -1011,6 +1010,7 @@ class _AddLectureState extends State<AddLecture> {
             String time = day + ' ' + Stime + ' - ' + Etime;
             item[index][1] = time;
 
+            // List hour_temp = i*2 for i in 0:14;
             List hour = [0, 2, 4, 6, 8, 10, 12, 14, 16 ,18 ,20, 22, 24, 26, 28];
             List minute = [0, 1];
             item[index][2] = [value[0]+1, hour[value[1]] + minute[value[2]], hour[value[3]] + minute[value[4]]];
