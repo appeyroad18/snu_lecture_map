@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_picker/flutter_picker.dart';
+import 'dart:math';
 
 import 'package:snu_lecture_map/dataclass.dart';
 import 'package:snu_lecture_map/search.dart';
@@ -23,13 +24,13 @@ List colors= [
 ];
 
 List colorList = [[0xFFFFFFFF],
-  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,],
-  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,],
-  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,],
-  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,],
-  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,],
-  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,],
-  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,]
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF],
+  [0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF,0xFFFFFFFF]
 ];
 
 int count = 0;
@@ -37,11 +38,11 @@ List item = ['강의명', '교수', ''];
 List<LectureTime> lectureTimeList= [];
 
 int upperLimit = 1; // 9시
-int lowerLimit = 11; // 18시
+int lowerLimit = 9+1; // 18시
 int timeTableCount = (lowerLimit - upperLimit);
 
 int dayUpperLimit = 0; //
-int dayLowerLimit = 6; //
+int dayLowerLimit = 5+1; //
 int dayCount = (dayLowerLimit - dayUpperLimit);
 
 class TimeTableBox extends StatelessWidget {
@@ -69,13 +70,13 @@ class TimeTableState extends State<TimeTable> {
 
   List day = [["", 0, 1],["월", 0, 1],["화", 0, 1],["수", 0, 1],["목", 0, 1],["금", 0, 1], ["토", 0, 1], ["일", 0, 1]];
   List<dynamic> info = [["8","9","10","11","12", "13","14", "15", "16", "17", "18","19","20","21"],
-    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1),],
-    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1),],
-    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1),],
-    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1),],
-    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1),],
-    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1),],
-    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1),],
+    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1)],
+    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1)],
+    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1)],
+    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1)],
+    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1)],
+    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1)],
+    [Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1), Dataclass(idx: -1)],
   ];
 
   @override
@@ -275,7 +276,7 @@ class TimeTableState extends State<TimeTable> {
     );
   }
 
-  
+
   Future _delete(Dataclass lecture) => showDialog(
     context: context,
     barrierDismissible: false, //barrierDismissible - Dialog를 제외한 다른 화면 터치 x
@@ -311,8 +312,10 @@ class TimeTableState extends State<TimeTable> {
             new TextButton(
               child: new Text("확인"),
               onPressed: () {
-                for (var i = 1; i < info.length; i++) {
-                  for (var j = 0; j < info[i].length; j++) {
+
+                // info, coloList 비우기
+                for (int i = 1; i < info.length; i++) {
+                  for (int j = 0; j < info[i].length; j++) {
                     if (info[i][j].idx == lecture.idx) {
                       info[i][j] = Dataclass(idx: -1);
                       colorList[i][j] = 0xFFFFFFFF;
@@ -320,6 +323,7 @@ class TimeTableState extends State<TimeTable> {
                   }
                 }
 
+                // colors 리스트 해당 색깔 인덱스 초기화
                 for (int i = 0; i < colors.length; i++) {
                   if (colors[i][1] == lecture.idx) {
                     colors[i][1] = -1;
@@ -329,20 +333,49 @@ class TimeTableState extends State<TimeTable> {
                 print(colors);
 
                 int earliestTime = 1;
-                int latestTime = 11;
+                int latestTime = 9+1;
 
-                for (int i = 1; i <= 7; i++) {
-                  for (int j=0; (j-1) ~/ 2 < earliestTime; j++) {
-                    print(j);
-                    print(info[i][j].idx);
-                    if (info[i][j].idx != -1) {earliestTime = (j-1) ~/ 2;}
-                  }
-                  for (int j=29; (j-1) ~/ 2 > latestTime; j--) {
-                    print(j);
-                    print(info[i][j].idx);
-                    if (info[i][j].idx != -1) {latestTime = (j-1) ~/ 2;}
+                List minMaxCheck = [];
+                for (int i=1; i<=7; i++) {
+                  for (int j=0; j<= 27; j++) {
+                    if (info[i][j].idx != -1) {
+                      minMaxCheck.add(j);
+                    }
                   }
                 }
+
+                minMaxCheck.sort();
+
+                print(minMaxCheck);
+                if (minMaxCheck.length > 0) {
+                  if (minMaxCheck[0] ~/ 2 < earliestTime) {
+                    earliestTime = minMaxCheck[0] ~/ 2;
+                  }
+                  if (minMaxCheck[minMaxCheck.length - 1] ~/ 2 + 1 >
+                      latestTime) {
+                    latestTime = minMaxCheck[minMaxCheck.length -
+                        1] ~/ 2 + 1;
+                  }
+                }
+
+                print(earliestTime);
+                print(latestTime);
+
+                dayLowerLimit = 5+1;
+
+                for (int i=6; i<=7; i++) {
+                  for (int j = 0; j <= 27; j++) {
+                    print('${i}, ${j}');
+                    print(info[i][j].idx);
+                    if (info[i][j].idx != -1) {
+                      dayLowerLimit = i + 1;
+                      print('${i}, ${j}');
+
+                    }
+                  }
+                }
+
+                print(dayLowerLimit);
 
                 print(earliestTime);
                 print(latestTime);
@@ -350,6 +383,7 @@ class TimeTableState extends State<TimeTable> {
                 upperLimit = earliestTime;
                 lowerLimit = latestTime;
                 timeTableCount = (lowerLimit - upperLimit);
+                dayCount = (dayLowerLimit - dayUpperLimit);
 
                 this.setState(() {});
                 Navigator.pop(context);
@@ -391,11 +425,11 @@ class TimeTableState extends State<TimeTable> {
               print(colors);
 
               upperLimit = 1; // 9시
-              lowerLimit = 11; // 18시
+              lowerLimit = 9+1; // 18시
               timeTableCount = (lowerLimit - upperLimit);
 
               dayUpperLimit = 0; //
-              dayLowerLimit = 6; //
+              dayLowerLimit = 5+1; //
               dayCount = (dayLowerLimit - dayUpperLimit);
 
               this.setState(() {});
@@ -529,22 +563,86 @@ class _LectureListViewState extends State<LectureListView> {
                       showDialog(
                           context: context,
                           builder: (BuildContext context) {
+
+                            int earliestTime = 1; // 9시
+                            int latestTime = 9+1; // 17시 (즉, 18시까지)
+
+                            List minMaxCheck = [];
+                            for (int i=1; i<=7; i++) {
+                              for (int j=0; j<= 27; j++) {
+                                if (info[i][j].idx != -1) {
+                                  minMaxCheck.add(j);
+                                }
+                              }
+                            }
+
+                            minMaxCheck.sort();
+
+                            print(minMaxCheck);
+                            if (minMaxCheck.length > 0) {
+                              if (minMaxCheck[0] ~/ 2 < earliestTime) {
+                                earliestTime = minMaxCheck[0] ~/ 2;
+                              }
+                              if (minMaxCheck[minMaxCheck.length - 1] ~/ 2 + 1 >
+                                  latestTime) {
+                                latestTime = minMaxCheck[minMaxCheck.length -
+                                    1] ~/ 2 + 1;
+                              }
+                            }
+
+                            print(earliestTime);
+                            print(latestTime);
+
+/*
+                            for (int i=1; i<=7; i++) { // 월요일부터 일요일까지
+                              print('${i}요일');
+                              for (int j=0; j ~/ 2 <= earliestTime; j++) { // 8시부터 최대 9시까지 확인
+                                print(j);
+                                print(info[i][j].idx);
+                                if (info[i][j].idx != -1) {
+                                  earliestTime = j ~/ 2 == 0 ? 0 : j ~/ 2 -1;
+                                  break;
+                                }
+                              }
+                              for (int j=27; j ~/ 2 >= latestTime; j--) { // 21시 반부터 최대 6시까지 확인
+                                print(j);
+                                print(info[i][j].idx);
+                                if (info[i][j].idx != -1) {
+                                  latestTime = j ~/ 2 == 13 ? 13 : j ~/ 2 +1;
+                                  print('lastTime: ${j}, ${j~/2+1}');
+                                  break;
+                                }
+                              }
+                            }
+
+ */
+
+                            for (int i=6; i<=7; i++) {
+                              for (int j = 0; j <= 27; j++) {
+                                if (info[i][j].idx != -1) {
+                                  dayLowerLimit = i + 1;
+                                }
+                              }
+                            }
+
+                            print(lecturesList[index].name);
+                            print(lecturesList[index].lecture_time);
+
                             bool filled = false;
-                            for (int time_index = 0; time_index <
-                                lecturesList[index].lecture_time
-                                    .length; time_index++) {
-                              int day = (lecturesList[index]
-                                  .lecture_time[time_index].day == 0) ? 7:
-                              lecturesList[index]
-                                  .lecture_time[time_index].day;
+                            for (int time_index = 0; time_index < lecturesList[index].lecture_time.length; time_index++) {
+                              int day = (lecturesList[index].lecture_time[time_index].day == 0) ? 7: lecturesList[index].lecture_time[time_index].day;
+                              double startTime = lecturesList[index].lecture_time[time_index].StartTime + 1;
+                              double endTime = lecturesList[index].lecture_time[time_index].EndTime + 1;
 
-                              double startTime = lecturesList[index]
-                                  .lecture_time[time_index].StartTime;
-                              double endTime = lecturesList[index]
-                                  .lecture_time[time_index].EndTime;
+                              print(day);
+                              print(startTime);
+                              print(endTime);
 
-                              for (int i = startTime.toInt() - 1; i <
-                                  endTime - 1; i++) {
+                              if (startTime ~/ 2 < earliestTime) {earliestTime = startTime ~/ 2;}
+                              if (endTime ~/ 2 + 1 > latestTime) {latestTime = endTime % 2 == 1 ? endTime ~/ 2 + 1 : endTime ~/ 2;}
+                              if (day+1 > dayLowerLimit) {dayLowerLimit = day+1;}
+
+                              for (int i = startTime.toInt(); i < endTime; i++) {
                                 if (info[day][i].idx != -1) {
                                   filled = true;
                                 }
@@ -569,6 +667,11 @@ class _LectureListViewState extends State<LectureListView> {
                               );
                             }
                             else {
+                              upperLimit = earliestTime;
+                              lowerLimit = latestTime;
+                              timeTableCount = (lowerLimit - upperLimit);
+                              dayCount = (dayLowerLimit - dayUpperLimit);
+
                               return AlertDialog(
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10.0)
@@ -602,13 +705,13 @@ class _LectureListViewState extends State<LectureListView> {
                                           lecturesList[index]
                                               .lecture_time[time_index].day;
                                           double startTime = lecturesList[index]
-                                              .lecture_time[time_index].StartTime;
+                                              .lecture_time[time_index].StartTime+1;
                                           double endTime = lecturesList[index]
-                                              .lecture_time[time_index].EndTime;
+                                              .lecture_time[time_index].EndTime+1;
 
-                                          for (int i = startTime.toInt() - 1; i <
-                                              endTime - 1; i++) {
-                                            if (i == startTime - 1) {
+                                          for (int i = startTime.toInt(); i <
+                                              endTime; i++) {
+                                            if (i == startTime) {
                                               info[day][i] = lecturesList[index];
                                               colorList[day][i] = color;
                                             } else {
@@ -693,13 +796,18 @@ class _AddLectureState extends State<AddLecture> {
                   );
                 }
                 else {
+
+                  // 인덱스 넣기
                   count ++;
                   newLecture.idx = 10000000 + count;
+
                   showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         List dataClasses = [];
+                        bool filled = false;
 
+                        // item: 4번째 원소부터 시간대 나타나는 리스트 [요일, 시작시간, 끝시간] (요일: 1-월 ~ 7-일, 시간: 0-8시 ~ 27-21시 반)
                         for (int i = 3; i < item.length; i++) {
                           if (item[i][2] != 0) {
                             LectureTime lectureTime = new LectureTime();
@@ -715,36 +823,61 @@ class _AddLectureState extends State<AddLecture> {
                           eachLecture.lecture_time = [lectureTimeList[i]];
                           dataClasses.add(eachLecture);
                         }
+                        // 여기까지의 코드로 dataClasses에 한 과목에 대한 여러개의 시간 대의 수업이 모두 담기게 됨
 
-                        bool filled = false;
-                        int earliestTime = 1;
-                        int latestTime = 11;
+                        // 시간표 크기 조절 (현재 표시된 시간표 화면 밖에 강의가 존재하는 경우 시간표 크기 조절)
+                        // 주의: info (0: 8시, 1: 9시, ... 13: 21시), 추가되는 강의의 시간 (0: 8시, 1: 8시 반, ... 26: 21시, 27: 21시 반)
+                        int earliestTime = 1; // 9시
+                        int latestTime = 9+1; // 17시 (즉, 18시까지)
 
-                        for (int i = 1; i <= 7; i++) {
-                          for (int j=0; (j-1) ~/ 2 < earliestTime; j++) {
-                            print(j);
-                            print(info[i][j].idx);
-                            if (info[i][j].idx != -1) {earliestTime = (j-1) ~/ 2;}
+                        List minMaxCheck = [];
+                        for (int i=1; i<=7; i++) {
+                          for (int j=0; j<= 27; j++) {
+                            if (info[i][j].idx != -1) {
+                              minMaxCheck.add(j);
+                            }
                           }
-                          for (int j=29; (j-1) ~/ 2 > latestTime; j--) {
-                            print(j);
-                            print(info[i][j].idx);
-                            if (info[i][j].idx != -1) {latestTime = (j-1) ~/ 2;}
+                        }
+
+                        minMaxCheck.sort();
+
+                        print(minMaxCheck);
+                        if (minMaxCheck.length > 0) {
+                          if (minMaxCheck[0] ~/ 2 < earliestTime) {
+                            earliestTime = minMaxCheck[0] ~/ 2;
+                          }
+                          if (minMaxCheck[minMaxCheck.length - 1] ~/ 2 + 1 >
+                              latestTime) {
+                            latestTime = minMaxCheck[minMaxCheck.length -
+                                1] ~/ 2 + 1;
                           }
                         }
 
                         print(earliestTime);
                         print(latestTime);
 
+                        for (int i=6; i<=7; i++) {
+                          for (int j = 0; j <= 27; j++) {
+                            if (info[i][j].idx != -1) {
+                              dayLowerLimit = i + 1;
+                            }
+                          }
+                        }
+
                         for (int time_index = 0; time_index < dataClasses.length; time_index++) {
-                          int day = (dataClasses[time_index].lecture_time![0].day! == 0) ? 0:
-                          dataClasses[time_index].lecture_time![0].day!;
+                          int day = dataClasses[time_index].lecture_time![0].day!;
                           double startTime = dataClasses[time_index].lecture_time![0].StartTime!;
                           double endTime = dataClasses[time_index].lecture_time![0].EndTime!;
 
-                          if ((startTime) ~/ 2 < earliestTime) {earliestTime = (startTime) ~/ 2;}
-                          if ((endTime) ~/ 2 > latestTime) {latestTime = (endTime) ~/ 2;}
+                          print(day);
+                          print(startTime);
+                          print(endTime);
 
+                          if (startTime ~/ 2 < earliestTime) {earliestTime = startTime ~/ 2;}
+                          if (endTime ~/ 2 + 1 > latestTime) {latestTime = endTime % 2 == 1 ? endTime ~/ 2 + 1 : endTime ~/ 2;}
+                          if (day+1 > dayLowerLimit) {dayLowerLimit = day+1;}
+
+                          // 중복 확인
                           for (int i = startTime.toInt(); i < endTime; i++) {
                             if (info[day][i].idx != -1) {
                               filled = true;
@@ -773,9 +906,12 @@ class _AddLectureState extends State<AddLecture> {
                           upperLimit = earliestTime;
                           lowerLimit = latestTime;
                           timeTableCount = (lowerLimit - upperLimit);
+                          dayCount = (dayLowerLimit - dayUpperLimit);
+
                           print(upperLimit);
                           print(lowerLimit);
                           print(timeTableCount);
+                          print(dayCount);
 
                           return AlertDialog(
                             shape: RoundedRectangleBorder(
@@ -802,8 +938,7 @@ class _AddLectureState extends State<AddLecture> {
                                   print(colors);
 
                                   for (int time_index = 0; time_index < dataClasses.length; time_index++) {
-                                    int day = (dataClasses[time_index].lecture_time![0].day! == 0) ? 0:
-                                    dataClasses[time_index].lecture_time![0].day!;
+                                    int day = dataClasses[time_index].lecture_time![0].day!;
                                     double startTime = dataClasses[time_index].lecture_time![0].StartTime!;
                                     double endTime = dataClasses[time_index].lecture_time![0].EndTime!;
 
