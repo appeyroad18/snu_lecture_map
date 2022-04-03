@@ -437,11 +437,10 @@ class _InfoboxState extends State<Infobox> {
 }
 
 class BuildingInfo extends StatefulWidget {
-
-  BuildingInfo({required this.buildingnumber, Key? key}) : super(key: key);
   String buildingnumber;
-  @override
+  BuildingInfo({required this.buildingnumber, Key? key}) : super(key: key);
 
+  @override
   _BuildingInfoState createState() => _BuildingInfoState();
 }
 
@@ -458,7 +457,7 @@ class _BuildingInfoState extends State<BuildingInfo> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           Text(
-            BUILDINGDATA[widget.buildingnumber]?[3] ?? '---',
+            BUILDINGDATA[widget.buildingnumber]![3]!=null ? BUILDINGDATA[widget.buildingnumber]![3] : "---",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
         ],
@@ -469,6 +468,8 @@ class _BuildingInfoState extends State<BuildingInfo> {
     );
   }
 }
+
+
 
 class ResMenuBox extends StatefulWidget {
   const ResMenuBox({Key? key}) : super(key: key);

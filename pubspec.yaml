@@ -102,6 +102,3 @@ flutter:
 flutter_native_splash:
   color: "#aeddef"
   image: assets/images/flutterlogo.png
-
-module:
-  androidX: true
