@@ -1,4 +1,5 @@
 import 'dart:core';
+import 'dart:ffi';
 // import 'dart:html';
 
 import 'package:flutter/material.dart';
@@ -10,6 +11,9 @@ import 'dart:convert' as convert;
 import 'package:korea_regexp/get_regexp.dart';
 import 'package:korea_regexp/models/regexp_options.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+
+List<Dataclass> dataclass = [];
+List<String> lectureNameList = [];
 
 class SearchScreen extends StatefulWidget {
   double bottomBarHeight;
@@ -28,39 +32,19 @@ class _SearchScreenState extends State<SearchScreen> {
 
   String _searchText = ""; // 검색창에 user가 타이핑한 문자열
 
-  List names = []; // 전체 리스트
+  List totalList = []; // 전체 리스트
 
-  List filteredNames = []; // searchtext에 의해 필터링된 리스트
+  List filteredList = []; // searchtext에 의해 필터링된 리스트
 
   Icon _searchIcon = Icon(Icons.search); // 검색 아이콘
 
   Widget _appBarTitle = Text('Search Example'); // Search Example의 단축어?
 
   //리스트를 변수로 가져오는 함수
-  void _getNames() async {
+  void getLectureName() async {
     setState(() {
-      names = datalist;
-      filteredNames = datalist;
-    });
-  }
-
-  void _searchPressed() {
-    setState(() {
-      if (_searchIcon.icon == Icons.search) {
-        //off->on
-        _searchIcon = Icon(Icons.close);
-        _appBarTitle = TextField(
-          controller: _filter,
-          decoration: InputDecoration(
-              prefixIcon: Icon(Icons.search), hintText: 'Search...'),
-        );
-      } else {
-        //on->off
-        _searchIcon = Icon(Icons.search);
-        _appBarTitle = Text('Search Example');
-        filteredNames = names;
-        _filter.clear();
-      }
+      totalList = lectureNameList;
+      filteredList = lectureNameList;
     });
   }
 
@@ -69,7 +53,7 @@ class _SearchScreenState extends State<SearchScreen> {
       if (_filter.text.isEmpty) {
         setState(() {
           _searchText = "";
-          filteredNames = names;
+          filteredList = totalList;
         });
       } else {
         setState(() {
@@ -81,67 +65,94 @@ class _SearchScreenState extends State<SearchScreen> {
 
   @override
   void initState() {
-    _getNames();
+    getLectureName();
     super.initState();
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: _buildBar(context),
+      appBar: AppBar(
+        centerTitle: true,
+        title: _appBarTitle,
+        leading: IconButton(
+          icon: _searchIcon,
+          onPressed: () {
+            if (whenSearchBarActivated()) {
+              activateSearchBar();
+            } else {
+              deactivateSearchBar();
+            }
+          },
+        ),
+      ),
       body: Container(
         child: _buildList(),
       ),
     );
   }
+  
+  bool whenSearchBarActivated() {
+    if (_searchIcon.icon == Icons.search) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-  PreferredSizeWidget _buildBar(BuildContext context) {
-    return AppBar(
-      centerTitle: true,
-      title: _appBarTitle,
-      leading: IconButton(
-        icon: _searchIcon,
-        onPressed: _searchPressed,
-      ),
+  void activateSearchBar() {
+    _searchIcon = Icon(Icons.close);
+    _appBarTitle = TextField(
+      controller: _filter,
+      decoration: InputDecoration(
+          prefixIcon: Icon(Icons.search), hintText: 'Search...'),
     );
   }
 
+  void deactivateSearchBar() {
+    _searchIcon = Icon(Icons.search);
+    _appBarTitle = Text('Search Example');
+    filteredList = totalList;
+    _filter.clear();
+  }
+
   Widget _buildList() {
-    if (!(_searchText.isEmpty)) {
-      //무언가를 입력했다면
-      List tempList = [];
-      RegExp regExp = getRegExp(
-          _searchText,
-          RegExpOptions(
-            initialSearch: true,
-            startsWith: false,
-            endsWith: false,
-            fuzzy: true,
-            ignoreSpace: true,
-            ignoreCase: true,
-          ));
-      for (int i = 0; i < names.length; i++) {
-        if (regExp.hasMatch(names[i])) {
-          //입력한 문자와 일치하는 검색 결과 필터
-          tempList.add(names[i]);
-        }
-      }
-      filteredNames = tempList;
+    if (_searchText.isNotEmpty) {
+      filteredList = filterTotalListBySearchText();
     }
     return ListView.builder(
-      itemCount: names == null ? 0 : filteredNames.length,
+      itemCount: filteredList.length,
       itemBuilder: (BuildContext context, int index) {
         return ListTile(
-          title: Text(filteredNames[index]),
+          title: Text(filteredList[index]),
           // ignore: avoid_print
-          onTap: () => print(filteredNames[index]),
+          onTap: () => print(filteredList[index]),
         );
       },
     );
   }
-}
 
-List<Dataclass> dataclass = [];
-List<String> datalist = [];
+  List filterTotalListBySearchText() {
+    List tempList = [];
+    RegExp regExp = getRegExp(
+      _searchText,
+      RegExpOptions(
+        initialSearch: true,
+        startsWith: false,
+        endsWith: false,
+        fuzzy: true,
+        ignoreSpace: true,
+        ignoreCase: true,
+      ),
+    );
+    for (int i = 0; i < totalList.length; i++) {
+      if (regExp.hasMatch(totalList[i])) {
+        //입력한 문자와 일치하는 검색 결과 필터
+        tempList.add(totalList[i]);
+      }
+    }
+    return tempList;
+  }
+}
 
 void button_Update() async {
   dataclass.clear();
@@ -295,9 +306,9 @@ void preProcessingData() {
       newlecturetime.EndTime = 999;
       lecturetime.add(newlecturetime);
     }
-    datalist.clear();
+    lectureNameList.clear();
     for (int i = 0; i < dataclass.length; i++) {
-      datalist.add(dataclass[i].name!);
+      lectureNameList.add(dataclass[i].name!);
     }
     dataclass[i].lecture_time = lecturetime;
     lecturetime.clear();
