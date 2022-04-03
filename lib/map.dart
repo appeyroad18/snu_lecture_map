@@ -94,7 +94,8 @@ class _MapScreenState extends State<MapScreen>
         actions: [
           IconButton(
             icon: Icon(Icons.restaurant_menu_sharp),
-            onPressed: (){
+            onPressed: () async {
+              await DatabaseHelper.instance.removeAll();
               getMenuInfo();
             },
           )
@@ -457,7 +458,7 @@ class _BuildingInfoState extends State<BuildingInfo> {
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
           ),
           Text(
-            BUILDINGDATA[widget.buildingnumber]![3]!=null ? BUILDINGDATA[widget.buildingnumber]![3] : "---",
+            BUILDINGDATA[widget.buildingnumber]?[3] ?? "---",
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
           ),
         ],
@@ -487,6 +488,25 @@ class _ResMenuBoxState extends State<ResMenuBox> {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: const BorderRadius.all(const Radius.circular(5)),
+      ),
+      child: FutureBuilder<List<MenuInfo>>(
+        future: DatabaseHelper.instance.getMenuInfoFromDb(),
+        builder: (BuildContext context, AsyncSnapshot<List<MenuInfo>> snapshot) {
+          if (!snapshot.hasData) {
+            return Center(child: Text('Loading...'),);
+          }
+          return snapshot.data!.isEmpty
+          ? Center(child: Text('No Menu Serves'),)
+          : ListView(
+            children: snapshot.data!.map((menuInfo) {
+              return Center(
+                child: ListTile(
+                  title: Text(menuInfo.menuName),
+                ),
+              );
+            }).toList(),
+          );
+        },
       ),
     );
   }
