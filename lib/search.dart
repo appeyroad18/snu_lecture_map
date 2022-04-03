@@ -300,7 +300,7 @@ void preProcessingData() {
       datalist.add(dataclass[i].name!);
     }
     dataclass[i].lecture_time = lecturetime;
-    lecturetime.clear();
+    // lecturetime.clear();
     //print('${dataclass[i].lecture_time![0].StartTime!}');
   }
 
